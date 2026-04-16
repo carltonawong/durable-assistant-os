@@ -70,7 +70,7 @@ This keeps setup anchored to real usefulness instead of forcing premature ontolo
 Current public-docs sequence:
 - [x] `README.md`
 - [x] `docs/thesis.md`
-- [ ] `docs/memory.md`
+- [x] `docs/memory.md`
 - [ ] `docs/behavior.md`
 - [ ] `docs/wizard.md`
 - [ ] `examples/carlton-instance.md`
