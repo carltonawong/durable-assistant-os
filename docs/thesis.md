@@ -2,7 +2,7 @@
 
 ## One sentence
 
-Build a useful personal assistant first, then distill the reusable framework from what actually worked.
+Build a useful personal assistant first, then distill an agent-agnostic operating harness and shared memory system from what actually worked.
 
 ## The problem
 

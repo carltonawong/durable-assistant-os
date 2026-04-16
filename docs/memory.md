@@ -5,7 +5,7 @@
 Use memory to make the assistant more useful over time without turning the system into a cluttered archive of everything it has ever seen.
 
 DAOS does not treat memory as a prestige feature.
-It treats memory as infrastructure for continuity, trust, and reduced repetition.
+It treats memory as core infrastructure inside an agent-agnostic operating harness: the shared continuity layer that lets durable collaboration survive across sessions, tools, and even agent swaps.
 
 ## Core stance
 

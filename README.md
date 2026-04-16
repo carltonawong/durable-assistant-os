@@ -2,7 +2,9 @@
 
 A useful personal assistant first.
 
-Durable Assistant OS (DAOS) is a lightweight framework for building an assistant that can actually help a real person over time — not just answer prompts well in isolated sessions.
+Durable Assistant OS (DAOS) is an agent-agnostic operating harness and shared memory system for durable human-agent collaboration.
+
+It is designed to help a real person over time — not just answer prompts well in isolated sessions.
 
 The core idea is simple:
 - start from lived reality, not abstract system design
