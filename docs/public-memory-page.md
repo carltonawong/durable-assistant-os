@@ -52,7 +52,15 @@ So the practical conflict model is: local thread first for live short-term disag
 
 ## When to use which layers
 
-_Draft pending._
+In practice, DAOS works best when each layer is used for the kind of memory it is actually good at. If you use every layer for everything, the system gets blurry fast. The simplest rule is: use the cheapest layer that can answer the current question without pretending it is more authoritative than it is.
+
+Use **local thread context** when you need the exact handoff point, the latest user steer, or the meaning of the current exchange. Use **hot cache** when you need a quick shared front door for what matters now across agents or runtimes. Use **agent continuity** when the hot cache is not enough and one specific agent needs help resuming its own lane cleanly.
+
+Use **the wiki** when the information should become durable shared truth: architecture, project definitions, stable decisions, synthesized findings, and canonical framing. Use **skills** when the question is procedural and reusable: how to perform a workflow repeatedly, not just what the system currently believes. Use **repo docs** when the material needs to be public-facing, project-facing, or packaging-ready for someone outside the original chat lane.
+
+Use **private agent memory** only for small evergreen support facts that help one agent avoid relearning the same preferences, recurring corrections, or environment quirks. It is useful when present, but it should stay narrow and should not compete with the wiki for canon or with continuity layers for current work state.
+
+A practical DAOS read path therefore looks like this: local thread first for exact continuity, hot cache and agent continuity for active-memory recovery, wiki for durable shared truth, skills for reusable operating method, and repo docs for published expression. If a fact needs to survive and be shared, move it upward into the durable layers. If it only needs to help in the current moment, keep it in the short-term ones.
 
 ## Maintenance / update posture
 
