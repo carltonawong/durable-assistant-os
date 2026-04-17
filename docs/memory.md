@@ -18,6 +18,16 @@ The default failure modes are:
 
 DAOS tries to avoid all three.
 
+## Memory model at a glance
+
+For public packaging, the simplest useful summary is:
+- **shared durable memory** holds the important long-lived facts and decisions
+- **private agent memory** is optional and stays tiny
+- **current working context** tracks what matters right now
+- **source-of-truth reality** is what the assistant verifies before acting
+
+That is enough to explain the model without dragging readers through internal implementation detail.
+
 ## What memory is for
 
 Memory should help the assistant:
@@ -68,6 +78,12 @@ This should usually stay limited to tiny evergreen support facts, for example:
 
 This layer is useful, but it should not become the home for shared doctrine, canonical project definitions, or current shared lane state.
 Those belong in the shared framework memory, not mainly inside one agent.
+
+It should also stay separate from agent continuity:
+- private agent memory = what this agent tends to remember about the user or environment
+- agent continuity = what this agent was last working on and what it should verify before resuming
+
+That boundary matters because private memory should not become a hidden work log, and continuity should not become a second preference/profile store.
 
 In a personal stack, this same layer may appear under different agent-specific names or mechanisms:
 - Hermes memory
@@ -150,6 +166,16 @@ A better pattern is:
 
 This keeps the system faster, cleaner, and less likely to confuse stale notes for truth.
 
+## What this means in practice
+
+A useful public explanation is:
+- the assistant should begin with the cheapest, highest-signal context
+- it should only go deeper when the shallow layer is not enough
+- it should not treat remembered notes as automatically current
+- when current reality matters, it should check the live source
+
+This is how memory stays helpful without pretending to be omniscient.
+
 ## Memory write rules
 
 A useful write policy is conservative but proactive.
@@ -193,6 +219,16 @@ That means the public version should emphasize:
 - how to avoid stale-memory drift
 
 It should avoid presenting a giant taxonomy unless the taxonomy creates clear practical value.
+
+## Public-framework translation rule
+
+When adapting the memory model for public docs or install-facing material:
+- explain the roles of the layers more than the internal mechanics
+- prefer plain language over ontology-heavy naming
+- keep the model small enough that another stack could adopt it
+- preserve the locked boundaries instead of inventing alternate categories just to sound cleaner
+
+The point of packaging is to make the doctrine easier to understand, not to quietly rewrite it.
 
 ## Working standard
 

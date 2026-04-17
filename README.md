@@ -25,8 +25,9 @@ DAOS aims for the middle path:
 - enough restraint to stay practical
 - enough behavioral clarity to build trust
 
-Read the longer thesis here:
+Read the core docs here:
 - [`docs/thesis.md`](docs/thesis.md)
+- [`docs/memory.md`](docs/memory.md)
 
 ## What DAOS is trying to solve
 
