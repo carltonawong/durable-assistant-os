@@ -76,8 +76,8 @@ This should usually stay limited to tiny evergreen support facts, for example:
 - stable environment quirks
 - small conventions that help the assistant avoid repeated mistakes
 
-This layer is useful, but it should not become the home for shared doctrine, canonical project definitions, or current shared lane state.
-Those belong in the shared framework memory, not mainly inside one agent.
+It is useful, but it should not become the home for shared doctrine, canonical project definitions, or current shared lane state.
+Those belong in shared memory, not mainly inside one agent.
 
 It should also stay separate from agent continuity:
 - private agent memory = what this agent tends to remember about the user or environment
@@ -91,10 +91,10 @@ In a personal stack, this same layer may appear under different agent-specific n
 - Codex memory or profile layer
 - OpenClaw / Quinn local memory
 
-The important point is not the product name. The role stays the same:
+The product name does not matter. The role does:
 private agent memory is a small support layer for tiny evergreen facts, not the main home for shared doctrine.
 
-For the public framework, this should be described as a generic default rather than tied to one stack:
+For the public framework, describe this generically rather than tying it to one stack:
 an optional per-agent support layer for small durable facts, with implementation varying by runtime.
 
 ### 2. Current working context
@@ -168,11 +168,11 @@ This keeps the system faster, cleaner, and less likely to confuse stale notes fo
 
 ## What this means in practice
 
-A useful public explanation is:
-- the assistant should begin with the cheapest, highest-signal context
-- it should only go deeper when the shallow layer is not enough
-- it should not treat remembered notes as automatically current
-- when current reality matters, it should check the live source
+In public terms:
+- start with the cheapest, highest-signal context
+- only go deeper when the shallow layer is not enough
+- do not treat remembered notes as automatically current
+- when current reality matters, check the live source
 
 This is how memory stays helpful without pretending to be omniscient.
 
@@ -226,7 +226,7 @@ When adapting the memory model for public docs or install-facing material:
 - explain the roles of the layers more than the internal mechanics
 - prefer plain language over ontology-heavy naming
 - keep the model small enough that another stack could adopt it
-- preserve the locked boundaries instead of inventing alternate categories just to sound cleaner
+- preserve the locked boundaries instead of inventing alternate categories for presentation
 
 The point of packaging is to make the doctrine easier to understand, not to quietly rewrite it.
 
