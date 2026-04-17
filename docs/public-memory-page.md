@@ -28,7 +28,17 @@ Taken together, these layers give DAOS a practical short-term read order: local 
 
 ## Layers inside durable memory
 
-_Draft pending._
+If short-term / active memory keeps an assistant oriented now, durable memory is what makes the system cumulative over time. In DAOS, this is where stable knowledge, decisions, canonical framing, and reusable structure are supposed to live. The goal is not to store everything forever. The goal is to preserve what future agents or future sessions should not have to re-derive.
+
+**The wiki** is the main durable shared memory layer. This is where shared truth across agents belongs: project definitions, architecture, canonical framing, synthesized findings, and durable decisions. For the DAOS memory model itself, the wiki is the primary canonical home rather than hot cache, chat residue, or one agent’s private memory.
+
+**Canonical docs and repo docs** are the public-facing durable layer. They take the stable doctrine already shaped in the wiki and express it in a form that can be shipped, read, and reused outside the original chat lane. In other words, durable memory is not complete until the ideas that matter publicly have been compiled into documentation someone else could actually use.
+
+**Skills and reusable methods** are also part of durable memory, but with a narrower role. Their job is to operationalize how to do something repeatedly. They should usually reflect canonical wiki truth rather than quietly becoming a second doctrine store. If a durable conceptual framing emerges in a skill first, it should be reconciled back into the wiki and any relevant repo docs.
+
+**Private agent memory** belongs at the bottom of the durable stack as an optional support layer. It is often useful in practice, but it should stay narrow: small evergreen facts such as preferences, recurring corrections, or stable environment quirks. It is not the place for canonical doctrine, shared current-lane state, or hidden work-log continuity.
+
+Taken together, durable memory in DAOS is the layer family that keeps the system portable, trustworthy, and resistant to drift. The wiki holds shared truth, docs make that truth publishable, skills preserve reusable operating methods, and private agent memory provides a small amount of stack-specific support without replacing the more canonical layers above it.
 
 ## Conflict resolution
 
