@@ -69,6 +69,18 @@ This should usually stay limited to tiny evergreen support facts, for example:
 This layer is useful, but it should not become the home for shared doctrine, canonical project definitions, or current shared lane state.
 Those belong in the shared framework memory, not mainly inside one agent.
 
+In a personal stack, this same layer may appear under different agent-specific names or mechanisms:
+- Hermes memory
+- Claude Code local memory or instruction layer
+- Codex memory or profile layer
+- OpenClaw / Quinn local memory
+
+The important point is not the product name. The role stays the same:
+private agent memory is a small support layer for tiny evergreen facts, not the main home for shared doctrine.
+
+For the public framework, this should be described as a generic default rather than tied to one stack:
+an optional per-agent support layer for small durable facts, with implementation varying by runtime.
+
 ### 2. Current working context
 This is the active-now layer.
 
