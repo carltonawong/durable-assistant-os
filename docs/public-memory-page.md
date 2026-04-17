@@ -64,7 +64,15 @@ A practical DAOS read path therefore looks like this: local thread first for exa
 
 ## Maintenance / update posture
 
-_Draft pending._
+DAOS is not designed as a memory system that stays healthy by accident. Its maintenance posture is deliberate: keep the write path simple, automate ingest where possible, and make hygiene a recurring behavior instead of a once-in-a-while cleanup project. The goal is not just to preserve facts, but to resist drift, sprawl, and stale context over time.
+
+The write path should stay low-friction. When a meaningful discovery, correction, decision, or workflow change appears, capture it in a compact dated raw note or write it directly into the wiki if you are already in maintenance mode. Do not force full curation in the middle of live work. The important thing is that durable material does not get stranded in chat, hot cache, or private scratch memory.
+
+From there, ingest can be scheduled or opportunistic. A practical DAOS pattern is: agents capture raw notes quickly, an ingest pass promotes them into durable wiki pages, and index/log surfaces are updated so the new knowledge becomes discoverable. Hot cache and agent continuity should also be refreshed when shared operational state or resumable lane state has meaningfully changed, but they should stay compact and front-door only.
+
+Hygiene should be explicit and recurring. Daily anti-bloat review helps catch accidental cache drift, duplicate notes, or overgrown temporary memory. A deeper weekly consolidation or pruning pass helps merge overlapping sources, compress stale detail, and keep the durable layers readable. This is why DAOS treats maintenance as part of the product behavior, not as a nice-to-have manual discipline.
+
+The overall posture is therefore simple: capture quickly, promote durably, compress regularly, and verify against reality when live state matters. A durable assistant should become clearer and more trustworthy over time, not more cluttered.
 
 ## Status
 
