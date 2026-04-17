@@ -8,31 +8,31 @@ In practice, read short-term memory in this order: **local thread first, then ho
 
 ## The two memory families
 
-DAOS keeps memory simple at the top level by splitting it into two families: **short-term / active memory** and **durable memory**. Short-term / active memory helps an assistant hold the right foreground while work is still live. Durable memory holds the knowledge that should survive session boundaries, tool changes, and longer stretches of time.
+DAOS keeps memory simple at the top level by splitting it into two families: **short-term / active memory** and **durable memory**. Short-term / active memory helps an assistant hold the right foreground while work is live. Durable memory holds the knowledge that should survive session boundaries, tool changes, and longer stretches of time.
 
-This split matters because not every memory failure is the same. Some problems come from losing the current thread; others come from losing the durable truth the system is supposed to build on. Short-term / active memory exists to keep work oriented in the moment. Durable memory exists to keep the system cumulative, portable, and trustworthy over time.
+This split matters because not every memory failure is the same. Some problems come from losing the current thread; others come from losing the durable truth the system is supposed to build on. Short-term / active memory keeps work oriented in the moment. Durable memory keeps the system cumulative, portable, and trustworthy over time.
 
-At a practical level, the short-term side includes layers like the local thread, hot cache, and agent continuity. The durable side includes the wiki, canonical docs, reusable skills and methods, and optional per-agent support memory when it stores only small evergreen facts.
+In practice, the short-term side includes the local thread, hot cache, and agent continuity. The durable side includes the wiki, canonical docs, reusable skills and methods, and optional per-agent support memory when it stores only small evergreen facts.
 
 ## Layers inside short-term / active memory
 
-In DAOS, short-term / active memory is the small stack that helps an assistant stay on the right live foreground. It is not one thing, and the layers do not do the same job. The point of separating them is to keep exact thread continuity, shared front-door context, and per-agent resume state from collapsing into one blurry memory bucket.
+In DAOS, short-term / active memory is the small stack that keeps an assistant on the right live foreground. The layers do different jobs. Separating them keeps exact thread continuity, shared front-door context, and per-agent resume state from collapsing into one blurry memory bucket.
 
-**Local thread context** comes first. This means the current message, any replied-to or quoted message, and the most recent turns in the current thread or session. This is the highest-signal layer for reconstructing the exact handoff point. Shared memory can recover the lane, but the local thread usually recovers the last sentence.
+**Local thread context** comes first. This means the current message, any replied-to or quoted message, and the most recent turns in the current thread or session. It is the highest-signal layer for reconstructing the exact handoff point. Shared memory can recover the lane, but the local thread usually recovers the last sentence.
 
 **Hot cache** comes next. In public framing, its job is best understood as a shared front door for what matters right now, with “tip of the tongue” describing the feel rather than replacing the function. It helps multiple agents or runtimes orient quickly to the current foreground, major corrections, and active risks. But it should not be treated as exact per-thread continuity, and it can become contested when multiple lanes are genuinely hot at once.
 
-**Agent continuity** follows after hot cache. This should stay literal in public framing: it is a per-agent resumable note about what that agent was last doing and what it should verify before resuming. Its job is not to replace the thread and not to become a second profile store. It exists because shared front-door context is sometimes not enough to tell one specific agent how to pick its lane back up cleanly.
+**Agent continuity** follows after hot cache. This should stay literal in public framing: it is a per-agent resumable note about what that agent was last doing and what it should verify before resuming. Its job is not to replace the thread or become a second profile store. It exists because shared front-door context is sometimes not enough to tell one specific agent how to pick its lane back up cleanly.
 
 Taken together, these layers give DAOS a practical short-term read order: local thread first, then hot cache, then agent continuity, then deeper fallback reconstruction. They are complementary, not interchangeable. The local thread anchors exact continuity, hot cache shares the current foreground, and agent continuity preserves one agent’s resumable state when the other two layers are not enough.
 
 ## Layers inside durable memory
 
-If short-term / active memory keeps an assistant oriented now, durable memory is what makes the system cumulative over time. In DAOS, this is where stable knowledge, decisions, canonical framing, and reusable structure are supposed to live. The goal is not to store everything forever. The goal is to preserve what future agents or future sessions should not have to re-derive.
+If short-term / active memory keeps an assistant oriented now, durable memory is what makes the system cumulative over time. In DAOS, this is where stable knowledge, decisions, canonical framing, and reusable structure are meant to live. The goal is not to store everything forever. It is to preserve what future agents or future sessions should not have to re-derive.
 
 **The wiki** is the main durable shared memory layer. This is where shared truth across agents belongs: project definitions, architecture, canonical framing, synthesized findings, and durable decisions. For the DAOS memory model itself, the wiki is the primary canonical home rather than hot cache, chat residue, or one agent’s private memory.
 
-**Canonical docs and repo docs** are the public-facing durable layer. They take the stable doctrine already shaped in the wiki and express it in a form that can be shipped, read, and reused outside the original chat lane. In other words, durable memory is not complete until the ideas that matter publicly have been compiled into documentation someone else could actually use.
+**Canonical docs and repo docs** are the public-facing durable layer. They take stable doctrine already shaped in the wiki and express it in a form that can be shipped, read, and reused outside the original chat lane. In other words, durable memory is not complete until the ideas that matter publicly have been compiled into documentation someone else could actually use.
 
 **Skills and reusable methods** are also part of durable memory, but with a narrower role. Their job is to operationalize how to do something repeatedly. They should usually reflect canonical wiki truth rather than quietly becoming a second doctrine store. If a durable conceptual framing emerges in a skill first, it should be reconciled back into the wiki and any relevant repo docs.
 
@@ -44,15 +44,15 @@ Taken together, durable memory in DAOS is the layer family that keeps the system
 
 Conflict resolution in DAOS starts with a simple rule: when short-term / active memory surfaces disagree, trust the local thread first. This is the Thread Priority Rule. It exists because the current message, reply target, and recent turns are usually the highest-signal source for what the assistant is actually being asked to do right now. Hot cache, agent continuity, and other recent lane residue can help orient the assistant, but they are fallback layers, not the default winner.
 
-This rule is stronger than a lookup order. It is also a behavioral default. If the immediate thread and the assistant’s own recently active lane memory feel in tension, the assistant should stay with the thread unless there is stronger evidence that directly contradicts that read. In practice, stronger evidence means a higher-authority and more directly relevant source such as explicit user clarification in the thread, verified files or runtime state when the dispute is about live reality, or canonical durable docs when the dispute is about stable doctrine.
+This rule is more than a lookup order. It is also a behavioral default. If the immediate thread and the assistant’s own recently active lane memory feel in tension, the assistant should stay with the thread unless there is stronger evidence that directly contradicts that read. In practice, stronger evidence means a higher-authority and more directly relevant source such as explicit user clarification in the thread, verified files or runtime state when the dispute is about live reality, or canonical durable docs when the dispute is about stable doctrine.
 
 Just as important, the Thread Priority Rule is scoped. It governs conflicts inside short-term / active memory surfaces: local thread context, hot cache, agent continuity, and other recent lane residue. It does **not** mean that a live thread silently overrides durable shared truth already compiled into the wiki or other canonical docs. If the conflict is about durable doctrine rather than immediate thread intent, the assistant should surface that mismatch, verify whether the user intends to change the doctrine, and update the durable layer explicitly if needed.
 
-So the practical conflict model is: local thread first for live short-term disagreements, stronger evidence only when directly relevant, and durable truth changed only on purpose. That keeps DAOS responsive in the moment without making one active conversation accidentally rewrite the system’s longer-term memory.
+The practical conflict model is simple: local thread first for live short-term disagreements, stronger evidence only when directly relevant, and durable truth changed only on purpose. That keeps DAOS responsive in the moment without letting one active conversation accidentally rewrite the system’s longer-term memory.
 
 ## When to use which layers
 
-In practice, DAOS works best when each layer is used for the kind of memory it is actually good at. If you use every layer for everything, the system gets blurry fast. The simplest rule is: use the cheapest layer that can answer the current question without pretending it is more authoritative than it is.
+In practice, DAOS works best when each layer is used for the kind of memory it is actually good at. If every layer is used for everything, the system gets blurry fast. The simplest rule is: use the cheapest layer that can answer the current question without pretending it is more authoritative than it is.
 
 Use **local thread context** when you need the exact handoff point, the latest user steer, or the meaning of the current exchange. Use **hot cache** when you need a quick shared front door for what matters now across agents or runtimes. Use **agent continuity** when the hot cache is not enough and one specific agent needs help resuming its own lane cleanly.
 
@@ -64,7 +64,7 @@ A practical DAOS read path therefore looks like this: local thread first for exa
 
 ## Maintenance / update posture
 
-DAOS is not designed as a memory system that stays healthy by accident. Its maintenance posture is deliberate: keep the write path simple, automate ingest where possible, and make hygiene a recurring behavior instead of a once-in-a-while cleanup project. The goal is not just to preserve facts, but to resist drift, sprawl, and stale context over time.
+DAOS is not designed as a memory system that stays healthy by accident. Its maintenance posture is deliberate: keep the write path simple, automate ingest where possible, and make hygiene a recurring behavior rather than a once-in-a-while cleanup project. The goal is not just to preserve facts, but to resist drift, sprawl, and stale context over time.
 
 The write path should stay low-friction. When a meaningful discovery, correction, decision, or workflow change appears, capture it in a compact dated raw note or write it directly into the wiki if you are already in maintenance mode. Do not force full curation in the middle of live work. The important thing is that durable material does not get stranded in chat, hot cache, or private scratch memory.
 
@@ -72,7 +72,7 @@ From there, ingest can be scheduled or opportunistic. A practical DAOS pattern i
 
 Hygiene should be explicit and recurring. Daily anti-bloat review helps catch accidental cache drift, duplicate notes, or overgrown temporary memory. A deeper weekly consolidation or pruning pass helps merge overlapping sources, compress stale detail, and keep the durable layers readable. This is why DAOS treats maintenance as part of the product behavior, not as a nice-to-have manual discipline.
 
-The overall posture is therefore simple: capture quickly, promote durably, compress regularly, and verify against reality when live state matters. A durable assistant should become clearer and more trustworthy over time, not more cluttered.
+The overall posture is simple: capture quickly, promote durably, compress regularly, and verify against reality when live state matters. A durable assistant should become clearer and more trustworthy over time, not more cluttered.
 
 ## Closing note
 
