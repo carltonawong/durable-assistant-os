@@ -90,6 +90,8 @@ DAOS takes a minimum-viable-memory position:
 The goal is not to remember everything.
 The goal is to remember the right things well enough to reduce friction and improve continuity.
 
+For the packaged version of this idea, see [`docs/memory.md`](memory.md).
+
 ## The trust stance
 
 A durable assistant is partly a behavioral system.
