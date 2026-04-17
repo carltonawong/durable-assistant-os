@@ -74,6 +74,6 @@ Hygiene should be explicit and recurring. Daily anti-bloat review helps catch ac
 
 The overall posture is therefore simple: capture quickly, promote durably, compress regularly, and verify against reality when live state matters. A durable assistant should become clearer and more trustworthy over time, not more cluttered.
 
-## Status
+## Closing note
 
-This page is the first repo-integrated DAOS public memory draft. It preserves the currently locked public doctrine and is ready for the remaining sections to be filled in from the existing DAOS source trail.
+DAOS is meant to make durable assistant memory simpler, not heavier. The point of this model is to keep the right foreground live, preserve the right truths over time, and make those truths portable across sessions, tools, and agents without turning memory into a bureaucratic system of its own.
