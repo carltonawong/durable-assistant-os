@@ -57,6 +57,18 @@ Examples:
 
 This layer should change slowly.
 
+### Private agent memory
+Some assistants also carry a small private memory layer of their own.
+
+This should usually stay limited to tiny evergreen support facts, for example:
+- stable user preferences
+- recurring corrections
+- stable environment quirks
+- small conventions that help the assistant avoid repeated mistakes
+
+This layer is useful, but it should not become the home for shared doctrine, canonical project definitions, or current shared lane state.
+Those belong in the shared framework memory, not mainly inside one agent.
+
 ### 2. Current working context
 This is the active-now layer.
 
