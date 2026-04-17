@@ -16,7 +16,15 @@ At a practical level, the short-term side includes layers like the local thread,
 
 ## Layers inside short-term / active memory
 
-_Draft pending. Locked doctrine already established in the DAOS wiki; this repo draft preserves the accepted opening and two-family framing first._
+In DAOS, short-term / active memory is the small stack that helps an assistant stay on the right live foreground. It is not one thing, and the layers do not do the same job. The point of separating them is to keep exact thread continuity, shared front-door context, and per-agent resume state from collapsing into one blurry memory bucket.
+
+**Local thread context** comes first. This means the current message, any replied-to or quoted message, and the most recent turns in the current thread or session. This is the highest-signal layer for reconstructing the exact handoff point. Shared memory can recover the lane, but the local thread usually recovers the last sentence.
+
+**Hot cache** comes next. In public framing, its job is best understood as a shared front door for what matters right now, with “tip of the tongue” describing the feel rather than replacing the function. It helps multiple agents or runtimes orient quickly to the current foreground, major corrections, and active risks. But it should not be treated as exact per-thread continuity, and it can become contested when multiple lanes are genuinely hot at once.
+
+**Agent continuity** follows after hot cache. This should stay literal in public framing: it is a per-agent resumable note about what that agent was last doing and what it should verify before resuming. Its job is not to replace the thread and not to become a second profile store. It exists because shared front-door context is sometimes not enough to tell one specific agent how to pick its lane back up cleanly.
+
+Taken together, these layers give DAOS a practical short-term read order: local thread first, then hot cache, then agent continuity, then deeper fallback reconstruction. They are complementary, not interchangeable. The local thread anchors exact continuity, hot cache shares the current foreground, and agent continuity preserves one agent’s resumable state when the other two layers are not enough.
 
 ## Layers inside durable memory
 
