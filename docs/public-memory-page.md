@@ -42,11 +42,13 @@ Taken together, durable memory in DAOS is the layer family that keeps the system
 
 ## Conflict resolution
 
-Current locked doctrine for this page:
-- local thread first
-- the Thread Priority Rule governs short-term / active memory conflicts only
-- durable truth is not silently overridden by live thread context
-- hot cache is a front door, not a replacement for durable truth
+Conflict resolution in DAOS starts with a simple rule: when short-term / active memory surfaces disagree, trust the local thread first. This is the Thread Priority Rule. It exists because the current message, reply target, and recent turns are usually the highest-signal source for what the assistant is actually being asked to do right now. Hot cache, agent continuity, and other recent lane residue can help orient the assistant, but they are fallback layers, not the default winner.
+
+This rule is stronger than a lookup order. It is also a behavioral default. If the immediate thread and the assistant’s own recently active lane memory feel in tension, the assistant should stay with the thread unless there is stronger evidence that directly contradicts that read. In practice, stronger evidence means a higher-authority and more directly relevant source such as explicit user clarification in the thread, verified files or runtime state when the dispute is about live reality, or canonical durable docs when the dispute is about stable doctrine.
+
+Just as important, the Thread Priority Rule is scoped. It governs conflicts inside short-term / active memory surfaces: local thread context, hot cache, agent continuity, and other recent lane residue. It does **not** mean that a live thread silently overrides durable shared truth already compiled into the wiki or other canonical docs. If the conflict is about durable doctrine rather than immediate thread intent, the assistant should surface that mismatch, verify whether the user intends to change the doctrine, and update the durable layer explicitly if needed.
+
+So the practical conflict model is: local thread first for live short-term disagreements, stronger evidence only when directly relevant, and durable truth changed only on purpose. That keeps DAOS responsive in the moment without making one active conversation accidentally rewrite the system’s longer-term memory.
 
 ## When to use which layers
 
