@@ -22,9 +22,11 @@ DAOS is the attempt to package a more durable model:
 6. `docs/lane-model.md` — the public lane model for lightweight domain mapping and foreground control
 7. `harness/core-setup.md` — the minimum viable install path
 8. `templates/assistant-charter-template.md` — reusable blank charter for locking assistant behavior defaults early
-9. `templates/operating-profile-template.md` — reusable fill-in structure for a first DAOS profile
-10. `templates/cadence-review-template.md` — reusable upkeep template for heartbeat, weekly, and monthly review
-11. `examples/user-operating-profile-example.md` — worked example of what a filled profile can look like
+9. `examples/assistant-charter-example.md` — worked example of a filled first-pass charter
+10. `templates/operating-profile-template.md` — reusable fill-in structure for a first DAOS profile
+11. `examples/first-pass-setup-output-example.md` — worked example of what one finished first sitting can produce
+12. `templates/cadence-review-template.md` — reusable upkeep template for heartbeat, weekly, and monthly review
+13. `examples/user-operating-profile-example.md` — worked example of what a filled profile can look like
 
 ## Current artifact map
 
@@ -45,6 +47,8 @@ DAOS is the attempt to package a more durable model:
 - `templates/cadence-review-template.md` — blank cadence/review structure for upkeep and recalibration
 
 ### examples/
+- `examples/assistant-charter-example.md` — generic worked example of a filled first-pass charter
+- `examples/first-pass-setup-output-example.md` — generic worked example of a minimum viable setup outcome after one sitting
 - `examples/user-operating-profile-example.md` — generic worked example showing what a filled profile can look like without becoming framework canon
 
 ## Document roles
@@ -59,7 +63,7 @@ A few files are intentionally close together but do different jobs:
 - `docs/lane-model.md` explains the public lane model, including statuses, foreground, and pressure
 - `harness/core-setup.md` explains **how to install** a minimum viable DAOS setup
 - `templates/` provides reusable blank structures
-- `examples/` demonstrates what a filled instance can look like
+- `examples/` demonstrates what a filled instance can look like, including both smaller setup artifacts and fuller profile outputs
 
 Simple rule:
 - `docs/` = explain
@@ -80,7 +84,9 @@ Current first-pass packaging status:
 - the public lane-model page exists
 - the first installable harness flow exists
 - the first reusable assistant charter template exists
+- the first reusable assistant charter example exists
 - the first reusable profile template exists
+- the first first-sitting setup output example exists
 - the first cadence/review template exists
 - the first generic worked example exists
 

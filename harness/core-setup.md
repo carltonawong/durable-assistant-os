@@ -44,6 +44,12 @@ By the end of core setup, you should be able to fill:
 
 If useful, save the resulting instance profile separately and keep the framework files generic.
 
+Useful companion artifacts:
+- `templates/assistant-charter-template.md`
+- `templates/operating-profile-template.md`
+- `examples/assistant-charter-example.md`
+- `examples/first-pass-setup-output-example.md`
+
 ## The core setup flow
 
 Run these blocks in order.
@@ -200,6 +206,10 @@ After setup, fill the operating profile in this order:
 6. Calibration-later notes
 
 Use `templates/operating-profile-template.md` as the default blank structure.
+
+If you want a worked target shape before running setup, read:
+- `examples/assistant-charter-example.md`
+- `examples/first-pass-setup-output-example.md`
 
 ## Install-quality checklist
 
