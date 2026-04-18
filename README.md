@@ -25,8 +25,11 @@ DAOS is the attempt to package a more durable model:
 9. `examples/assistant-charter-example.md` — worked example of a filled first-pass charter
 10. `templates/operating-profile-template.md` — reusable fill-in structure for a first DAOS profile
 11. `examples/first-pass-setup-output-example.md` — worked example of what one finished first sitting can produce
-12. `templates/cadence-review-template.md` — reusable upkeep template for heartbeat, weekly, and monthly review
-13. `examples/user-operating-profile-example.md` — worked example of what a filled profile can look like
+12. `templates/lane-snapshot-template.md` — reusable single-lane operating snapshot for higher-friction lanes
+13. `examples/lane-snapshot-example.md` — worked example of a filled lane-specific snapshot
+14. `templates/cadence-review-template.md` — reusable upkeep template for heartbeat, weekly, and monthly review
+15. `examples/cadence-review-example.md` — worked example of a lightweight review/calibration pass
+16. `examples/user-operating-profile-example.md` — worked example of what a filled profile can look like
 
 ## Current artifact map
 
@@ -44,11 +47,14 @@ DAOS is the attempt to package a more durable model:
 ### templates/
 - `templates/assistant-charter-template.md` — blank assistant-charter structure for locking behavior defaults early
 - `templates/operating-profile-template.md` — blank operating-profile structure
+- `templates/lane-snapshot-template.md` — blank lane-specific operating snapshot for higher-friction lanes
 - `templates/cadence-review-template.md` — blank cadence/review structure for upkeep and recalibration
 
 ### examples/
 - `examples/assistant-charter-example.md` — generic worked example of a filled first-pass charter
 - `examples/first-pass-setup-output-example.md` — generic worked example of a minimum viable setup outcome after one sitting
+- `examples/lane-snapshot-example.md` — generic worked example of a lane-specific snapshot for one live lane
+- `examples/cadence-review-example.md` — generic worked example of a lightweight review/calibration pass
 - `examples/user-operating-profile-example.md` — generic worked example showing what a filled profile can look like without becoming framework canon
 
 ## Document roles
@@ -87,7 +93,10 @@ Current first-pass packaging status:
 - the first reusable assistant charter example exists
 - the first reusable profile template exists
 - the first first-sitting setup output example exists
+- the first reusable lane snapshot template exists
+- the first lane snapshot example exists
 - the first cadence/review template exists
+- the first cadence review example exists
 - the first generic worked example exists
 
 So the repo now has a usable first-pass stack across doctrine, installation, templates, and example material.

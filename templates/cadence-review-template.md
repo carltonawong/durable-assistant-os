@@ -51,5 +51,7 @@ Questions:
 ## 6. Notes
 
 - `harness/` installs the starting defaults
+- `templates/lane-snapshot-template.md` can hold extra structure for one lane between broad profile reviews
+- `examples/cadence-review-example.md` shows what a lightweight filled review can look like
 - `templates/` supports ongoing reuse and maintenance
 - this file is for cadence and recalibration, not first-time setup

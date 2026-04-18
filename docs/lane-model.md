@@ -159,6 +159,10 @@ That is why it appears inside:
 The setup goal is not to perfect the lane map.
 It is to establish a usable first map that can later be refined.
 
+Useful companion artifacts:
+- `templates/lane-snapshot-template.md`
+- `examples/lane-snapshot-example.md`
+
 ## How this connects to calibration
 
 The lane model should improve through use.
@@ -170,6 +174,10 @@ Good later calibration questions include:
 - does anything need to be split, merged, renamed, paused, or archived?
 
 This keeps the lane model adaptive instead of frozen.
+
+If you want a concrete example of lane-level upkeep after first install, see:
+- `templates/cadence-review-template.md`
+- `examples/cadence-review-example.md`
 
 ## Bottom line
 
