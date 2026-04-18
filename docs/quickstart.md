@@ -30,6 +30,7 @@ Read these worked examples first:
 - `examples/first-pass-setup-output-example.md`
 - `examples/lane-snapshot-example.md`
 - `examples/cadence-review-example.md`
+- `examples/setup-conversation-example.md`
 
 Use them to understand the target shape.
 Do not copy them blindly.

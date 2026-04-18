@@ -49,6 +49,7 @@ Useful companion artifacts:
 - `templates/operating-profile-template.md`
 - `examples/assistant-charter-example.md`
 - `examples/first-pass-setup-output-example.md`
+- `examples/setup-conversation-example.md`
 
 ## The core setup flow
 
@@ -210,6 +211,7 @@ Use `templates/operating-profile-template.md` as the default blank structure.
 If you want a worked target shape before running setup, read:
 - `examples/assistant-charter-example.md`
 - `examples/first-pass-setup-output-example.md`
+- `examples/setup-conversation-example.md`
 
 ## Install-quality checklist
 

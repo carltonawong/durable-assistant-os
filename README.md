@@ -47,7 +47,8 @@ When the initial setup is in place, maintain it with:
 14. `examples/lane-snapshot-example.md` — worked example of a filled lane-specific snapshot
 15. `templates/cadence-review-template.md` — reusable upkeep template for heartbeat, weekly, and monthly review
 16. `examples/cadence-review-example.md` — worked example of a lightweight review/calibration pass
-17. `examples/user-operating-profile-example.md` — worked example of what a filled profile can look like
+17. `examples/setup-conversation-example.md` — worked example of what a first DAOS setup conversation can sound like
+18. `examples/user-operating-profile-example.md` — worked example of what a filled profile can look like
 
 ## Current artifact map
 
@@ -81,6 +82,7 @@ When the initial setup is in place, maintain it with:
 - `examples/first-pass-setup-output-example.md` — generic worked example of a minimum viable setup outcome after one sitting
 - `examples/lane-snapshot-example.md` — generic worked example of a lane-specific snapshot for one live lane
 - `examples/cadence-review-example.md` — generic worked example of a lightweight review/calibration pass
+- `examples/setup-conversation-example.md` — generic worked example of the setup conversation shape itself
 - `examples/user-operating-profile-example.md` — generic worked example showing what a filled profile can look like without becoming framework canon
 
 ## Document roles
@@ -97,7 +99,7 @@ A few files are intentionally close together but do different jobs:
 - `harness/core-setup.md` explains **how to install** a minimum viable DAOS setup
 - `starter-pack/` provides a copyable real-world working scaffold for first-time adopters
 - `templates/` provides reusable blank structures
-- `examples/` demonstrates what a filled instance can look like, including both smaller setup artifacts and fuller profile outputs
+- `examples/` demonstrates what a filled instance or setup interaction can look like, including both smaller setup artifacts and fuller profile outputs
 
 Simple rule:
 - `docs/` = explain
@@ -127,6 +129,7 @@ Current first-pass packaging status:
 - the first lane snapshot example exists
 - the first cadence/review template exists
 - the first cadence review example exists
+- the first setup conversation example exists
 - the first generic worked example exists
 
 So the repo now has a usable first-pass stack across doctrine, installation, templates, and example material.
