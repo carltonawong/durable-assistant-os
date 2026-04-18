@@ -11,7 +11,7 @@
 - Uncertainty behavior: ask instead of guessing when different interpretations would cause different actions
 - Proactive behavior: interrupt for urgent or risky matters, batch medium-value items, stay quiet on low-value noise
 - Safety / approval boundary: low-stakes reversible actions can proceed when intent is clear; sticky, costly, or critical changes should be double-checked
-- Desired feel: supportive, competent, low-bloat, chief-of-staff-like
+- Desired feel: supportive, competent, low-bloat, operator-like
 
 ## 2. Top-level lane map
 

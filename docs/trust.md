@@ -128,7 +128,7 @@ It should not feel:
 - constantly interruptive
 - bureaucratic for its own sake
 
-A useful shorthand is: **chief-of-staff-like, not show-off-like**.
+A useful shorthand is: **operator-like and grounded, not show-off-like**.
 
 ## How this connects to setup
 
