@@ -41,6 +41,7 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     plan = subparsers.add_parser("plan", help="Plan a portability import")
     plan.add_argument("bundle_dir")
     plan.add_argument("--target-wiki-root", required=True)
+    plan.add_argument("--target-pack-dir")
 
     apply_cmd = subparsers.add_parser("apply", help="Apply a safe portability import")
     apply_cmd.add_argument("bundle_dir")
@@ -183,14 +184,43 @@ def inspect_bundle(bundle_dir: Path) -> str:
     return "\n".join(lines)
 
 
-def plan_import(bundle_dir: Path, target_wiki_root: Path) -> str:
+def summarize_durable_import(durable_root: Path, target_wiki_root: Path) -> tuple[int, int, int]:
+    new_files = 0
+    unchanged_files = 0
+    conflicts = 0
+    for item in durable_root.rglob("*"):
+        if item.is_dir():
+            continue
+        rel = item.relative_to(durable_root)
+        target = target_wiki_root / rel
+        if not target.exists():
+            new_files += 1
+            continue
+        if target.read_text(encoding="utf-8") == item.read_text(encoding="utf-8"):
+            unchanged_files += 1
+            continue
+        conflicts += 1
+    return new_files, unchanged_files, conflicts
+
+
+def plan_import(bundle_dir: Path, target_wiki_root: Path, target_pack_dir: Path | None = None) -> str:
     manifest = load_bundle_manifest(bundle_dir)
     payload = manifest["payload"]
+    durable_root = bundle_dir / "durable" / "wiki"
+    require_dir(durable_root, "bundle durable wiki")
+    new_files, unchanged_files, conflicts = summarize_durable_import(durable_root, target_wiki_root)
     lines = [f"DAOS portability plan: {bundle_dir}"]
     lines.append("would restore pack metadata anchors")
     lines.append(f"would copy durable wiki files to {target_wiki_root}")
+    lines.append(f"durable_new_files: {new_files}")
+    lines.append(f"durable_unchanged_files: {unchanged_files}")
+    lines.append(f"durable_conflicts: {conflicts}")
+    lines.append("default durable-conflict policy: keep")
     if payload['active_memory']['included']:
-        lines.append("would stage active-memory files for review, not live activation")
+        if target_pack_dir is not None:
+            lines.append(f"active-memory stage: {target_pack_dir / '.daos' / 'portability-stage' / 'active-memory'}")
+        else:
+            lines.append("would stage active-memory files for review, not live activation")
     return "\n".join(lines)
 
 
@@ -313,7 +343,12 @@ def main(argv: list[str] | None = None) -> int:
             print(inspect_bundle(Path(args.bundle_dir).expanduser().resolve()))
             return 0
         if args.command == "plan":
-            print(plan_import(Path(args.bundle_dir).expanduser().resolve(), Path(args.target_wiki_root).expanduser().resolve()))
+            target_pack_dir = Path(args.target_pack_dir).expanduser().resolve() if args.target_pack_dir else None
+            print(plan_import(
+                Path(args.bundle_dir).expanduser().resolve(),
+                Path(args.target_wiki_root).expanduser().resolve(),
+                target_pack_dir,
+            ))
             return 0
         if args.command == "apply":
             print(apply_import(

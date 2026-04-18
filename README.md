@@ -53,6 +53,7 @@ Wiki-first portability step:
 - `python scripts/daos_portability.py inspect /path/to/bundle`
 - `python scripts/daos_portability.py plan /path/to/bundle --target-wiki-root /path/to/new-wiki`
 - `python scripts/daos_portability.py apply /path/to/bundle --target-wiki-root /path/to/new-wiki --target-pack-dir /path/to/new-pack`
+- `plan --target-pack-dir` now previews new/unchanged/conflicting durable files plus active-memory staging targets before writes
 - `apply` defaults to conservative `keep` on durable conflicts, can `--durable-conflicts stage|overwrite`, and stages bundled active-memory sidecars unless `--active-memory skip`
 
 If one lane needs more structure, add:

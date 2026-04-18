@@ -72,6 +72,15 @@ python scripts/daos_portability.py inspect /tmp/bundle
 python scripts/daos_portability.py plan /tmp/bundle --target-wiki-root /tmp/new-wiki
 ```
 
+Optional richer import preview:
+
+```bash
+python scripts/daos_portability.py plan \
+  /tmp/bundle \
+  --target-wiki-root /tmp/new-wiki \
+  --target-pack-dir /tmp/new-pack
+```
+
 ### Apply
 
 ```bash
@@ -124,8 +133,9 @@ python scripts/daos_portability.py apply \
 
 ### Plan reports
 - where pack metadata would come from
-- how many durable wiki files would be copied
-- whether active-memory payload would be staged for review
+- how many durable wiki files are new vs unchanged vs conflicting at the target wiki root
+- default durable-conflict posture (`keep`)
+- active-memory staging target when a target pack dir is provided
 
 ### Apply currently does
 - restore `daos-pack.json` into a target pack root

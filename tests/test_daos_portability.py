@@ -170,6 +170,34 @@ class DaosPortabilityScriptTests(unittest.TestCase):
             self.assertIn("would restore pack metadata anchors", result.stdout)
             self.assertFalse(target_wiki.exists())
 
+    def test_plan_summarizes_durable_conflicts_and_active_memory_staging_targets(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            tmp = Path(tmpdir)
+            _, _, bundle_dir, _, _ = self.bootstrap_pack_and_bundle(tmp, include_active_memory=True)
+            target_wiki = tmp / "target-wiki"
+            target_pack = tmp / "target-pack"
+            target_wiki.mkdir(parents=True)
+            (target_wiki / "index.md").write_text("# Other durable root\n", encoding="utf-8")
+            (target_wiki / "pages").mkdir(parents=True)
+            (target_wiki / "pages" / "ops.md").write_text("# Ops\nDurable note\n", encoding="utf-8")
+
+            result = self.run_portability(
+                "plan",
+                str(bundle_dir),
+                "--target-wiki-root",
+                str(target_wiki),
+                "--target-pack-dir",
+                str(target_pack),
+            )
+
+            self.assertEqual(result.returncode, 0, msg=result.stderr)
+            self.assertIn("durable_new_files: 2", result.stdout)
+            self.assertIn("durable_unchanged_files: 1", result.stdout)
+            self.assertIn("durable_conflicts: 1", result.stdout)
+            self.assertIn("default durable-conflict policy: keep", result.stdout)
+            self.assertIn(str(target_pack / ".daos" / "portability-stage" / "active-memory"), result.stdout)
+            self.assertFalse(target_pack.exists())
+
     def test_apply_restores_durable_wiki_and_metadata_into_empty_target(self) -> None:
         with tempfile.TemporaryDirectory() as tmpdir:
             tmp = Path(tmpdir)
