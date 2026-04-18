@@ -27,6 +27,10 @@ First generated install step:
 - `python scripts/daos_bootstrap.py /path/to/my-daos-pack`
 - add `--filled-example` to generate from the filled starter-pack example instead
 
+First interactive generated install step:
+- `python scripts/daos_wizard.py /path/to/my-daos-pack`
+- the wizard asks a compact first-pass question set and writes a filled starter pack
+
 First readiness check:
 - `python scripts/daos_validate.py /path/to/my-daos-pack`
 - blank scaffolds are expected to fail until you fill the required fields
@@ -90,10 +94,12 @@ After first install, use:
 ### scripts/
 - `scripts/daos_bootstrap.py` — generate a DAOS working folder by copying the blank starter-pack or the filled example into a target path
 - `scripts/daos_validate.py` — check whether a DAOS pack is minimally filled enough to operate
+- `scripts/daos_wizard.py` — run a compact setup wizard and generate a filled DAOS starter pack
 
 ### tests/
 - `tests/test_daos_bootstrap.py` — standard-library verification for the bootstrap generator script
 - `tests/test_daos_validate.py` — standard-library verification for the DAOS pack validator
+- `tests/test_daos_wizard.py` — standard-library verification for the interactive setup wizard
 
 ### templates/
 - `templates/assistant-charter-template.md` — blank assistant-charter structure for locking behavior defaults early
@@ -127,6 +133,7 @@ A few files are intentionally close together but do different jobs:
 - `starter-pack/` provides a copyable real-world working scaffold for first-time adopters
 - `scripts/daos_bootstrap.py` provides the first runnable/generated DAOS install step
 - `scripts/daos_validate.py` provides the first runnable readiness check for a filled DAOS pack
+- `scripts/daos_wizard.py` provides the first interactive generated DAOS setup path
 - `templates/` provides reusable blank structures
 - `examples/` demonstrates what a filled instance or setup interaction can look like, including both smaller setup artifacts and fuller profile outputs
 
@@ -148,6 +155,7 @@ Current first-pass packaging status:
 - the first staged adoption-path guide exists
 - the first runnable bootstrap generator exists
 - the first runnable pack validator exists
+- the first interactive setup wizard exists
 - the public memory front door exists
 - the deeper memory reference layer exists
 - the public trust/behavior page exists

@@ -20,6 +20,7 @@ Use:
 - `docs/quickstart.md`
 - `starter-pack/`
 - `scripts/daos_bootstrap.py`
+- `scripts/daos_wizard.py`
 - `examples/`
 
 Success looks like:
@@ -110,6 +111,7 @@ Examples of deeper structure:
 Current note:
 - DAOS now has its **first** generated install step (`scripts/daos_bootstrap.py`), but it is still intentionally simple and file-copy based rather than a full interactive wizard
 - DAOS now also has its **first** readiness check (`scripts/daos_validate.py`) for determining whether a filled pack is minimally operable
+- DAOS now also has its **first** compact interactive wizard (`scripts/daos_wizard.py`) for generating a filled pack from a short setup question set
 
 Failure mode:
 - treating complexity as maturity

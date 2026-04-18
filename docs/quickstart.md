@@ -19,6 +19,10 @@ Fastest generated option:
 - add `--filled-example` if you want a filled starter-pack instead of a blank scaffold
 - then run `python scripts/daos_validate.py /path/to/my-daos-pack` once you have actually filled the pack
 
+Fastest interactive option:
+- run `python scripts/daos_wizard.py /path/to/my-daos-pack`
+- then run `python scripts/daos_validate.py /path/to/my-daos-pack`
+
 1. Read `docs/setup.md`
 2. Run `harness/core-setup.md`
 3. Fill `templates/assistant-charter-template.md`
@@ -33,6 +37,7 @@ If you want to understand what comes after setup and the first week, read `docs/
 
 If you want the first runnable/generated install step instead of copying folders manually, use `scripts/daos_bootstrap.py`.
 If you want the first runnable readiness check, use `scripts/daos_validate.py`.
+If you want the first interactive generated setup path, use `scripts/daos_wizard.py`.
 
 ## If you want examples before filling anything
 
