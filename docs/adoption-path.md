@@ -19,6 +19,7 @@ Goal:
 Use:
 - `docs/quickstart.md`
 - `starter-pack/`
+- `scripts/daos_bootstrap.py`
 - `examples/`
 
 Success looks like:
@@ -36,6 +37,8 @@ Goal:
 
 Use:
 - `harness/core-setup.md`
+- a generated folder from `python scripts/daos_bootstrap.py /path/to/my-daos-pack`
+- `python scripts/daos_validate.py /path/to/my-daos-pack` after the pack is filled
 - `starter-pack/assistant-charter.md`
 - `starter-pack/operating-profile.md`
 - optionally `starter-pack/lane-snapshot.md`
@@ -103,6 +106,10 @@ Examples of deeper structure:
 - stronger review surfaces
 - more durable publishable doctrine for a shared assistant operating model
 - eventually, more runnable/generated install flows
+
+Current note:
+- DAOS now has its **first** generated install step (`scripts/daos_bootstrap.py`), but it is still intentionally simple and file-copy based rather than a full interactive wizard
+- DAOS now also has its **first** readiness check (`scripts/daos_validate.py`) for determining whether a filled pack is minimally operable
 
 Failure mode:
 - treating complexity as maturity

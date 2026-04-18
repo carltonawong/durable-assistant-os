@@ -14,6 +14,11 @@ If you want to try DAOS right now, do these in order:
 Fastest option:
 - copy `starter-pack/` into your own workspace and fill the files there
 
+Fastest generated option:
+- run `python scripts/daos_bootstrap.py /path/to/my-daos-pack`
+- add `--filled-example` if you want a filled starter-pack instead of a blank scaffold
+- then run `python scripts/daos_validate.py /path/to/my-daos-pack` once you have actually filled the pack
+
 1. Read `docs/setup.md`
 2. Run `harness/core-setup.md`
 3. Fill `templates/assistant-charter-template.md`
@@ -25,6 +30,9 @@ Fastest option:
 That is enough to install a first-pass DAOS baseline.
 
 If you want to understand what comes after setup and the first week, read `docs/adoption-path.md`.
+
+If you want the first runnable/generated install step instead of copying folders manually, use `scripts/daos_bootstrap.py`.
+If you want the first runnable readiness check, use `scripts/daos_validate.py`.
 
 ## If you want examples before filling anything
 
