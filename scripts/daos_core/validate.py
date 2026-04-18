@@ -53,6 +53,13 @@ def has_filled_label(lines: list[str], label: str) -> bool:
     return False
 
 
+def get_label_value(lines: list[str], label: str) -> str:
+    for line in lines:
+        if line.startswith(label):
+            return line[len(label) :].strip()
+    return ""
+
+
 def collect_lane_sections(lines: list[str]) -> list[tuple[str, list[str]]]:
     sections: list[tuple[str, list[str]]] = []
     current_name: str | None = None
@@ -78,6 +85,20 @@ def collect_lane_sections(lines: list[str]) -> list[tuple[str, list[str]]]:
         sections.append((current_name, current_lines))
 
     return sections
+
+
+def collect_top_level_lanes(lines: list[str]) -> list[str]:
+    lanes: list[str] = []
+    in_section = False
+    for line in lines:
+        if line.startswith("## 2. Top-level lane map"):
+            in_section = True
+            continue
+        if in_section and line.startswith("## "):
+            break
+        if in_section and line.startswith("- "):
+            lanes.append(line[2:].strip())
+    return [lane for lane in lanes if lane]
 
 
 def validate_manifest(path: Path, result: ValidationResult) -> None:
@@ -110,6 +131,40 @@ def validate_cadence_review(path: Path, result: ValidationResult) -> None:
     )
     if all(not has_filled_label(lines, prompt) for prompt in prompts):
         result.warnings.append("cadence-review.md looks blank; keep it for later or fill it after real use")
+
+
+def validate_operating_profile_lints(lines: list[str], lane_sections: list[tuple[str, list[str]]], result: ValidationResult) -> None:
+    top_level_lanes = collect_top_level_lanes(lines)
+    lane_names = [name for name, _ in lane_sections if name and name != "[name]"]
+    unique_lane_names = set(lane_names)
+
+    duplicates = sorted({name for name in lane_names if lane_names.count(name) > 1})
+    if duplicates:
+        result.warnings.append(
+            "operating-profile.md has duplicate lane names: " + ", ".join(duplicates)
+        )
+
+    missing_from_map = sorted(unique_lane_names.difference(top_level_lanes))
+    if missing_from_map:
+        result.warnings.append(
+            "operating-profile.md has lane snapshots missing from the top-level lane map: "
+            + ", ".join(missing_from_map)
+        )
+
+    foreground_yes = 0
+    for _, lane_lines in lane_sections:
+        if get_label_value(lane_lines, "- Foreground:").lower() == "yes":
+            foreground_yes += 1
+    if foreground_yes > 3:
+        result.warnings.append(
+            f"operating-profile.md has more than 3 foreground lanes ({foreground_yes}); the focus set may be overloaded"
+        )
+
+    memory_front_door = get_label_value(lines, "- Memory front door:").lower()
+    if memory_front_door and all(token not in memory_front_door for token in ("thread", "cache", "continuity", "local")):
+        result.warnings.append(
+            "operating-profile.md memory front door may be too thin; consider a local thread/cache/continuity front door"
+        )
 
 
 def validate_pack_dir(pack_dir: str | Path) -> ValidationResult:
@@ -157,6 +212,7 @@ def validate_pack_dir(pack_dir: str | Path) -> ValidationResult:
                     result.errors.append(
                         f"operating-profile.md lane '{lane_name}' has an empty required field: {label}"
                     )
+        validate_operating_profile_lints(operating_lines, filled_lanes, result)
 
     validate_cadence_review(root / "cadence-review.md", result)
     return result

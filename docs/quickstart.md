@@ -21,6 +21,7 @@ Fastest generated option:
 - add `--filled-example` if you want a filled starter-pack instead of a blank scaffold
 - generated packs now include `daos-pack.json` as the machine-readable manifest
 - then run `python scripts/daos_validate.py /path/to/my-daos-pack` once you have actually filled the pack
+- expect lint/calibration warnings when the pack shape looks operable but still likely fragile
 
 Fastest interactive option:
 - run `python scripts/daos_wizard.py /path/to/my-daos-pack`

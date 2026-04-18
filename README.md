@@ -40,6 +40,7 @@ First interactive generated install step:
 First readiness check:
 - `python scripts/daos_validate.py /path/to/my-daos-pack`
 - blank scaffolds are expected to fail until you fill the required fields
+- validation now also surfaces calibration/lint warnings such as overloaded foreground lanes, duplicate lane names, and thin memory-front-door defaults
 
 If one lane needs more structure, add:
 - `templates/lane-snapshot-template.md`

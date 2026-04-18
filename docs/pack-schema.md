@@ -11,6 +11,7 @@ But generated packs now also include a machine-readable manifest:
 That manifest gives DAOS a stable substrate for:
 - schema-backed generation
 - validation
+- lint / calibration diagnostics
 - richer wizard work later
 - future import/export or app layers if they become warranted
 
@@ -77,6 +78,18 @@ DAOS still accepts older packs that do not yet have `daos-pack.json`.
 Validation warns about that instead of hard-failing.
 
 That keeps the current repo examples usable while moving generated packs onto a canonical schema path.
+
+## Validation posture
+
+DAOS validation now does two things:
+- **errors** for missing or unfilled structure that makes the pack not minimally operable
+- **warnings** for calibration/lint smells that suggest the pack may still be fragile in real use
+
+Current warning examples include:
+- duplicate lane names
+- lane snapshots that are missing from the top-level lane map
+- overloaded foreground sets (more than 3 foreground lanes)
+- memory front doors that skip the usual thread/cache/continuity staging
 
 ## Design stance
 
