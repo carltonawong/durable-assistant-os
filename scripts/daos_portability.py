@@ -42,6 +42,7 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     plan.add_argument("bundle_dir")
     plan.add_argument("--target-wiki-root", required=True)
     plan.add_argument("--target-pack-dir")
+    plan.add_argument("--review-output")
 
     apply_cmd = subparsers.add_parser("apply", help="Apply a safe portability import")
     apply_cmd.add_argument("bundle_dir")
@@ -203,12 +204,68 @@ def summarize_durable_import(durable_root: Path, target_wiki_root: Path) -> tupl
     return new_files, unchanged_files, conflicts
 
 
-def plan_import(bundle_dir: Path, target_wiki_root: Path, target_pack_dir: Path | None = None) -> str:
+def collect_durable_conflicts(durable_root: Path, target_wiki_root: Path) -> list[str]:
+    conflicts: list[str] = []
+    for item in durable_root.rglob("*"):
+        if item.is_dir():
+            continue
+        rel = item.relative_to(durable_root)
+        target = target_wiki_root / rel
+        if target.exists() and target.read_text(encoding="utf-8") != item.read_text(encoding="utf-8"):
+            conflicts.append(str(rel))
+    return conflicts
+
+
+def write_plan_review(
+    output_path: Path,
+    *,
+    bundle_dir: Path,
+    target_wiki_root: Path,
+    target_pack_dir: Path | None,
+    new_files: int,
+    unchanged_files: int,
+    conflicts: list[str],
+    active_memory_stage: Path | None,
+) -> Path:
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    lines = [
+        "# DAOS Portability Plan Review",
+        "",
+        f"- Bundle: `{bundle_dir}`",
+        f"- Target wiki root: `{target_wiki_root}`",
+        f"- Target pack dir: `{target_pack_dir}`" if target_pack_dir else "- Target pack dir: not provided",
+        "- Default durable-conflict policy: `keep`",
+        "",
+        "## Summary",
+        "",
+        f"- durable_new_files: {new_files}",
+        f"- durable_unchanged_files: {unchanged_files}",
+        f"- durable_conflicts: {len(conflicts)}",
+    ]
+    if active_memory_stage is not None:
+        lines.extend(["", "## Active Memory", "", f"- Stage path: `{active_memory_stage}`"])
+    if conflicts:
+        lines.extend(["", "## Durable Conflicts", ""])
+        lines.extend(f"- {item}" for item in conflicts)
+    else:
+        lines.extend(["", "## Durable Conflicts", "", "- None"])
+    output_path.write_text("\n".join(lines) + "\n", encoding="utf-8")
+    return output_path
+
+
+def plan_import(
+    bundle_dir: Path,
+    target_wiki_root: Path,
+    target_pack_dir: Path | None = None,
+    review_output: Path | None = None,
+) -> str:
     manifest = load_bundle_manifest(bundle_dir)
     payload = manifest["payload"]
     durable_root = bundle_dir / "durable" / "wiki"
     require_dir(durable_root, "bundle durable wiki")
     new_files, unchanged_files, conflicts = summarize_durable_import(durable_root, target_wiki_root)
+    conflict_items = collect_durable_conflicts(durable_root, target_wiki_root)
+    active_memory_stage = target_pack_dir / ".daos" / "portability-stage" / "active-memory" if (payload['active_memory']['included'] and target_pack_dir is not None) else None
     lines = [f"DAOS portability plan: {bundle_dir}"]
     lines.append("would restore pack metadata anchors")
     lines.append(f"would copy durable wiki files to {target_wiki_root}")
@@ -217,10 +274,22 @@ def plan_import(bundle_dir: Path, target_wiki_root: Path, target_pack_dir: Path 
     lines.append(f"durable_conflicts: {conflicts}")
     lines.append("default durable-conflict policy: keep")
     if payload['active_memory']['included']:
-        if target_pack_dir is not None:
-            lines.append(f"active-memory stage: {target_pack_dir / '.daos' / 'portability-stage' / 'active-memory'}")
+        if active_memory_stage is not None:
+            lines.append(f"active-memory stage: {active_memory_stage}")
         else:
             lines.append("would stage active-memory files for review, not live activation")
+    if review_output is not None:
+        review_path = write_plan_review(
+            review_output,
+            bundle_dir=bundle_dir,
+            target_wiki_root=target_wiki_root,
+            target_pack_dir=target_pack_dir,
+            new_files=new_files,
+            unchanged_files=unchanged_files,
+            conflicts=conflict_items,
+            active_memory_stage=active_memory_stage,
+        )
+        lines.append(f"review artifact: {review_path}")
     return "\n".join(lines)
 
 
@@ -344,10 +413,12 @@ def main(argv: list[str] | None = None) -> int:
             return 0
         if args.command == "plan":
             target_pack_dir = Path(args.target_pack_dir).expanduser().resolve() if args.target_pack_dir else None
+            review_output = Path(args.review_output).expanduser().resolve() if args.review_output else None
             print(plan_import(
                 Path(args.bundle_dir).expanduser().resolve(),
                 Path(args.target_wiki_root).expanduser().resolve(),
                 target_pack_dir,
+                review_output,
             ))
             return 0
         if args.command == "apply":

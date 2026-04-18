@@ -198,6 +198,36 @@ class DaosPortabilityScriptTests(unittest.TestCase):
             self.assertIn(str(target_pack / ".daos" / "portability-stage" / "active-memory"), result.stdout)
             self.assertFalse(target_pack.exists())
 
+    def test_plan_can_write_review_artifact_with_conflict_details_without_touching_targets(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            tmp = Path(tmpdir)
+            _, _, bundle_dir, _, _ = self.bootstrap_pack_and_bundle(tmp, include_active_memory=True)
+            target_wiki = tmp / "target-wiki"
+            target_pack = tmp / "target-pack"
+            review_output = tmp / "review" / "portability-plan.md"
+            target_wiki.mkdir(parents=True)
+            (target_wiki / "index.md").write_text("# Other durable root\n", encoding="utf-8")
+
+            result = self.run_portability(
+                "plan",
+                str(bundle_dir),
+                "--target-wiki-root",
+                str(target_wiki),
+                "--target-pack-dir",
+                str(target_pack),
+                "--review-output",
+                str(review_output),
+            )
+
+            self.assertEqual(result.returncode, 0, msg=result.stderr)
+            self.assertTrue(review_output.exists())
+            review_text = review_output.read_text(encoding="utf-8")
+            self.assertIn("# DAOS Portability Plan Review", review_text)
+            self.assertIn("- index.md", review_text)
+            self.assertIn(str(target_pack / ".daos" / "portability-stage" / "active-memory"), review_text)
+            self.assertIn("review artifact:", result.stdout)
+            self.assertFalse(target_pack.exists())
+
     def test_apply_restores_durable_wiki_and_metadata_into_empty_target(self) -> None:
         with tempfile.TemporaryDirectory() as tmpdir:
             tmp = Path(tmpdir)

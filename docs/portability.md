@@ -81,6 +81,16 @@ python scripts/daos_portability.py plan \
   --target-pack-dir /tmp/new-pack
 ```
 
+Optional review artifact:
+
+```bash
+python scripts/daos_portability.py plan \
+  /tmp/bundle \
+  --target-wiki-root /tmp/new-wiki \
+  --target-pack-dir /tmp/new-pack \
+  --review-output /tmp/review/portability-plan.md
+```
+
 ### Apply
 
 ```bash
@@ -136,6 +146,7 @@ python scripts/daos_portability.py apply \
 - how many durable wiki files are new vs unchanged vs conflicting at the target wiki root
 - default durable-conflict posture (`keep`)
 - active-memory staging target when a target pack dir is provided
+- optional markdown review artifact with conflict list and intake summary when `--review-output` is provided
 
 ### Apply currently does
 - restore `daos-pack.json` into a target pack root
