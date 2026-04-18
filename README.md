@@ -18,11 +18,12 @@ DAOS is the attempt to package a more durable model:
 2. `docs/public-memory-page.md` — the front-door public explanation of the DAOS memory model
 3. `docs/memory.md` — the deeper reference layer for DAOS memory doctrine
 4. `docs/trust.md` — the public trust and behavior model for ask-vs-act, approval, and verification posture
-5. `harness/core-setup.md` — the minimum viable install path
-6. `templates/assistant-charter-template.md` — reusable blank charter for locking assistant behavior defaults early
-7. `templates/operating-profile-template.md` — reusable fill-in structure for a first DAOS profile
-8. `templates/cadence-review-template.md` — reusable upkeep template for heartbeat, weekly, and monthly review
-9. `examples/user-operating-profile-example.md` — worked example of what a filled profile can look like
+5. `docs/setup.md` — the public setup philosophy for progressive install and early usefulness
+6. `harness/core-setup.md` — the minimum viable install path
+7. `templates/assistant-charter-template.md` — reusable blank charter for locking assistant behavior defaults early
+8. `templates/operating-profile-template.md` — reusable fill-in structure for a first DAOS profile
+9. `templates/cadence-review-template.md` — reusable upkeep template for heartbeat, weekly, and monthly review
+10. `examples/user-operating-profile-example.md` — worked example of what a filled profile can look like
 
 ## Current artifact map
 
@@ -31,6 +32,7 @@ DAOS is the attempt to package a more durable model:
 - `docs/public-memory-page.md` — the public-facing memory overview
 - `docs/memory.md` — deeper DAOS memory doctrine and architecture notes
 - `docs/trust.md` — the public trust and behavior model
+- `docs/setup.md` — the public setup philosophy
 
 ### harness/
 - `harness/core-setup.md` — first runnable one-sitting setup flow for installing DAOS defaults
@@ -51,6 +53,7 @@ A few files are intentionally close together but do different jobs:
 - `docs/public-memory-page.md` explains the memory model in the cleanest public-facing form
 - `docs/memory.md` is the deeper doctrine/reference layer behind that public page
 - `docs/trust.md` explains the public behavior and trust model
+- `docs/setup.md` explains the public setup philosophy and progressive-install stance
 - `harness/core-setup.md` explains **how to install** a minimum viable DAOS setup
 - `templates/` provides reusable blank structures
 - `examples/` demonstrates what a filled instance can look like
@@ -70,6 +73,7 @@ Current first-pass packaging status:
 - the public memory front door exists
 - the deeper memory reference layer exists
 - the public trust/behavior page exists
+- the public setup philosophy page exists
 - the first installable harness flow exists
 - the first reusable assistant charter template exists
 - the first reusable profile template exists
