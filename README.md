@@ -18,12 +18,14 @@ DAOS is the attempt to package a more durable model:
 2. `harness/core-setup.md` — minimum viable install path
 3. `templates/operating-profile-template.md` — reusable fill-in structure
 4. `examples/user-operating-profile-example.md` — worked example of what a filled profile can look like
+5. `templates/cadence-review-template.md` — reusable upkeep template for heartbeat, weekly, and monthly review
 
 ## Current file set
 
 - `docs/public-memory-page.md` — integration-ready public draft for the DAOS memory model
 - `harness/core-setup.md` — first installable harness file for minimum viable DAOS setup
 - `templates/operating-profile-template.md` — first reusable template for filling a minimum viable DAOS operating profile
+- `templates/cadence-review-template.md` — reusable cadence/review template for ongoing upkeep and recalibration
 - `examples/user-operating-profile-example.md` — first example file showing a filled operating profile without becoming framework canon
 
 ## Folder roles
@@ -41,6 +43,7 @@ Current first-pass packaging status:
 - `docs/` has its first public file
 - `harness/` has its first install file
 - `templates/` has its first reusable template
+- `templates/` now also has a cadence/review template for ongoing upkeep
 - `examples/` has its first generic worked example
 
 So the repo now has one concrete file in each top-level layer.
