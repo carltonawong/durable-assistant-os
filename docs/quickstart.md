@@ -41,16 +41,14 @@ That is enough to install a first-pass DAOS baseline.
 
 If you want to understand what comes after setup and the first week, read `docs/adoption-path.md`.
 
-If you want the first runnable/generated install step instead of copying folders manually, use `scripts/daos_bootstrap.py`.
-If you want the first runnable readiness check, use `scripts/daos_validate.py`.
-If you want a safe non-destructive update inspection for an existing pack, use `scripts/daos_update.py check` or `scripts/daos_update.py plan`.
-If you want the current metadata-and-additive-safe apply path for an existing pack, use `scripts/daos_update.py apply`.
-If you want to move durable wiki memory and pack identity between installs, use `scripts/daos_portability.py export`, `inspect`, `plan`, and `apply`.
-`plan --target-pack-dir` previews new/unchanged/conflicting durable files plus active-memory staging targets before writes.
-`plan --review-output /path/to/review.md` writes a portable markdown intake review with proposed decisions.
-`apply --review-input /path/to/review.md` follows those review decisions for conflicts, selected new files, and active-memory staging.
-`apply` keeps conflicting durable markdown by default, can stage or overwrite incoming conflicts explicitly, and stages bundled active-memory sidecars unless you pass `--active-memory skip`.
-If you want the first interactive generated setup path, use `scripts/daos_wizard.py`.
+If you need more than first install, the next tools are:
+- `scripts/daos_bootstrap.py` — generate a blank or filled pack
+- `scripts/daos_wizard.py` — interactive setup
+- `scripts/daos_validate.py` — readiness + lint/calibration checks
+- `scripts/daos_update.py` — safe in-place pack inspection/apply
+- `scripts/daos_portability.py` — durable wiki export/inspect/plan/apply when moving installs
+
+You do not need all of those before first value.
 
 ## If you want examples before filling anything
 
