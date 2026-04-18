@@ -54,10 +54,13 @@ You do not need all of those before first value.
 
 Read these worked examples first:
 - `examples/assistant-charter-example.md`
+- `examples/creative-studio-assistant-charter-example.md`
 - `examples/first-pass-setup-output-example.md`
 - `examples/lane-snapshot-example.md`
 - `examples/cadence-review-example.md`
 - `examples/setup-conversation-example.md`
+- `examples/user-operating-profile-example.md`
+- `examples/creative-studio-operating-profile-example.md`
 - `examples/starter-pack-example/`
 
 Use them to understand the target shape.

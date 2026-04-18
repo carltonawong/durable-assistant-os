@@ -39,7 +39,7 @@ If you want the interactive path instead:
 ### Working surfaces
 - `starter-pack/` — default copyable operating instance
 - `templates/` — reusable source blanks
-- `examples/` — worked examples of filled artifacts and flows
+- `examples/` — worked examples of filled artifacts and flows, including less Carlton-shaped profiles such as a creative-studio example
 - `harness/core-setup.md` and `harness/first-week.md` — install + stabilization guidance
 
 ### Tooling
