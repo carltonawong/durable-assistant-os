@@ -48,6 +48,7 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     apply_cmd.add_argument("bundle_dir")
     apply_cmd.add_argument("--target-wiki-root", required=True)
     apply_cmd.add_argument("--target-pack-dir", required=True)
+    apply_cmd.add_argument("--review-input")
     apply_cmd.add_argument(
         "--durable-conflicts",
         choices=("keep", "stage", "overwrite"),
@@ -249,8 +250,36 @@ def write_plan_review(
         lines.extend(f"- {item}" for item in conflicts)
     else:
         lines.extend(["", "## Durable Conflicts", "", "- None"])
+    lines.extend(["", "## Proposed Decisions", ""])
+    for item in conflicts:
+        lines.append(f"- durable-conflict:{item} = keep")
+    if active_memory_stage is not None:
+        lines.append("- active-memory = stage")
     output_path.write_text("\n".join(lines) + "\n", encoding="utf-8")
     return output_path
+
+
+def parse_review_input(review_input: Path) -> dict[str, object]:
+    if not review_input.is_file():
+        raise ValueError(f"review input does not exist: {review_input}")
+    decisions: dict[str, object] = {"durable_conflicts": {}, "active_memory": None}
+    for raw_line in review_input.read_text(encoding="utf-8").splitlines():
+        line = raw_line.strip()
+        if not line.startswith("- ") or " = " not in line:
+            continue
+        left, right = line[2:].split(" = ", 1)
+        if left.startswith("durable-conflict:"):
+            rel = left.split(":", 1)[1]
+            action = right.strip()
+            if action not in {"keep", "stage", "overwrite"}:
+                raise ValueError(f"unsupported durable conflict action in review input: {action}")
+            decisions["durable_conflicts"][rel] = action
+        elif left == "active-memory":
+            action = right.strip()
+            if action not in {"stage", "skip"}:
+                raise ValueError(f"unsupported active-memory action in review input: {action}")
+            decisions["active_memory"] = action
+    return decisions
 
 
 def plan_import(
@@ -322,12 +351,17 @@ def apply_import(
     *,
     durable_conflicts: str = "keep",
     active_memory: str = "stage",
+    review_input: Path | None = None,
 ) -> str:
     manifest = load_bundle_manifest(bundle_dir)
     durable_root = bundle_dir / "durable" / "wiki"
     pack_root = bundle_dir / "pack"
     require_dir(durable_root, "bundle durable wiki")
     require_dir(pack_root, "bundle pack")
+
+    review_decisions = parse_review_input(review_input) if review_input is not None else {"durable_conflicts": {}, "active_memory": None}
+    if review_decisions["active_memory"] is not None:
+        active_memory = str(review_decisions["active_memory"])
 
     target_pack_dir.mkdir(parents=True, exist_ok=True)
     target_wiki_root.mkdir(parents=True, exist_ok=True)
@@ -346,12 +380,14 @@ def apply_import(
             target.mkdir(parents=True, exist_ok=True)
             continue
         if target.exists() and target.read_text(encoding="utf-8") != item.read_text(encoding="utf-8"):
-            collisions.append(str(rel))
-            if durable_conflicts == "stage":
+            rel_str = str(rel)
+            collisions.append(rel_str)
+            action = review_decisions["durable_conflicts"].get(rel_str, durable_conflicts)
+            if action == "stage":
                 stage_copy(item, stage_root / "durable-conflicts", rel)
                 staged_conflicts += 1
                 continue
-            if durable_conflicts == "overwrite":
+            if action == "overwrite":
                 backup_existing(target, backup_root / "durable-wiki", rel)
                 target.parent.mkdir(parents=True, exist_ok=True)
                 shutil.copy2(item, target)
@@ -386,8 +422,22 @@ def apply_import(
             raise ValueError(f"bundle manifest says active memory is included but active payload is missing: {active_root}")
 
     lines = [f"DAOS portability apply: {bundle_dir}", f"copied durable wiki files: {copied}", "restored pack metadata anchors"]
-    if collisions and durable_conflicts in {"keep", "stage"}:
+    if review_input is not None:
+        lines.append(f"review-driven apply: {review_input}")
+        conflict_actions = set(review_decisions["durable_conflicts"].values())
+        if len(conflict_actions) == 1:
+            lines.append(f"durable-conflicts: {next(iter(conflict_actions))}")
+        elif conflict_actions:
+            lines.append("durable-conflicts: mixed")
+        else:
+            lines.append(f"durable-conflicts: {durable_conflicts}")
+        lines.append(f"active-memory: {active_memory}")
+    if collisions and all(review_decisions["durable_conflicts"].get(item, durable_conflicts) == "keep" for item in collisions):
         review = write_collision_review(target_pack_dir, collisions)
+        lines.append(f"collision review: {review}")
+    elif collisions and any(review_decisions["durable_conflicts"].get(item, durable_conflicts) == "keep" for item in collisions):
+        keep_collisions = [item for item in collisions if review_decisions["durable_conflicts"].get(item, durable_conflicts) == "keep"]
+        review = write_collision_review(target_pack_dir, keep_collisions)
         lines.append(f"collision review: {review}")
     if staged_conflicts:
         lines.append(f"staged incoming durable conflicts: {staged_conflicts}")
@@ -422,12 +472,14 @@ def main(argv: list[str] | None = None) -> int:
             ))
             return 0
         if args.command == "apply":
+            review_input = Path(args.review_input).expanduser().resolve() if args.review_input else None
             print(apply_import(
                 Path(args.bundle_dir).expanduser().resolve(),
                 Path(args.target_wiki_root).expanduser().resolve(),
                 Path(args.target_pack_dir).expanduser().resolve(),
                 durable_conflicts=args.durable_conflicts,
                 active_memory=args.active_memory,
+                review_input=review_input,
             ))
             return 0
     except ValueError as exc:

@@ -91,6 +91,16 @@ python scripts/daos_portability.py plan \
   --review-output /tmp/review/portability-plan.md
 ```
 
+Review-driven apply:
+
+```bash
+python scripts/daos_portability.py apply \
+  /tmp/bundle \
+  --target-wiki-root /tmp/new-wiki \
+  --target-pack-dir /tmp/new-pack \
+  --review-input /tmp/review/portability-plan.md
+```
+
 ### Apply
 
 ```bash
@@ -146,12 +156,13 @@ python scripts/daos_portability.py apply \
 - how many durable wiki files are new vs unchanged vs conflicting at the target wiki root
 - default durable-conflict posture (`keep`)
 - active-memory staging target when a target pack dir is provided
-- optional markdown review artifact with conflict list and intake summary when `--review-output` is provided
+- optional markdown review artifact with conflict list, proposed decisions, and intake summary when `--review-output` is provided
 
 ### Apply currently does
 - restore `daos-pack.json` into a target pack root
 - restore or synthesize `.daos/manifest.json` in the target pack root
 - copy non-conflicting durable wiki files into the target wiki root
+- support review-driven apply via `--review-input`, using decisions previously written into a portability plan review artifact
 - default durable-conflict policy is `keep`: leave target durable files untouched and emit a collision review note
 - optional durable-conflict policy `stage`: preserve the target file and stage the incoming conflicting durable file under `.daos/portability-stage/durable-conflicts/`
 - optional durable-conflict policy `overwrite`: replace the target durable file only when explicitly requested and back up the displaced file under `.daos/portability-backups/`

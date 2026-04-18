@@ -225,8 +225,56 @@ class DaosPortabilityScriptTests(unittest.TestCase):
             self.assertIn("# DAOS Portability Plan Review", review_text)
             self.assertIn("- index.md", review_text)
             self.assertIn(str(target_pack / ".daos" / "portability-stage" / "active-memory"), review_text)
+            self.assertIn("## Proposed Decisions", review_text)
+            self.assertIn("- durable-conflict:index.md = keep", review_text)
+            self.assertIn("- active-memory = stage", review_text)
             self.assertIn("review artifact:", result.stdout)
             self.assertFalse(target_pack.exists())
+
+    def test_apply_can_follow_review_artifact_decisions(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            tmp = Path(tmpdir)
+            _, _, bundle_dir, _, _ = self.bootstrap_pack_and_bundle(tmp, include_active_memory=True)
+            target_wiki = tmp / "target-wiki"
+            target_pack = tmp / "target-pack"
+            review_output = tmp / "review" / "portability-plan.md"
+            target_wiki.mkdir(parents=True)
+            (target_wiki / "index.md").write_text("# Other durable root\n", encoding="utf-8")
+
+            plan = self.run_portability(
+                "plan",
+                str(bundle_dir),
+                "--target-wiki-root",
+                str(target_wiki),
+                "--target-pack-dir",
+                str(target_pack),
+                "--review-output",
+                str(review_output),
+            )
+            self.assertEqual(plan.returncode, 0, msg=plan.stderr)
+
+            review_text = review_output.read_text(encoding="utf-8")
+            review_text = review_text.replace("- durable-conflict:index.md = keep", "- durable-conflict:index.md = overwrite")
+            review_text = review_text.replace("- active-memory = stage", "- active-memory = skip")
+            review_output.write_text(review_text, encoding="utf-8")
+
+            result = self.run_portability(
+                "apply",
+                str(bundle_dir),
+                "--target-wiki-root",
+                str(target_wiki),
+                "--target-pack-dir",
+                str(target_pack),
+                "--review-input",
+                str(review_output),
+            )
+
+            self.assertEqual(result.returncode, 0, msg=result.stderr)
+            self.assertEqual((target_wiki / "index.md").read_text(encoding="utf-8"), "# Durable Wiki\n")
+            self.assertFalse((target_pack / ".daos" / "portability-stage" / "active-memory").exists())
+            self.assertIn("review-driven apply", result.stdout)
+            self.assertIn("durable-conflicts: overwrite", result.stdout)
+            self.assertIn("active-memory: skip", result.stdout)
 
     def test_apply_restores_durable_wiki_and_metadata_into_empty_target(self) -> None:
         with tempfile.TemporaryDirectory() as tmpdir:
