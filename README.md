@@ -90,7 +90,8 @@ The current focus is not adding random files. It is:
 
 This repo is still early, but it should increasingly behave like a framework others can inspect and adopt.
 
-Baseline hygiene targets:
+Baseline hygiene now present:
+- Apache-2.0 license
 - clear README front door
 - contribution guidance
 - security reporting guidance
