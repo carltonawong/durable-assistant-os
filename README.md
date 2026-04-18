@@ -14,43 +14,80 @@ DAOS is the attempt to package a more durable model:
 
 ## Read this repo in this order
 
-1. `docs/public-memory-page.md` — public explanation of the DAOS memory model
-2. `harness/core-setup.md` — minimum viable install path
-3. `templates/operating-profile-template.md` — reusable fill-in structure
-4. `examples/user-operating-profile-example.md` — worked example of what a filled profile can look like
-5. `templates/cadence-review-template.md` — reusable upkeep template for heartbeat, weekly, and monthly review
+1. `docs/thesis.md` — the product thesis and framing for why DAOS exists
+2. `docs/public-memory-page.md` — the front-door public explanation of the DAOS memory model
+3. `docs/memory.md` — the deeper reference layer for DAOS memory doctrine
+4. `harness/core-setup.md` — the minimum viable install path
+5. `templates/operating-profile-template.md` — reusable fill-in structure for a first DAOS profile
+6. `templates/cadence-review-template.md` — reusable upkeep template for heartbeat, weekly, and monthly review
+7. `examples/user-operating-profile-example.md` — worked example of what a filled profile can look like
 
-## Current file set
+## Current artifact map
 
-- `docs/public-memory-page.md` — integration-ready public draft for the DAOS memory model
-- `harness/core-setup.md` — first installable harness file for minimum viable DAOS setup
-- `templates/operating-profile-template.md` — first reusable template for filling a minimum viable DAOS operating profile
-- `templates/cadence-review-template.md` — reusable cadence/review template for ongoing upkeep and recalibration
-- `examples/user-operating-profile-example.md` — first example file showing a filled operating profile without becoming framework canon
+### docs/
+- `docs/thesis.md` — the repo's core claim, framing, and design stance
+- `docs/public-memory-page.md` — the public-facing memory overview
+- `docs/memory.md` — deeper DAOS memory doctrine and architecture notes
 
-## Folder roles
+### harness/
+- `harness/core-setup.md` — first runnable one-sitting setup flow for installing DAOS defaults
 
-- `docs/` — public-facing conceptual and explanatory documentation
-- `harness/` — installable assistant setup material, onboarding flow, and operating surfaces
-- `templates/` — reusable schemas, profile templates, checklists, and cadence templates
-- `examples/` — clearly labeled example-instance material, including generic or instance-derived examples where useful
+### templates/
+- `templates/operating-profile-template.md` — blank operating-profile structure
+- `templates/cadence-review-template.md` — blank cadence/review structure for upkeep and recalibration
+
+### examples/
+- `examples/user-operating-profile-example.md` — generic worked example showing what a filled profile can look like without becoming framework canon
+
+## Document roles
+
+A few files are intentionally close together but do different jobs:
+
+- `docs/thesis.md` explains **why** DAOS exists
+- `docs/public-memory-page.md` explains the memory model in the cleanest public-facing form
+- `docs/memory.md` is the deeper doctrine/reference layer behind that public page
+- `harness/core-setup.md` explains **how to install** a minimum viable DAOS setup
+- `templates/` provides reusable blank structures
+- `examples/` demonstrates what a filled instance can look like
+
+Simple rule:
+- `docs/` = explain
+- `harness/` = install
+- `templates/` = reuse
+- `examples/` = demonstrate
 
 ## Current status
 
 This repository is being seeded from locked DAOS doctrine already captured in the shared wiki.
 
 Current first-pass packaging status:
-- `docs/` has its first public file
-- `harness/` has its first install file
-- `templates/` has its first reusable template
-- `templates/` now also has a cadence/review template for ongoing upkeep
-- `examples/` has its first generic worked example
+- the core thesis exists
+- the public memory front door exists
+- the deeper memory reference layer exists
+- the first installable harness flow exists
+- the first reusable profile template exists
+- the first cadence/review template exists
+- the first generic worked example exists
 
-So the repo now has one concrete file in each top-level layer.
+So the repo now has a usable first-pass stack across doctrine, installation, templates, and example material.
 
 ## Near-term direction
 
-The current focus is not adding more random files. It is tightening the front door, refining the first-pass files, and only then deciding the next highest-leverage repo deliverables.
+The current focus is not adding random files. It is:
+- tightening the repo front door
+- refining the first-pass install and template surfaces
+- improving public-framework hygiene
+- only then deciding the next highest-leverage deliverables
+
+## Public-framework hygiene
+
+This repo is still early, but it should increasingly behave like a framework others can inspect and adopt.
+
+Baseline hygiene targets:
+- clear README front door
+- contribution guidance
+- security reporting guidance
+- basic repository ownership/ignore files
 
 ## Commit checkpoints
 
@@ -60,11 +97,3 @@ Commit when all three are true:
 - one repo-facing slice is coherent
 - the public/private boundary for that slice is stable
 - the change can be described with one clean commit message
-
-Current recommended checkpoint:
-- first-pass file set across `docs/`, `harness/`, `templates/`, and `examples/`
-- generic/public-safe example naming
-- README front-door refinement
-
-Recommended commit message:
-- `establish first-pass DAOS repo structure and generic starter files`
