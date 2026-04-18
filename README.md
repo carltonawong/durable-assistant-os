@@ -20,6 +20,9 @@ Take the shortest path first:
 3. `templates/assistant-charter-template.md`
 4. `templates/operating-profile-template.md`
 
+Lowest-friction real start:
+- copy `starter-pack/` into your own workspace and fill that first
+
 If one lane needs more structure, add:
 - `templates/lane-snapshot-template.md`
 
@@ -60,6 +63,13 @@ When the initial setup is in place, maintain it with:
 ### harness/
 - `harness/core-setup.md` — first runnable one-sitting setup flow for installing DAOS defaults
 
+### starter-pack/
+- `starter-pack/README.md` — copyable scaffold for trying DAOS on a real instance quickly
+- `starter-pack/assistant-charter.md` — ready-to-fill working charter
+- `starter-pack/operating-profile.md` — ready-to-fill working profile
+- `starter-pack/lane-snapshot.md` — optional ready-to-fill lane-specific working note
+- `starter-pack/cadence-review.md` — later-use working review sheet
+
 ### templates/
 - `templates/assistant-charter-template.md` — blank assistant-charter structure for locking behavior defaults early
 - `templates/operating-profile-template.md` — blank operating-profile structure
@@ -85,6 +95,7 @@ A few files are intentionally close together but do different jobs:
 - `docs/setup.md` explains the public setup philosophy and progressive-install stance
 - `docs/lane-model.md` explains the public lane model, including statuses, foreground, and pressure
 - `harness/core-setup.md` explains **how to install** a minimum viable DAOS setup
+- `starter-pack/` provides a copyable real-world working scaffold for first-time adopters
 - `templates/` provides reusable blank structures
 - `examples/` demonstrates what a filled instance can look like, including both smaller setup artifacts and fuller profile outputs
 
@@ -101,6 +112,7 @@ This repository is being seeded from locked DAOS doctrine already captured in th
 Current first-pass packaging status:
 - the core thesis exists
 - the first quickstart path exists
+- the first starter-pack scaffold exists
 - the public memory front door exists
 - the deeper memory reference layer exists
 - the public trust/behavior page exists

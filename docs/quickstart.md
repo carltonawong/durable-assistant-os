@@ -11,6 +11,9 @@ It is the shortest path to a first useful setup.
 
 If you want to try DAOS right now, do these in order:
 
+Fastest option:
+- copy `starter-pack/` into your own workspace and fill the files there
+
 1. Read `docs/setup.md`
 2. Run `harness/core-setup.md`
 3. Fill `templates/assistant-charter-template.md`
@@ -88,3 +91,5 @@ Start small.
 Lock the high-leverage defaults.
 Use it.
 Then calibrate.
+
+If you want the lowest-friction real start, copy `starter-pack/` and begin there.
