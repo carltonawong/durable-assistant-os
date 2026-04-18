@@ -46,6 +46,18 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     apply_cmd.add_argument("bundle_dir")
     apply_cmd.add_argument("--target-wiki-root", required=True)
     apply_cmd.add_argument("--target-pack-dir", required=True)
+    apply_cmd.add_argument(
+        "--durable-conflicts",
+        choices=("keep", "stage", "overwrite"),
+        default="keep",
+        help="How to handle conflicting durable wiki files (default: keep)",
+    )
+    apply_cmd.add_argument(
+        "--active-memory",
+        choices=("stage", "skip"),
+        default="stage",
+        help="How to handle bundled active-memory sidecars (default: stage)",
+    )
 
     return parser.parse_args(argv)
 
@@ -192,7 +204,26 @@ def write_collision_review(target_pack_dir: Path, collisions: list[str]) -> Path
     return path
 
 
-def apply_import(bundle_dir: Path, target_wiki_root: Path, target_pack_dir: Path) -> str:
+def stage_copy(source: Path, destination_root: Path, rel: Path) -> None:
+    destination = destination_root / rel
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    shutil.copy2(source, destination)
+
+
+def backup_existing(source: Path, destination_root: Path, rel: Path) -> None:
+    destination = destination_root / rel
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    shutil.copy2(source, destination)
+
+
+def apply_import(
+    bundle_dir: Path,
+    target_wiki_root: Path,
+    target_pack_dir: Path,
+    *,
+    durable_conflicts: str = "keep",
+    active_memory: str = "stage",
+) -> str:
     manifest = load_bundle_manifest(bundle_dir)
     durable_root = bundle_dir / "durable" / "wiki"
     pack_root = bundle_dir / "pack"
@@ -203,7 +234,12 @@ def apply_import(bundle_dir: Path, target_wiki_root: Path, target_pack_dir: Path
     target_wiki_root.mkdir(parents=True, exist_ok=True)
 
     copied = 0
+    overwritten = 0
     collisions: list[str] = []
+    staged_conflicts = 0
+    active_memory_staged = 0
+    stage_root = target_pack_dir / ".daos" / "portability-stage"
+    backup_root = target_pack_dir / ".daos" / "portability-backups" / datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%SZ')
     for item in durable_root.rglob("*"):
         rel = item.relative_to(durable_root)
         target = target_wiki_root / rel
@@ -212,6 +248,16 @@ def apply_import(bundle_dir: Path, target_wiki_root: Path, target_pack_dir: Path
             continue
         if target.exists() and target.read_text(encoding="utf-8") != item.read_text(encoding="utf-8"):
             collisions.append(str(rel))
+            if durable_conflicts == "stage":
+                stage_copy(item, stage_root / "durable-conflicts", rel)
+                staged_conflicts += 1
+                continue
+            if durable_conflicts == "overwrite":
+                backup_existing(target, backup_root / "durable-wiki", rel)
+                target.parent.mkdir(parents=True, exist_ok=True)
+                shutil.copy2(item, target)
+                overwritten += 1
+                continue
             continue
         target.parent.mkdir(parents=True, exist_ok=True)
         shutil.copy2(item, target)
@@ -233,12 +279,27 @@ def apply_import(bundle_dir: Path, target_wiki_root: Path, target_pack_dir: Path
         }
         (managed_target / "manifest.json").write_text(json.dumps(generated_manifest, indent=2) + "\n", encoding="utf-8")
 
+    active_root = bundle_dir / "active"
+    if manifest["payload"]["active_memory"]["included"] and active_memory == "stage":
+        if active_root.is_dir():
+            active_memory_staged = copy_tree_contents(active_root, stage_root / "active-memory")
+        else:
+            raise ValueError(f"bundle manifest says active memory is included but active payload is missing: {active_root}")
+
     lines = [f"DAOS portability apply: {bundle_dir}", f"copied durable wiki files: {copied}", "restored pack metadata anchors"]
-    if collisions:
+    if collisions and durable_conflicts in {"keep", "stage"}:
         review = write_collision_review(target_pack_dir, collisions)
         lines.append(f"collision review: {review}")
+    if staged_conflicts:
+        lines.append(f"staged incoming durable conflicts: {staged_conflicts}")
+    if overwritten:
+        lines.append(f"overwrote durable wiki conflicts: {overwritten}")
+        lines.append(f"conflict backups: {backup_root}")
     if manifest["payload"]["active_memory"]["included"]:
-        lines.append("active-memory payload remains staged-only by default")
+        if active_memory == "stage":
+            lines.append(f"active-memory stage: {stage_root / 'active-memory'} ({active_memory_staged} files)")
+        else:
+            lines.append("active-memory payload skipped")
     return "\n".join(lines)
 
 
@@ -259,6 +320,8 @@ def main(argv: list[str] | None = None) -> int:
                 Path(args.bundle_dir).expanduser().resolve(),
                 Path(args.target_wiki_root).expanduser().resolve(),
                 Path(args.target_pack_dir).expanduser().resolve(),
+                durable_conflicts=args.durable_conflicts,
+                active_memory=args.active_memory,
             ))
             return 0
     except ValueError as exc:

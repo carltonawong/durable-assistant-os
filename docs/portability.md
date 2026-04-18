@@ -81,6 +81,25 @@ python scripts/daos_portability.py apply \
   --target-pack-dir /tmp/new-pack
 ```
 
+Optional conflict and active-memory controls:
+
+```bash
+python scripts/daos_portability.py apply \
+  /tmp/bundle \
+  --target-wiki-root /tmp/new-wiki \
+  --target-pack-dir /tmp/new-pack \
+  --durable-conflicts stage
+```
+
+```bash
+python scripts/daos_portability.py apply \
+  /tmp/bundle \
+  --target-wiki-root /tmp/new-wiki \
+  --target-pack-dir /tmp/new-pack \
+  --durable-conflicts overwrite \
+  --active-memory skip
+```
+
 ## Current behavior
 
 ### Export includes by default
@@ -112,8 +131,11 @@ python scripts/daos_portability.py apply \
 - restore `daos-pack.json` into a target pack root
 - restore or synthesize `.daos/manifest.json` in the target pack root
 - copy non-conflicting durable wiki files into the target wiki root
-- emit a collision review note instead of silently overwriting conflicting durable wiki files
-- keep active-memory payload staged-only by default
+- default durable-conflict policy is `keep`: leave target durable files untouched and emit a collision review note
+- optional durable-conflict policy `stage`: preserve the target file and stage the incoming conflicting durable file under `.daos/portability-stage/durable-conflicts/`
+- optional durable-conflict policy `overwrite`: replace the target durable file only when explicitly requested and back up the displaced file under `.daos/portability-backups/`
+- stage bundled active-memory sidecars under `.daos/portability-stage/active-memory/` by default
+- support `--active-memory skip` when the bundle carries active sidecars but the import should ignore them
 
 ## Current non-goals
 - no archive compression yet

@@ -39,6 +39,39 @@ class DaosPortabilityScriptTests(unittest.TestCase):
         (root / "sources" / "lane-model.md").write_text("# Lane Model\n", encoding="utf-8")
         (root / "log.md").write_text("# Log\n", encoding="utf-8")
 
+    def bootstrap_pack_and_bundle(
+        self,
+        tmp: Path,
+        *,
+        include_active_memory: bool = False,
+    ) -> tuple[Path, Path, Path, Path | None, Path | None]:
+        pack_dir = tmp / "pack"
+        wiki_root = tmp / "wiki"
+        bundle_dir = tmp / "bundle"
+        self.seed_wiki(wiki_root)
+        bootstrap = self.run_bootstrap("--filled-example", str(pack_dir))
+        self.assertEqual(bootstrap.returncode, 0, msg=bootstrap.stderr)
+
+        hot_cache = None
+        continuity = None
+        export_args = ["export", "--pack-dir", str(pack_dir), "--wiki-root", str(wiki_root), "--out", str(bundle_dir)]
+        if include_active_memory:
+            hot_cache = tmp / "hot-cache.md"
+            continuity = tmp / "agent-continuity.md"
+            hot_cache.write_text("# Hot Cache\n", encoding="utf-8")
+            continuity.write_text("# Continuity\n", encoding="utf-8")
+            export_args.extend([
+                "--include-active-memory",
+                "--hot-cache",
+                str(hot_cache),
+                "--agent-continuity",
+                str(continuity),
+            ])
+
+        export = self.run_portability(*export_args)
+        self.assertEqual(export.returncode, 0, msg=export.stderr)
+        return pack_dir, wiki_root, bundle_dir, hot_cache, continuity
+
     def test_export_builds_bundle_with_manifest_and_durable_wiki(self) -> None:
         with tempfile.TemporaryDirectory() as tmpdir:
             tmp = Path(tmpdir)
@@ -163,18 +196,11 @@ class DaosPortabilityScriptTests(unittest.TestCase):
     def test_apply_refuses_silent_overwrite_on_durable_wiki_conflict(self) -> None:
         with tempfile.TemporaryDirectory() as tmpdir:
             tmp = Path(tmpdir)
-            pack_dir = tmp / "pack"
-            wiki_root = tmp / "wiki"
-            bundle_dir = tmp / "bundle"
+            _, _, bundle_dir, _, _ = self.bootstrap_pack_and_bundle(tmp)
             target_wiki = tmp / "target-wiki"
             target_pack = tmp / "target-pack"
-            self.seed_wiki(wiki_root)
             target_wiki.mkdir(parents=True)
             (target_wiki / "index.md").write_text("# Other durable root\n", encoding="utf-8")
-            bootstrap = self.run_bootstrap("--filled-example", str(pack_dir))
-            self.assertEqual(bootstrap.returncode, 0, msg=bootstrap.stderr)
-            export = self.run_portability("export", "--pack-dir", str(pack_dir), "--wiki-root", str(wiki_root), "--out", str(bundle_dir))
-            self.assertEqual(export.returncode, 0, msg=export.stderr)
 
             result = self.run_portability("apply", str(bundle_dir), "--target-wiki-root", str(target_wiki), "--target-pack-dir", str(target_pack))
 
@@ -184,6 +210,75 @@ class DaosPortabilityScriptTests(unittest.TestCase):
             self.assertEqual(len(staged_conflicts), 1)
             self.assertIn("collision", staged_conflicts[0].read_text(encoding="utf-8"))
             self.assertIn("collision review", result.stdout)
+
+    def test_apply_stages_active_memory_sidecars_by_default(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            tmp = Path(tmpdir)
+            _, _, bundle_dir, _, _ = self.bootstrap_pack_and_bundle(tmp, include_active_memory=True)
+            target_wiki = tmp / "target-wiki"
+            target_pack = tmp / "target-pack"
+
+            result = self.run_portability("apply", str(bundle_dir), "--target-wiki-root", str(target_wiki), "--target-pack-dir", str(target_pack))
+
+            self.assertEqual(result.returncode, 0, msg=result.stderr)
+            staged_active = target_pack / ".daos" / "portability-stage" / "active-memory"
+            self.assertTrue((staged_active / "hot-cache.md").exists())
+            self.assertTrue((staged_active / "agent-continuity.md").exists())
+            self.assertIn("active-memory stage", result.stdout)
+
+    def test_apply_can_stage_incoming_durable_conflicts_for_manual_merge(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            tmp = Path(tmpdir)
+            _, _, bundle_dir, _, _ = self.bootstrap_pack_and_bundle(tmp)
+            target_wiki = tmp / "target-wiki"
+            target_pack = tmp / "target-pack"
+            target_wiki.mkdir(parents=True)
+            (target_wiki / "index.md").write_text("# Other durable root\n", encoding="utf-8")
+
+            result = self.run_portability(
+                "apply",
+                str(bundle_dir),
+                "--target-wiki-root",
+                str(target_wiki),
+                "--target-pack-dir",
+                str(target_pack),
+                "--durable-conflicts",
+                "stage",
+            )
+
+            self.assertEqual(result.returncode, 0, msg=result.stderr)
+            self.assertEqual((target_wiki / "index.md").read_text(encoding="utf-8"), "# Other durable root\n")
+            staged_conflict = target_pack / ".daos" / "portability-stage" / "durable-conflicts" / "index.md"
+            self.assertTrue(staged_conflict.exists())
+            self.assertEqual(staged_conflict.read_text(encoding="utf-8"), "# Durable Wiki\n")
+            self.assertIn("staged incoming durable conflicts", result.stdout)
+
+    def test_apply_can_overwrite_durable_conflicts_with_backup_when_explicitly_requested(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            tmp = Path(tmpdir)
+            _, _, bundle_dir, _, _ = self.bootstrap_pack_and_bundle(tmp)
+            target_wiki = tmp / "target-wiki"
+            target_pack = tmp / "target-pack"
+            target_wiki.mkdir(parents=True)
+            (target_wiki / "index.md").write_text("# Other durable root\n", encoding="utf-8")
+
+            result = self.run_portability(
+                "apply",
+                str(bundle_dir),
+                "--target-wiki-root",
+                str(target_wiki),
+                "--target-pack-dir",
+                str(target_pack),
+                "--durable-conflicts",
+                "overwrite",
+            )
+
+            self.assertEqual(result.returncode, 0, msg=result.stderr)
+            self.assertEqual((target_wiki / "index.md").read_text(encoding="utf-8"), "# Durable Wiki\n")
+            backups = list((target_pack / ".daos" / "portability-backups").glob("*/durable-wiki/index.md"))
+            self.assertEqual(len(backups), 1)
+            self.assertEqual(backups[0].read_text(encoding="utf-8"), "# Other durable root\n")
+            self.assertIn("overwrote durable wiki conflicts", result.stdout)
 
 
 if __name__ == "__main__":
