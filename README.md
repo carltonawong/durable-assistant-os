@@ -1,93 +1,67 @@
 # Durable Assistant OS
 
-A useful personal assistant first.
+Durable Assistant OS (DAOS) is a framework for building assistants that stay useful over time instead of degrading into clutter, drift, and unreliable memory.
 
-Durable Assistant OS (DAOS) is an agent-agnostic operating harness and shared memory system for durable human-agent collaboration.
+## What DAOS is
 
-It is designed to help a real person over time — not just answer prompts well in isolated sessions.
+DAOS is aimed at a simple problem: most assistants feel impressive once, then slowly get worse. Memory gets noisy, the wrong context takes the foreground, setup becomes heavy, and trust drops.
 
-The core idea is simple:
-- start from lived reality, not abstract system design
-- help with real priorities, active projects, and constraints
-- preserve useful continuity without turning the system into a bloated maze of memory rules
-- distill only the reusable pieces into a public framework
+DAOS is the attempt to package a more durable model:
+- clear memory boundaries
+- lightweight but explicit behavior defaults
+- progressive setup instead of giant intake
+- reusable repo files that can be explained, installed, templated, and demonstrated
 
-This repository is intentionally narrow in scope. It is not trying to be a universal theory of agents. It is an attempt to capture the smallest set of practices that make a personal AI assistant meaningfully more useful, trustworthy, and durable.
+## Read this repo in this order
 
-## Thesis
+1. `docs/public-memory-page.md` — public explanation of the DAOS memory model
+2. `harness/core-setup.md` — minimum viable install path
+3. `templates/operating-profile-template.md` — reusable fill-in structure
+4. `examples/user-operating-profile-example.md` — worked example of what a filled profile can look like
 
-Most assistant systems drift in one of two directions:
-- they stay stateless and repeatedly lose context
-- they become overengineered and burden the user with setup, maintenance, and abstraction
+## Current file set
 
-DAOS aims for the middle path:
-- enough structure to preserve continuity
-- enough restraint to stay practical
-- enough behavioral clarity to build trust
+- `docs/public-memory-page.md` — integration-ready public draft for the DAOS memory model
+- `harness/core-setup.md` — first installable harness file for minimum viable DAOS setup
+- `templates/operating-profile-template.md` — first reusable template for filling a minimum viable DAOS operating profile
+- `examples/user-operating-profile-example.md` — first example file showing a filled operating profile without becoming framework canon
 
-Read the core docs here:
-- [`docs/thesis.md`](docs/thesis.md)
-- [`docs/memory.md`](docs/memory.md)
+## Folder roles
 
-## What DAOS is trying to solve
+- `docs/` — public-facing conceptual and explanatory documentation
+- `harness/` — installable assistant setup material, onboarding flow, and operating surfaces
+- `templates/` — reusable schemas, profile templates, checklists, and cadence templates
+- `examples/` — clearly labeled example-instance material, including generic or instance-derived examples where useful
 
-A durable assistant should be able to:
-- understand what matters right now
-- track a small number of active projects and constraints
-- behave consistently enough to earn trust
-- improve without forcing the user to constantly restate context
-- stay grounded in real files, real systems, and real work
+## Current status
 
-## Design principles
+This repository is being seeded from locked DAOS doctrine already captured in the shared wiki.
 
-### 1. Useful before elegant
-If a design choice does not materially improve real assistance, it should probably be omitted.
+Current first-pass packaging status:
+- `docs/` has its first public file
+- `harness/` has its first install file
+- `templates/` has its first reusable template
+- `examples/` has its first generic worked example
 
-### 2. Real life before framework purity
-The assistant should begin with the user’s actual priorities, responsibilities, and stuck points.
+So the repo now has one concrete file in each top-level layer.
 
-### 3. Minimum viable memory
-Keep enough continuity to be helpful. Avoid memory sprawl.
+## Near-term direction
 
-### 4. Trust is a feature
-The assistant should be predictable about boundaries, uncertainty, and when it acts versus asks.
+The current focus is not adding more random files. It is tightening the front door, refining the first-pass files, and only then deciding the next highest-leverage repo deliverables.
 
-### 5. Compression matters
-A durable system should get easier to use over time, not heavier.
+## Commit checkpoints
 
-## Early setup stance
+Use commits at coherent checkpoints, not after every tiny edit.
 
-DAOS favors a minimum-viable setup flow.
+Commit when all three are true:
+- one repo-facing slice is coherent
+- the public/private boundary for that slice is stable
+- the change can be described with one clean commit message
 
-The opening questions should focus on things like:
-- what matters most right now
-- the top few active projects
-- what each project is, why it matters, and what is stuck or next
-- the main current constraints or responsibilities
-- how the user wants reminders, task support, and boundaries handled
+Current recommended checkpoint:
+- first-pass file set across `docs/`, `harness/`, `templates/`, and `examples/`
+- generic/public-safe example naming
+- README front-door refinement
 
-This keeps setup anchored to real usefulness instead of forcing premature ontology design.
-
-## Repository roadmap
-
-Current public-docs sequence:
-- [x] `README.md`
-- [x] `docs/thesis.md`
-- [x] `docs/memory.md`
-- [ ] `docs/behavior.md`
-- [ ] `docs/wizard.md`
-- [ ] `examples/carlton-instance.md`
-
-## Non-goals
-
-DAOS is not currently trying to be:
-- a giant enterprise agent platform
-- a fully general memory theory
-- a framework with dozens of required configuration objects
-- a replacement for judgment, verification, or human oversight
-
-## Status
-
-This repo is in early public formulation. The core ideas are being distilled from real assistant-building work rather than invented all at once.
-
-That is intentional.
+Recommended commit message:
+- `establish first-pass DAOS repo structure and generic starter files`
