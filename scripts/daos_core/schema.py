@@ -1,9 +1,11 @@
 from __future__ import annotations
 
 from dataclasses import asdict, dataclass, field
+from uuid import uuid4
 
 
 SCHEMA_VERSION = "1"
+FRAMEWORK_VERSION = "0.1.0-alpha3"
 MEMORY_FRONT_DOOR = "local thread first, then hot cache, then agent continuity"
 DURABLE_MEMORY_HOME = "wiki first, with repo/docs used for publishable framework outputs"
 VERIFIED_REALITY_RULE = "live files, runtime, and current state outrank remembered context for operational facts"
@@ -73,6 +75,8 @@ class OperatingProfile:
 @dataclass
 class DaosPack:
     schema_version: str = SCHEMA_VERSION
+    framework_version: str = FRAMEWORK_VERSION
+    pack_id: str = field(default_factory=lambda: str(uuid4()))
     pack_kind: str = "starter-pack"
     generator: str = ""
     assistant_charter: AssistantCharter = field(default_factory=lambda: AssistantCharter(*([""] * 16)))

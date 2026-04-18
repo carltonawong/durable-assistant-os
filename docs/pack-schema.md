@@ -12,6 +12,7 @@ That manifest gives DAOS a stable substrate for:
 - schema-backed generation
 - validation
 - lint / calibration diagnostics
+- safe update inspection/planning
 - richer wizard work later
 - future import/export or app layers if they become warranted
 
@@ -66,6 +67,14 @@ A generated pack currently centers on:
 - `assistant-charter.md`
 - `operating-profile.md`
 - `daos-pack.json`
+
+The manifest currently includes:
+- `schema_version`
+- `framework_version`
+- `pack_id`
+- `pack_kind`
+- `generator`
+- structured assistant/profile data
 
 And usually includes these supporting files:
 - `README.md`

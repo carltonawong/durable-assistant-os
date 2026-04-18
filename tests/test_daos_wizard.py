@@ -84,6 +84,8 @@ class DaosWizardScriptTests(unittest.TestCase):
             manifest = json.loads((destination / "daos-pack.json").read_text(encoding="utf-8"))
             self.assertEqual(manifest["schema_version"], "1")
             self.assertEqual(manifest["generator"], "scripts/daos_wizard.py")
+            self.assertEqual(manifest["framework_version"], "0.1.0-alpha3")
+            self.assertTrue(manifest["pack_id"])
             self.assertEqual(manifest["assistant_charter"]["primary_outcome"], self.BASE_ANSWERS[0])
 
     def test_wizard_can_customize_lane_details(self) -> None:

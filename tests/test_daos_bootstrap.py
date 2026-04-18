@@ -51,6 +51,8 @@ class DaosBootstrapScriptTests(unittest.TestCase):
             self.assertEqual(manifest["schema_version"], "1")
             self.assertEqual(manifest["pack_kind"], "starter-pack")
             self.assertEqual(manifest["generator"], "scripts/daos_bootstrap.py")
+            self.assertEqual(manifest["framework_version"], "0.1.0-alpha3")
+            self.assertTrue(manifest["pack_id"])
 
     def test_non_empty_destination_fails_without_force(self) -> None:
         with tempfile.TemporaryDirectory() as tmpdir:
