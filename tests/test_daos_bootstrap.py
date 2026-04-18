@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import json
 import subprocess
 import tempfile
 import unittest
@@ -39,6 +40,18 @@ class DaosBootstrapScriptTests(unittest.TestCase):
             self.assertTrue((destination / "operating-profile.md").exists())
             self.assertIn("filled starter-pack example", result.stdout)
 
+    def test_generated_pack_includes_manifest(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            destination = Path(tmpdir) / "manifest-pack"
+
+            result = self.run_script(str(destination))
+
+            self.assertEqual(result.returncode, 0, msg=result.stderr)
+            manifest = json.loads((destination / "daos-pack.json").read_text(encoding="utf-8"))
+            self.assertEqual(manifest["schema_version"], "1")
+            self.assertEqual(manifest["pack_kind"], "starter-pack")
+            self.assertEqual(manifest["generator"], "scripts/daos_bootstrap.py")
+
     def test_non_empty_destination_fails_without_force(self) -> None:
         with tempfile.TemporaryDirectory() as tmpdir:
             destination = Path(tmpdir) / "occupied"
@@ -55,6 +68,8 @@ class DaosBootstrapScriptTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmpdir:
             destination = Path(tmpdir) / "replace-me"
             destination.mkdir()
+            (destination / "assistant-charter.md").write_text("# old charter\n", encoding="utf-8")
+            (destination / "operating-profile.md").write_text("# old profile\n", encoding="utf-8")
             (destination / "old.txt").write_text("old", encoding="utf-8")
 
             result = self.run_script("--force", str(destination))
@@ -62,6 +77,18 @@ class DaosBootstrapScriptTests(unittest.TestCase):
             self.assertEqual(result.returncode, 0, msg=result.stderr)
             self.assertFalse((destination / "old.txt").exists())
             self.assertTrue((destination / "README.md").exists())
+
+    def test_force_refuses_non_daos_directory_without_explicit_override(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            destination = Path(tmpdir) / "ordinary-folder"
+            destination.mkdir()
+            (destination / "keep.txt").write_text("keep", encoding="utf-8")
+
+            result = self.run_script("--force", str(destination))
+
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn("refusing to delete a non-DAOS directory", result.stderr)
+            self.assertTrue((destination / "keep.txt").exists())
 
 
 if __name__ == "__main__":

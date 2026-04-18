@@ -14,10 +14,11 @@ If you want to try DAOS on a real assistant or real user context, copy this fold
 ## What this folder is
 
 This is a ready-to-copy instance scaffold.
+It is the default first-user starting point in the repo.
 It is not the canonical doctrine source.
 
 Use the files here when you want to operate.
-Use `templates/` when you want reusable source templates.
+Use `templates/` when you want reusable source templates or want to extend the framework itself.
 Use `examples/` when you want to see filled shapes.
 Use `examples/starter-pack-example/` when you want to see this exact folder structure already filled.
 

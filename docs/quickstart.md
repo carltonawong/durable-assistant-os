@@ -13,23 +13,28 @@ If you want to try DAOS right now, do these in order:
 
 Fastest option:
 - copy `starter-pack/` into your own workspace and fill the files there
+- treat that copied pack as your working instance
+- treat `templates/` as reusable source blanks, not the default first-user starting point
 
 Fastest generated option:
 - run `python scripts/daos_bootstrap.py /path/to/my-daos-pack`
 - add `--filled-example` if you want a filled starter-pack instead of a blank scaffold
+- generated packs now include `daos-pack.json` as the machine-readable manifest
 - then run `python scripts/daos_validate.py /path/to/my-daos-pack` once you have actually filled the pack
 
 Fastest interactive option:
 - run `python scripts/daos_wizard.py /path/to/my-daos-pack`
+- the wizard now supports optional lane-by-lane customization and a review summary before it writes files
 - then run `python scripts/daos_validate.py /path/to/my-daos-pack`
 
 1. Read `docs/setup.md`
 2. Run `harness/core-setup.md`
-3. Fill `templates/assistant-charter-template.md`
-4. Fill `templates/operating-profile-template.md`
-5. If one lane needs more structure, fill `templates/lane-snapshot-template.md`
-6. When the first setup is done, use `templates/cadence-review-template.md` for upkeep
-7. During real use, use `harness/first-week.md` to keep the system light and calibrated
+3. Fill the copied/generated pack first
+4. Use `templates/assistant-charter-template.md` only if you need the reusable source blank
+5. Use `templates/operating-profile-template.md` only if you need the reusable source blank
+6. If one lane needs more structure, fill `templates/lane-snapshot-template.md`
+7. When the first setup is done, use `templates/cadence-review-template.md` for upkeep
+8. During real use, use `harness/first-week.md` to keep the system light and calibrated
 
 That is enough to install a first-pass DAOS baseline.
 

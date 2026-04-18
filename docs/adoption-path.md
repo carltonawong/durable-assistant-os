@@ -44,6 +44,10 @@ Use:
 - `starter-pack/operating-profile.md`
 - optionally `starter-pack/lane-snapshot.md`
 
+Interpretation note:
+- `starter-pack/` and generated packs are the operating instance surface
+- `templates/` are reusable source blanks for extension, not the default first-user path
+
 Success looks like:
 - you have a filled charter
 - you have a lane map
@@ -109,9 +113,9 @@ Examples of deeper structure:
 - eventually, more runnable/generated install flows
 
 Current note:
-- DAOS now has its **first** generated install step (`scripts/daos_bootstrap.py`), but it is still intentionally simple and file-copy based rather than a full interactive wizard
-- DAOS now also has its **first** readiness check (`scripts/daos_validate.py`) for determining whether a filled pack is minimally operable
-- DAOS now also has its **first** compact interactive wizard (`scripts/daos_wizard.py`) for generating a filled pack from a short setup question set
+- DAOS now has its first schema-backed generated install step (`scripts/daos_bootstrap.py`) and generated packs now include `daos-pack.json`
+- DAOS now also has its first readiness check (`scripts/daos_validate.py`) for determining whether a filled pack is minimally operable
+- DAOS now also has a richer compact wizard (`scripts/daos_wizard.py`) with optional lane customization and a review summary before write
 
 Failure mode:
 - treating complexity as maturity

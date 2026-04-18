@@ -16,20 +16,26 @@ DAOS is the attempt to package a more durable model:
 
 Take the shortest path first:
 1. `docs/quickstart.md`
-2. `harness/core-setup.md`
-3. `templates/assistant-charter-template.md`
-4. `templates/operating-profile-template.md`
+2. `starter-pack/README.md`
+3. `harness/core-setup.md`
+4. `templates/assistant-charter-template.md` *(only if you need the reusable source blank, not the default operating path)*
+5. `templates/operating-profile-template.md` *(same note as above)*
 
 Lowest-friction real start:
 - copy `starter-pack/` into your own workspace and fill that first
 
+Default path rule:
+- operate from `starter-pack/` or a generated pack
+- use `templates/` only when you are extending or reusing the framework artifacts themselves
+
 First generated install step:
 - `python scripts/daos_bootstrap.py /path/to/my-daos-pack`
 - add `--filled-example` to generate from the filled starter-pack example instead
+- generated packs now include `daos-pack.json` as the machine-readable manifest
 
 First interactive generated install step:
 - `python scripts/daos_wizard.py /path/to/my-daos-pack`
-- the wizard asks a compact first-pass question set and writes a filled starter pack
+- the wizard asks a compact first-pass question set, allows optional lane-by-lane customization, shows a review summary, and writes a filled starter pack
 
 First readiness check:
 - `python scripts/daos_validate.py /path/to/my-daos-pack`
@@ -48,7 +54,8 @@ After first install, use:
 
 1. `docs/quickstart.md` — the shortest path to trying DAOS right away
 2. `docs/adoption-path.md` — the staged path from trying DAOS to deeper structure
-3. `docs/thesis.md` — the product thesis and framing for why DAOS exists
+3. `docs/pack-schema.md` — the canonical DAOS pack model behind generation and validation
+4. `docs/thesis.md` — the product thesis and framing for why DAOS exists
 4. `docs/public-memory-page.md` — the front-door public explanation of the DAOS memory model
 5. `docs/memory.md` — the deeper reference layer for DAOS memory doctrine
 6. `docs/trust.md` — the public trust and behavior model for ask-vs-act, approval, and verification posture
@@ -73,6 +80,7 @@ After first install, use:
 ### docs/
 - `docs/quickstart.md` — fastest newcomer path to a first useful DAOS install
 - `docs/adoption-path.md` — staged adoption map from first try through deeper structure decisions
+- `docs/pack-schema.md` — canonical pack model for schema-backed generation and validation
 - `docs/thesis.md` — the repo's core claim, framing, and design stance
 - `docs/public-memory-page.md` — the public-facing memory overview
 - `docs/memory.md` — deeper DAOS memory doctrine and architecture notes
@@ -102,8 +110,8 @@ After first install, use:
 - `tests/test_daos_wizard.py` — standard-library verification for the interactive setup wizard
 
 ### templates/
-- `templates/assistant-charter-template.md` — blank assistant-charter structure for locking behavior defaults early
-- `templates/operating-profile-template.md` — blank operating-profile structure
+- `templates/assistant-charter-template.md` — reusable source blank, not the default first-instance starting point
+- `templates/operating-profile-template.md` — reusable source blank, not the default first-instance starting point
 - `templates/lane-snapshot-template.md` — blank lane-specific operating snapshot for higher-friction lanes
 - `templates/cadence-review-template.md` — blank cadence/review structure for upkeep and recalibration
 
