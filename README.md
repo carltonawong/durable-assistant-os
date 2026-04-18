@@ -18,9 +18,10 @@ DAOS is the attempt to package a more durable model:
 2. `docs/public-memory-page.md` — the front-door public explanation of the DAOS memory model
 3. `docs/memory.md` — the deeper reference layer for DAOS memory doctrine
 4. `harness/core-setup.md` — the minimum viable install path
-5. `templates/operating-profile-template.md` — reusable fill-in structure for a first DAOS profile
-6. `templates/cadence-review-template.md` — reusable upkeep template for heartbeat, weekly, and monthly review
-7. `examples/user-operating-profile-example.md` — worked example of what a filled profile can look like
+5. `templates/assistant-charter-template.md` — reusable blank charter for locking assistant behavior defaults early
+6. `templates/operating-profile-template.md` — reusable fill-in structure for a first DAOS profile
+7. `templates/cadence-review-template.md` — reusable upkeep template for heartbeat, weekly, and monthly review
+8. `examples/user-operating-profile-example.md` — worked example of what a filled profile can look like
 
 ## Current artifact map
 
@@ -33,6 +34,7 @@ DAOS is the attempt to package a more durable model:
 - `harness/core-setup.md` — first runnable one-sitting setup flow for installing DAOS defaults
 
 ### templates/
+- `templates/assistant-charter-template.md` — blank assistant-charter structure for locking behavior defaults early
 - `templates/operating-profile-template.md` — blank operating-profile structure
 - `templates/cadence-review-template.md` — blank cadence/review structure for upkeep and recalibration
 
@@ -65,6 +67,7 @@ Current first-pass packaging status:
 - the public memory front door exists
 - the deeper memory reference layer exists
 - the first installable harness flow exists
+- the first reusable assistant charter template exists
 - the first reusable profile template exists
 - the first cadence/review template exists
 - the first generic worked example exists
