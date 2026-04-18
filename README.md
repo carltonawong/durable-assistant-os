@@ -45,7 +45,8 @@ First readiness check:
 First safe update inspection step:
 - `python scripts/daos_update.py check /path/to/my-daos-pack`
 - `python scripts/daos_update.py plan /path/to/my-daos-pack`
-- current updater posture is intentionally metadata-first and non-destructive
+- `python scripts/daos_update.py apply /path/to/my-daos-pack`
+- current updater posture starts with backup-first metadata-only apply and still refuses user-owned file rewrites
 
 If one lane needs more structure, add:
 - `templates/lane-snapshot-template.md`
@@ -108,7 +109,7 @@ After first install, use:
 ### scripts/
 - `scripts/daos_bootstrap.py` — generate a DAOS working folder by copying the blank starter-pack or the filled example into a target path
 - `scripts/daos_validate.py` — check whether a DAOS pack is minimally filled enough to operate
-- `scripts/daos_update.py` — inspect safe update posture for an existing DAOS pack without rewriting user-owned files
+- `scripts/daos_update.py` — inspect or apply safe metadata-first updates for an existing DAOS pack without rewriting user-owned files
 - `scripts/daos_wizard.py` — run a compact setup wizard and generate a filled DAOS starter pack
 
 ### tests/

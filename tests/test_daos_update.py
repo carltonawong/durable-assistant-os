@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import json
 import subprocess
 import tempfile
 import unittest
@@ -71,6 +72,49 @@ class DaosUpdateScriptTests(unittest.TestCase):
             self.assertIn("do not overwrite assistant-charter.md", result.stdout)
             self.assertIn("do not overwrite operating-profile.md", result.stdout)
             self.assertIn("managed metadata only", result.stdout)
+
+    def test_apply_creates_manifest_and_records_migration_for_manifestless_pack(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            destination = Path(tmpdir) / "legacy-pack"
+            bootstrap = self.run_bootstrap("--filled-example", str(destination))
+            self.assertEqual(bootstrap.returncode, 0, msg=bootstrap.stderr)
+            (destination / "daos-pack.json").unlink()
+            original_charter = (destination / "assistant-charter.md").read_text(encoding="utf-8")
+
+            result = self.run_update("apply", str(destination))
+
+            self.assertEqual(result.returncode, 0, msg=result.stderr)
+            manifest = json.loads((destination / "daos-pack.json").read_text(encoding="utf-8"))
+            self.assertEqual(manifest["schema_version"], "1")
+            self.assertEqual(manifest["framework_version"], "0.1.0-alpha3")
+            self.assertTrue(manifest["pack_id"])
+            self.assertEqual((destination / "assistant-charter.md").read_text(encoding="utf-8"), original_charter)
+            self.assertTrue((destination / ".daos" / "migrations").is_dir())
+            migration_files = list((destination / ".daos" / "migrations").glob("*.json"))
+            self.assertEqual(len(migration_files), 1)
+            record = json.loads(migration_files[0].read_text(encoding="utf-8"))
+            self.assertIn("created daos-pack.json", record["actions"])
+            self.assertIn("wrote .daos/manifest.json", record["actions"])
+
+    def test_apply_repairs_metadata_gaps_and_backs_up_existing_manifest(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            destination = Path(tmpdir) / "partial-pack"
+            bootstrap = self.run_bootstrap("--filled-example", str(destination))
+            self.assertEqual(bootstrap.returncode, 0, msg=bootstrap.stderr)
+            manifest_path = destination / "daos-pack.json"
+            manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+            manifest.pop("framework_version", None)
+            manifest.pop("pack_id", None)
+            manifest_path.write_text(json.dumps(manifest, indent=2) + "\n", encoding="utf-8")
+
+            result = self.run_update("apply", str(destination))
+
+            self.assertEqual(result.returncode, 0, msg=result.stderr)
+            updated_manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+            self.assertEqual(updated_manifest["framework_version"], "0.1.0-alpha3")
+            self.assertTrue(updated_manifest["pack_id"])
+            backup_files = list((destination / ".daos" / "backups").glob("**/daos-pack.json"))
+            self.assertGreaterEqual(len(backup_files), 1)
 
 
 if __name__ == "__main__":

@@ -197,6 +197,24 @@ Perform only changes that satisfy the DAOS safety rules:
 - never silently overwrite user-owned files
 - write a migration report
 
+### Current implemented scope
+
+DAOS now ships a first narrow `apply` path in `scripts/daos_update.py`.
+
+Current apply behavior:
+- create or repair `daos-pack.json`
+- add `framework_version` and `pack_id` when missing
+- preserve existing metadata fields when possible
+- write `.daos/manifest.json`
+- write a migration record in `.daos/migrations/`
+- backup any pre-existing `daos-pack.json` into `.daos/backups/`
+- leave `assistant-charter.md` and `operating-profile.md` untouched
+
+Current non-goals:
+- no prose merging
+- no operating-profile rewrites
+- no auto-refresh of user-owned live files
+
 ## Migration rules
 
 The updater should prefer a small number of migration classes:
