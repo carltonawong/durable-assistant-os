@@ -205,6 +205,18 @@ def summarize_durable_import(durable_root: Path, target_wiki_root: Path) -> tupl
     return new_files, unchanged_files, conflicts
 
 
+def collect_new_durable_files(durable_root: Path, target_wiki_root: Path) -> list[str]:
+    new_files: list[str] = []
+    for item in durable_root.rglob("*"):
+        if item.is_dir():
+            continue
+        rel = item.relative_to(durable_root)
+        target = target_wiki_root / rel
+        if not target.exists():
+            new_files.append(str(rel))
+    return new_files
+
+
 def collect_durable_conflicts(durable_root: Path, target_wiki_root: Path) -> list[str]:
     conflicts: list[str] = []
     for item in durable_root.rglob("*"):
@@ -226,6 +238,7 @@ def write_plan_review(
     new_files: int,
     unchanged_files: int,
     conflicts: list[str],
+    new_file_items: list[str],
     active_memory_stage: Path | None,
 ) -> Path:
     output_path.parent.mkdir(parents=True, exist_ok=True)
@@ -253,6 +266,8 @@ def write_plan_review(
     lines.extend(["", "## Proposed Decisions", ""])
     for item in conflicts:
         lines.append(f"- durable-conflict:{item} = keep")
+    for item in new_file_items:
+        lines.append(f"- new-file:{item} = import")
     if active_memory_stage is not None:
         lines.append("- active-memory = stage")
     output_path.write_text("\n".join(lines) + "\n", encoding="utf-8")
@@ -262,7 +277,7 @@ def write_plan_review(
 def parse_review_input(review_input: Path) -> dict[str, object]:
     if not review_input.is_file():
         raise ValueError(f"review input does not exist: {review_input}")
-    decisions: dict[str, object] = {"durable_conflicts": {}, "active_memory": None}
+    decisions: dict[str, object] = {"durable_conflicts": {}, "new_files": {}, "active_memory": None}
     for raw_line in review_input.read_text(encoding="utf-8").splitlines():
         line = raw_line.strip()
         if not line.startswith("- ") or " = " not in line:
@@ -274,6 +289,12 @@ def parse_review_input(review_input: Path) -> dict[str, object]:
             if action not in {"keep", "stage", "overwrite"}:
                 raise ValueError(f"unsupported durable conflict action in review input: {action}")
             decisions["durable_conflicts"][rel] = action
+        elif left.startswith("new-file:"):
+            rel = left.split(":", 1)[1]
+            action = right.strip()
+            if action not in {"import", "skip"}:
+                raise ValueError(f"unsupported new-file action in review input: {action}")
+            decisions["new_files"][rel] = action
         elif left == "active-memory":
             action = right.strip()
             if action not in {"stage", "skip"}:
@@ -293,6 +314,7 @@ def plan_import(
     durable_root = bundle_dir / "durable" / "wiki"
     require_dir(durable_root, "bundle durable wiki")
     new_files, unchanged_files, conflicts = summarize_durable_import(durable_root, target_wiki_root)
+    new_file_items = collect_new_durable_files(durable_root, target_wiki_root)
     conflict_items = collect_durable_conflicts(durable_root, target_wiki_root)
     active_memory_stage = target_pack_dir / ".daos" / "portability-stage" / "active-memory" if (payload['active_memory']['included'] and target_pack_dir is not None) else None
     lines = [f"DAOS portability plan: {bundle_dir}"]
@@ -316,6 +338,7 @@ def plan_import(
             new_files=new_files,
             unchanged_files=unchanged_files,
             conflicts=conflict_items,
+            new_file_items=new_file_items,
             active_memory_stage=active_memory_stage,
         )
         lines.append(f"review artifact: {review_path}")
@@ -359,7 +382,7 @@ def apply_import(
     require_dir(durable_root, "bundle durable wiki")
     require_dir(pack_root, "bundle pack")
 
-    review_decisions = parse_review_input(review_input) if review_input is not None else {"durable_conflicts": {}, "active_memory": None}
+    review_decisions = parse_review_input(review_input) if review_input is not None else {"durable_conflicts": {}, "new_files": {}, "active_memory": None}
     if review_decisions["active_memory"] is not None:
         active_memory = str(review_decisions["active_memory"])
 
@@ -374,13 +397,19 @@ def apply_import(
     stage_root = target_pack_dir / ".daos" / "portability-stage"
     backup_root = target_pack_dir / ".daos" / "portability-backups" / datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%SZ')
     for item in durable_root.rglob("*"):
-        rel = item.relative_to(durable_root)
-        target = target_wiki_root / rel
         if item.is_dir():
-            target.mkdir(parents=True, exist_ok=True)
             continue
-        if target.exists() and target.read_text(encoding="utf-8") != item.read_text(encoding="utf-8"):
-            rel_str = str(rel)
+        rel = item.relative_to(durable_root)
+        rel_str = str(rel)
+        target = target_wiki_root / rel
+        if not target.exists():
+            if review_decisions["new_files"].get(rel_str, "import") == "skip":
+                continue
+            target.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copy2(item, target)
+            copied += 1
+            continue
+        if target.read_text(encoding="utf-8") != item.read_text(encoding="utf-8"):
             collisions.append(rel_str)
             action = review_decisions["durable_conflicts"].get(rel_str, durable_conflicts)
             if action == "stage":
@@ -431,6 +460,13 @@ def apply_import(
             lines.append("durable-conflicts: mixed")
         else:
             lines.append(f"durable-conflicts: {durable_conflicts}")
+        new_file_actions = set(review_decisions["new_files"].values())
+        if new_file_actions == {"skip"}:
+            lines.append("new-files: skip")
+        elif "skip" in new_file_actions:
+            lines.append("new-files: selective")
+        elif new_file_actions == {"import"}:
+            lines.append("new-files: import")
         lines.append(f"active-memory: {active_memory}")
     if collisions and all(review_decisions["durable_conflicts"].get(item, durable_conflicts) == "keep" for item in collisions):
         review = write_collision_review(target_pack_dir, collisions)

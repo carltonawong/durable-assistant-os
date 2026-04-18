@@ -276,6 +276,48 @@ class DaosPortabilityScriptTests(unittest.TestCase):
             self.assertIn("durable-conflicts: overwrite", result.stdout)
             self.assertIn("active-memory: skip", result.stdout)
 
+    def test_apply_can_skip_review_selected_new_durable_files(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            tmp = Path(tmpdir)
+            _, _, bundle_dir, _, _ = self.bootstrap_pack_and_bundle(tmp)
+            target_wiki = tmp / "target-wiki"
+            target_pack = tmp / "target-pack"
+            review_output = tmp / "review" / "portability-plan.md"
+            target_wiki.mkdir(parents=True)
+            (target_wiki / "index.md").write_text("# Other durable root\n", encoding="utf-8")
+
+            plan = self.run_portability(
+                "plan",
+                str(bundle_dir),
+                "--target-wiki-root",
+                str(target_wiki),
+                "--target-pack-dir",
+                str(target_pack),
+                "--review-output",
+                str(review_output),
+            )
+            self.assertEqual(plan.returncode, 0, msg=plan.stderr)
+
+            review_text = review_output.read_text(encoding="utf-8")
+            review_text = review_text.replace("- new-file:pages/ops.md = import", "- new-file:pages/ops.md = skip")
+            review_output.write_text(review_text, encoding="utf-8")
+
+            result = self.run_portability(
+                "apply",
+                str(bundle_dir),
+                "--target-wiki-root",
+                str(target_wiki),
+                "--target-pack-dir",
+                str(target_pack),
+                "--review-input",
+                str(review_output),
+            )
+
+            self.assertEqual(result.returncode, 0, msg=result.stderr)
+            self.assertFalse((target_wiki / "pages" / "ops.md").exists())
+            self.assertTrue((target_wiki / "sources" / "lane-model.md").exists())
+            self.assertIn("new-files: selective", result.stdout)
+
     def test_apply_restores_durable_wiki_and_metadata_into_empty_target(self) -> None:
         with tempfile.TemporaryDirectory() as tmpdir:
             tmp = Path(tmpdir)

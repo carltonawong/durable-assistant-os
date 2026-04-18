@@ -166,6 +166,7 @@ python scripts/daos_portability.py apply \
 - default durable-conflict policy is `keep`: leave target durable files untouched and emit a collision review note
 - optional durable-conflict policy `stage`: preserve the target file and stage the incoming conflicting durable file under `.daos/portability-stage/durable-conflicts/`
 - optional durable-conflict policy `overwrite`: replace the target durable file only when explicitly requested and back up the displaced file under `.daos/portability-backups/`
+- allow review-driven skip/import decisions for non-conflicting new durable files
 - stage bundled active-memory sidecars under `.daos/portability-stage/active-memory/` by default
 - support `--active-memory skip` when the bundle carries active sidecars but the import should ignore them
 

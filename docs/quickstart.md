@@ -48,7 +48,7 @@ If you want the current metadata-and-additive-safe apply path for an existing pa
 If you want to move durable wiki memory and pack identity between installs, use `scripts/daos_portability.py export`, `inspect`, `plan`, and `apply`.
 `plan --target-pack-dir` previews new/unchanged/conflicting durable files plus active-memory staging targets before writes.
 `plan --review-output /path/to/review.md` writes a portable markdown intake review with proposed decisions.
-`apply --review-input /path/to/review.md` follows those review decisions for conflicts and active-memory staging.
+`apply --review-input /path/to/review.md` follows those review decisions for conflicts, selected new files, and active-memory staging.
 `apply` keeps conflicting durable markdown by default, can stage or overwrite incoming conflicts explicitly, and stages bundled active-memory sidecars unless you pass `--active-memory skip`.
 If you want the first interactive generated setup path, use `scripts/daos_wizard.py`.
 
