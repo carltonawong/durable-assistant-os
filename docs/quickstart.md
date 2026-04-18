@@ -45,6 +45,7 @@ If you want the first runnable/generated install step instead of copying folders
 If you want the first runnable readiness check, use `scripts/daos_validate.py`.
 If you want a safe non-destructive update inspection for an existing pack, use `scripts/daos_update.py check` or `scripts/daos_update.py plan`.
 If you want the current metadata-and-additive-safe apply path for an existing pack, use `scripts/daos_update.py apply`.
+If you want to move durable wiki memory and pack identity between installs, use `scripts/daos_portability.py export`, `inspect`, `plan`, and `apply`.
 If you want the first interactive generated setup path, use `scripts/daos_wizard.py`.
 
 ## If you want examples before filling anything

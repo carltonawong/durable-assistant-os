@@ -48,6 +48,12 @@ First safe update inspection step:
 - `python scripts/daos_update.py apply /path/to/my-daos-pack`
 - current updater posture starts with backup-first metadata apply, can restore clearly framework-owned support files, can perform narrow additive mixed-file patches when the structure is safely recognizable, writes review notes for warning-level items, and still refuses user-owned file rewrites
 
+Wiki-first portability step:
+- `python scripts/daos_portability.py export --pack-dir /path/to/pack --wiki-root /path/to/wiki --out /path/to/bundle`
+- `python scripts/daos_portability.py inspect /path/to/bundle`
+- `python scripts/daos_portability.py plan /path/to/bundle --target-wiki-root /path/to/new-wiki`
+- `python scripts/daos_portability.py apply /path/to/bundle --target-wiki-root /path/to/new-wiki --target-pack-dir /path/to/new-pack`
+
 If one lane needs more structure, add:
 - `templates/lane-snapshot-template.md`
 
@@ -62,7 +68,8 @@ After first install, use:
 1. `docs/quickstart.md` — the shortest path to trying DAOS right away
 2. `docs/adoption-path.md` — the staged path from trying DAOS to deeper structure
 3. `docs/pack-schema.md` — the canonical DAOS pack model behind generation and validation
-4. `docs/thesis.md` — the product thesis and framing for why DAOS exists
+4. `docs/portability.md` — the wiki-first portability model for moving durable memory and pack identity
+5. `docs/thesis.md` — the product thesis and framing for why DAOS exists
 4. `docs/public-memory-page.md` — the front-door public explanation of the DAOS memory model
 5. `docs/memory.md` — the deeper reference layer for DAOS memory doctrine
 6. `docs/trust.md` — the public trust and behavior model for ask-vs-act, approval, and verification posture
@@ -88,6 +95,7 @@ After first install, use:
 - `docs/quickstart.md` — fastest newcomer path to a first useful DAOS install
 - `docs/adoption-path.md` — staged adoption map from first try through deeper structure decisions
 - `docs/pack-schema.md` — canonical pack model for schema-backed generation and validation
+- `docs/portability.md` — wiki-first portability model for moving durable memory and pack identity
 - `docs/thesis.md` — the repo's core claim, framing, and design stance
 - `docs/public-memory-page.md` — the public-facing memory overview
 - `docs/memory.md` — deeper DAOS memory doctrine and architecture notes
@@ -110,6 +118,7 @@ After first install, use:
 - `scripts/daos_bootstrap.py` — generate a DAOS working folder by copying the blank starter-pack or the filled example into a target path
 - `scripts/daos_validate.py` — check whether a DAOS pack is minimally filled enough to operate
 - `scripts/daos_update.py` — inspect or apply safe metadata-first updates for an existing DAOS pack without rewriting user-owned files
+- `scripts/daos_portability.py` — export durable wiki memory plus pack identity, then inspect or plan portability intake
 - `scripts/daos_wizard.py` — run a compact setup wizard and generate a filled DAOS starter pack
 
 ### tests/

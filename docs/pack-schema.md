@@ -13,6 +13,7 @@ That manifest gives DAOS a stable substrate for:
 - validation
 - lint / calibration diagnostics
 - safe update inspection/planning
+- wiki-first portability bundles
 - richer wizard work later
 - future import/export or app layers if they become warranted
 
