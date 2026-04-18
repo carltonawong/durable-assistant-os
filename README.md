@@ -19,11 +19,12 @@ DAOS is the attempt to package a more durable model:
 3. `docs/memory.md` — the deeper reference layer for DAOS memory doctrine
 4. `docs/trust.md` — the public trust and behavior model for ask-vs-act, approval, and verification posture
 5. `docs/setup.md` — the public setup philosophy for progressive install and early usefulness
-6. `harness/core-setup.md` — the minimum viable install path
-7. `templates/assistant-charter-template.md` — reusable blank charter for locking assistant behavior defaults early
-8. `templates/operating-profile-template.md` — reusable fill-in structure for a first DAOS profile
-9. `templates/cadence-review-template.md` — reusable upkeep template for heartbeat, weekly, and monthly review
-10. `examples/user-operating-profile-example.md` — worked example of what a filled profile can look like
+6. `docs/lane-model.md` — the public lane model for lightweight domain mapping and foreground control
+7. `harness/core-setup.md` — the minimum viable install path
+8. `templates/assistant-charter-template.md` — reusable blank charter for locking assistant behavior defaults early
+9. `templates/operating-profile-template.md` — reusable fill-in structure for a first DAOS profile
+10. `templates/cadence-review-template.md` — reusable upkeep template for heartbeat, weekly, and monthly review
+11. `examples/user-operating-profile-example.md` — worked example of what a filled profile can look like
 
 ## Current artifact map
 
@@ -33,6 +34,7 @@ DAOS is the attempt to package a more durable model:
 - `docs/memory.md` — deeper DAOS memory doctrine and architecture notes
 - `docs/trust.md` — the public trust and behavior model
 - `docs/setup.md` — the public setup philosophy
+- `docs/lane-model.md` — the public lane model
 
 ### harness/
 - `harness/core-setup.md` — first runnable one-sitting setup flow for installing DAOS defaults
@@ -54,6 +56,7 @@ A few files are intentionally close together but do different jobs:
 - `docs/memory.md` is the deeper doctrine/reference layer behind that public page
 - `docs/trust.md` explains the public behavior and trust model
 - `docs/setup.md` explains the public setup philosophy and progressive-install stance
+- `docs/lane-model.md` explains the public lane model, including statuses, foreground, and pressure
 - `harness/core-setup.md` explains **how to install** a minimum viable DAOS setup
 - `templates/` provides reusable blank structures
 - `examples/` demonstrates what a filled instance can look like
@@ -74,6 +77,7 @@ Current first-pass packaging status:
 - the deeper memory reference layer exists
 - the public trust/behavior page exists
 - the public setup philosophy page exists
+- the public lane-model page exists
 - the first installable harness flow exists
 - the first reusable assistant charter template exists
 - the first reusable profile template exists
