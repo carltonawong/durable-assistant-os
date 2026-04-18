@@ -208,12 +208,15 @@ Current apply behavior:
 - write `.daos/manifest.json`
 - write a migration record in `.daos/migrations/`
 - backup any pre-existing `daos-pack.json` into `.daos/backups/`
+- restore missing clearly framework-owned support files such as `lane-snapshot.md` and `cadence-review.md`
+- write review notes under `.daos/review-notes/` for warning-level items that need human judgment
 - leave `assistant-charter.md` and `operating-profile.md` untouched
 
 Current non-goals:
 - no prose merging
 - no operating-profile rewrites
 - no auto-refresh of user-owned live files
+- no silent resolution of warning-level judgment calls; those become review notes instead
 
 ## Migration rules
 

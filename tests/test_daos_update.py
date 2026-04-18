@@ -116,6 +116,38 @@ class DaosUpdateScriptTests(unittest.TestCase):
             backup_files = list((destination / ".daos" / "backups").glob("**/daos-pack.json"))
             self.assertGreaterEqual(len(backup_files), 1)
 
+    def test_apply_restores_missing_framework_owned_support_files(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            destination = Path(tmpdir) / "support-pack"
+            bootstrap = self.run_bootstrap("--filled-example", str(destination))
+            self.assertEqual(bootstrap.returncode, 0, msg=bootstrap.stderr)
+            (destination / "lane-snapshot.md").unlink()
+            (destination / "cadence-review.md").unlink()
+
+            result = self.run_update("apply", str(destination))
+
+            self.assertEqual(result.returncode, 0, msg=result.stderr)
+            self.assertTrue((destination / "lane-snapshot.md").exists())
+            self.assertTrue((destination / "cadence-review.md").exists())
+            self.assertIn("restored lane-snapshot.md", result.stdout)
+            self.assertIn("restored cadence-review.md", result.stdout)
+
+    def test_apply_writes_review_note_for_warning_only_pack(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            destination = Path(tmpdir) / "warning-pack"
+            bootstrap = self.run_bootstrap("--filled-example", str(destination))
+            self.assertEqual(bootstrap.returncode, 0, msg=bootstrap.stderr)
+            (destination / "cadence-review.md").write_text("# Cadence Review\n", encoding="utf-8")
+
+            result = self.run_update("apply", str(destination))
+
+            self.assertEqual(result.returncode, 0, msg=result.stderr)
+            review_notes = list((destination / ".daos" / "review-notes").glob("*.md"))
+            self.assertEqual(len(review_notes), 1)
+            review_note = review_notes[0].read_text(encoding="utf-8")
+            self.assertIn("cadence-review.md looks blank", review_note)
+            self.assertIn("review note", result.stdout)
+
 
 if __name__ == "__main__":
     unittest.main()

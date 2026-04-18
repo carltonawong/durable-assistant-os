@@ -46,7 +46,7 @@ First safe update inspection step:
 - `python scripts/daos_update.py check /path/to/my-daos-pack`
 - `python scripts/daos_update.py plan /path/to/my-daos-pack`
 - `python scripts/daos_update.py apply /path/to/my-daos-pack`
-- current updater posture starts with backup-first metadata-only apply and still refuses user-owned file rewrites
+- current updater posture starts with backup-first metadata apply, can restore clearly framework-owned support files, writes review notes for warning-level items, and still refuses user-owned file rewrites
 
 If one lane needs more structure, add:
 - `templates/lane-snapshot-template.md`

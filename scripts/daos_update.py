@@ -14,9 +14,16 @@ from uuid import uuid4
 from daos_core import validate_pack_dir
 
 
+REPO_ROOT = Path(__file__).resolve().parents[1]
+STARTER_PACK_DIR = REPO_ROOT / "starter-pack"
 USER_OWNED_FILES = (
     "assistant-charter.md",
     "operating-profile.md",
+)
+FRAMEWORK_OWNED_FILES = (
+    "README.md",
+    "lane-snapshot.md",
+    "cadence-review.md",
 )
 MANAGED_METADATA_FILE = "daos-pack.json"
 OPTIONAL_METADATA_FIELDS = (
@@ -70,14 +77,16 @@ def update_ready(manifest_gaps: list[str], validation_errors: list[str]) -> str:
     return "stable"
 
 
-def ensure_managed_dirs(pack_dir: Path) -> tuple[Path, Path, Path]:
+def ensure_managed_dirs(pack_dir: Path) -> tuple[Path, Path, Path, Path]:
     root = pack_dir / ".daos"
     backups = root / "backups"
     migrations = root / "migrations"
+    review_notes = root / "review-notes"
     root.mkdir(exist_ok=True)
     backups.mkdir(exist_ok=True)
     migrations.mkdir(exist_ok=True)
-    return root, backups, migrations
+    review_notes.mkdir(exist_ok=True)
+    return root, backups, migrations, review_notes
 
 
 def build_managed_manifest(pack_dir: Path, manifest: dict[str, object]) -> dict[str, object]:
@@ -88,6 +97,7 @@ def build_managed_manifest(pack_dir: Path, manifest: dict[str, object]) -> dict[
         "framework_version": str(manifest.get("framework_version", DEFAULT_FRAMEWORK_VERSION)),
         "pack_id": str(manifest.get("pack_id", "")),
         "protected_files": list(USER_OWNED_FILES),
+        "framework_owned_files": list(FRAMEWORK_OWNED_FILES),
         "pack_path": str(pack_dir),
     }
 
@@ -125,15 +135,39 @@ def backup_file_if_present(path: Path, backups_dir: Path, stamp: str) -> list[st
     return [f"backed up {path.name} to {target_dir}"]
 
 
+def restore_framework_owned_files(pack_dir: Path) -> list[str]:
+    actions: list[str] = []
+    for filename in FRAMEWORK_OWNED_FILES:
+        target = pack_dir / filename
+        if target.exists():
+            continue
+        source = STARTER_PACK_DIR / filename
+        if not source.is_file():
+            continue
+        shutil.copy2(source, target)
+        actions.append(f"restored {filename}")
+    return actions
+
+
+def write_review_note(review_notes_dir: Path, warnings: list[str], stamp: str) -> Path | None:
+    if not warnings:
+        return None
+    path = review_notes_dir / f"{stamp}-warning-review.md"
+    content = ["# DAOS Update Review Note", "", f"Generated: {iso_now()}", "", "## Why this exists", "", "The updater found warning-level items that were not rewritten automatically.", "", "## Review items", ""]
+    content.extend(f"- {warning}" for warning in warnings)
+    path.write_text("\n".join(content) + "\n", encoding="utf-8")
+    return path
+
+
 def apply_updates(pack_dir: Path) -> str:
     validation = validate_pack_dir(pack_dir)
     if validation.errors:
-        raise ValueError("pack has blocking validation errors; refuse metadata apply until the pack is minimally operable")
+        raise ValueError("pack has blocking validation errors; refuse apply until the pack is minimally operable")
 
     existing_manifest, _ = load_manifest(pack_dir)
     updated_manifest, actions = build_updated_manifest(existing_manifest)
 
-    root, backups_dir, migrations_dir = ensure_managed_dirs(pack_dir)
+    root, backups_dir, migrations_dir, review_notes_dir = ensure_managed_dirs(pack_dir)
     stamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
     action_log: list[str] = []
     action_log.extend(backup_file_if_present(pack_dir / MANAGED_METADATA_FILE, backups_dir, stamp))
@@ -144,17 +178,27 @@ def apply_updates(pack_dir: Path) -> str:
     (root / "manifest.json").write_text(json.dumps(managed_manifest, indent=2) + "\n", encoding="utf-8")
     actions.append("wrote .daos/manifest.json")
 
+    restore_actions = restore_framework_owned_files(pack_dir)
+    actions.extend(restore_actions)
+
+    review_note_path = write_review_note(review_notes_dir, validation.warnings, stamp)
+    if review_note_path is not None:
+        actions.append(f"wrote review note: {review_note_path.name}")
+
+    mode = "metadata-plus-additive-safe-migrations" if restore_actions or review_note_path else "metadata-only"
     migration_record = {
         "applied_at": iso_now(),
-        "mode": "metadata-only",
+        "mode": mode,
         "protected_files": list(USER_OWNED_FILES),
+        "framework_owned_files": list(FRAMEWORK_OWNED_FILES),
         "actions": actions,
         "backups": action_log,
+        "warnings_seen": validation.warnings,
     }
-    migration_path = migrations_dir / f"{stamp}-metadata-apply.json"
+    migration_path = migrations_dir / f"{stamp}-apply.json"
     migration_path.write_text(json.dumps(migration_record, indent=2) + "\n", encoding="utf-8")
 
-    lines = [f"DAOS pack update apply: {pack_dir}", "applied posture: metadata-only"]
+    lines = [f"DAOS pack update apply: {pack_dir}", f"applied posture: {mode}"]
     if action_log:
         lines.append("backups:")
         lines.extend(f"- {item}" for item in action_log)
@@ -164,6 +208,8 @@ def apply_updates(pack_dir: Path) -> str:
     lines.append("actions:")
     lines.extend(f"- {item}" for item in actions)
     lines.append(f"migration_record: {migration_path}")
+    if review_note_path is not None:
+        lines.append(f"review note: {review_note_path}")
     lines.append("protected files:")
     lines.extend(f"- left untouched: {name}" for name in USER_OWNED_FILES)
     return "\n".join(lines)
@@ -196,19 +242,22 @@ def render_plan(pack_dir: Path) -> str:
     validation = validate_pack_dir(pack_dir)
     _, manifest_gaps = load_manifest(pack_dir)
     lines = [f"DAOS pack update plan: {pack_dir}"]
-    lines.append("planned posture: managed metadata only unless a future additive migration is explicitly safe")
+    lines.append("planned posture: managed metadata only unless a clearly framework-owned additive migration is safe")
     lines.append("protected files:")
     lines.extend(f"- do not overwrite {name}" for name in USER_OWNED_FILES)
     if manifest_gaps:
         lines.append("safe next actions:")
         for gap in manifest_gaps:
             if gap == "missing managed metadata anchor":
-                lines.append("- add managed metadata anchor via metadata-only apply")
+                lines.append("- add managed metadata anchor via apply")
             else:
                 lines.append(f"- add {gap.split(': ', 1)[1]} to managed metadata")
     else:
         lines.append("safe next actions:")
         lines.append("- no immediate managed metadata patch is required")
+    for filename in FRAMEWORK_OWNED_FILES:
+        if not (pack_dir / filename).exists():
+            lines.append(f"- restore missing framework-owned support file: {filename}")
     if validation.errors:
         lines.append("apply blockers:")
         lines.extend(f"- {error}" for error in validation.errors)
@@ -218,6 +267,7 @@ def render_plan(pack_dir: Path) -> str:
     if validation.warnings:
         lines.append("review items:")
         lines.extend(f"- {warning}" for warning in validation.warnings)
+        lines.append("- write review note instead of rewriting warning-level user context")
     return "\n".join(lines)
 
 
