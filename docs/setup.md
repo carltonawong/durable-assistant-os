@@ -8,6 +8,10 @@ It is trying to become useful quickly and then improve over time.
 That means setup is not a giant life-modeling exercise.
 It is a controlled first-pass install that locks the smallest useful defaults, proves value early, and leaves room for later calibration.
 
+If you want the shortest practical path instead of the full setup framing, start with:
+- `docs/quickstart.md`
+- `harness/core-setup.md`
+
 ## The setup stance
 
 A good setup flow should begin with the user's lived reality, not system internals.
