@@ -148,6 +148,52 @@ class DaosUpdateScriptTests(unittest.TestCase):
             self.assertIn("cadence-review.md looks blank", review_note)
             self.assertIn("review note", result.stdout)
 
+    def test_apply_adds_missing_durable_capture_rule_to_operating_profile(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            destination = Path(tmpdir) / "mixed-pack"
+            bootstrap = self.run_bootstrap("--filled-example", str(destination))
+            self.assertEqual(bootstrap.returncode, 0, msg=bootstrap.stderr)
+            profile_path = destination / "operating-profile.md"
+            original = profile_path.read_text(encoding="utf-8")
+            modified = original.replace(
+                "- Durable capture rule: if a second review shows something should not live mainly in hot cache or chat, create/update a durable note in the same pass\n",
+                "",
+            )
+            profile_path.write_text(modified, encoding="utf-8")
+
+            result = self.run_update("apply", str(destination))
+
+            self.assertEqual(result.returncode, 0, msg=result.stderr)
+            updated = profile_path.read_text(encoding="utf-8")
+            self.assertIn("- Durable capture rule:", updated)
+            self.assertIn("added missing durable capture rule to operating-profile.md", result.stdout)
+            profile_backups = list((destination / ".daos" / "backups").glob("**/operating-profile.md"))
+            self.assertGreaterEqual(len(profile_backups), 1)
+
+    def test_apply_writes_review_note_when_mixed_file_cannot_be_safely_migrated(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            destination = Path(tmpdir) / "mixed-review-pack"
+            bootstrap = self.run_bootstrap("--filled-example", str(destination))
+            self.assertEqual(bootstrap.returncode, 0, msg=bootstrap.stderr)
+            profile_path = destination / "operating-profile.md"
+            broken = profile_path.read_text(encoding="utf-8").replace("## 5. Memory / trust defaults\n\n", "")
+            broken = broken.replace(
+                "- Durable capture rule: if a second review shows something should not live mainly in hot cache or chat, create/update a durable note in the same pass\n",
+                "",
+            )
+            profile_path.write_text(broken, encoding="utf-8")
+
+            result = self.run_update("apply", str(destination))
+
+            self.assertEqual(result.returncode, 0, msg=result.stderr)
+            updated = profile_path.read_text(encoding="utf-8")
+            self.assertNotIn("- Durable capture rule:", updated)
+            review_notes = list((destination / ".daos" / "review-notes").glob("*.md"))
+            self.assertEqual(len(review_notes), 1)
+            review_note = review_notes[0].read_text(encoding="utf-8")
+            self.assertIn("could not safely add durable capture rule", review_note)
+            self.assertIn("review note", result.stdout)
+
 
 if __name__ == "__main__":
     unittest.main()

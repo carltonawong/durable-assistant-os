@@ -209,14 +209,16 @@ Current apply behavior:
 - write a migration record in `.daos/migrations/`
 - backup any pre-existing `daos-pack.json` into `.daos/backups/`
 - restore missing clearly framework-owned support files such as `lane-snapshot.md` and `cadence-review.md`
-- write review notes under `.daos/review-notes/` for warning-level items that need human judgment
-- leave `assistant-charter.md` and `operating-profile.md` untouched
+- apply narrow additive mixed-file migrations when a patch is clearly safe, such as adding a missing durable-capture rule to `operating-profile.md`
+- write review notes under `.daos/review-notes/` for warning-level items or mixed-file cases that still need human judgment
+- leave `assistant-charter.md` and `operating-profile.md` otherwise untouched
 
 Current non-goals:
 - no prose merging
 - no operating-profile rewrites
 - no auto-refresh of user-owned live files
 - no silent resolution of warning-level judgment calls; those become review notes instead
+- no broad mixed-file edits unless the patch is narrowly additive and structurally safe
 
 ## Migration rules
 

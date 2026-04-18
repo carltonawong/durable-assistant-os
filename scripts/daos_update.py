@@ -32,6 +32,10 @@ OPTIONAL_METADATA_FIELDS = (
 )
 DEFAULT_SCHEMA_VERSION = "1"
 DEFAULT_FRAMEWORK_VERSION = "0.1.0-alpha3"
+DEFAULT_DURABLE_CAPTURE_RULE = (
+    "if a second review shows something should not live mainly in hot cache or chat, "
+    "create/update a durable note in the same pass"
+)
 
 
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
@@ -149,12 +153,58 @@ def restore_framework_owned_files(pack_dir: Path) -> list[str]:
     return actions
 
 
-def write_review_note(review_notes_dir: Path, warnings: list[str], stamp: str) -> Path | None:
-    if not warnings:
+def backup_user_owned_file(path: Path, backups_dir: Path, stamp: str) -> list[str]:
+    return backup_file_if_present(path, backups_dir, stamp)
+
+
+def add_durable_capture_rule_if_safe(pack_dir: Path, backups_dir: Path, stamp: str) -> tuple[list[str], list[str]]:
+    profile_path = pack_dir / "operating-profile.md"
+    if not profile_path.is_file():
+        return [], []
+    content = profile_path.read_text(encoding="utf-8")
+    if "- Durable capture rule:" in content:
+        return [], []
+    section_header = "## 5. Memory / trust defaults\n\n"
+    if section_header not in content:
+        return [], [
+            "could not safely add durable capture rule to operating-profile.md because the memory/trust section header was missing"
+        ]
+    insertion_anchor = "- Escalation / approval rule:"
+    anchor_index = content.find(insertion_anchor)
+    if anchor_index == -1:
+        return [], [
+            "could not safely add durable capture rule to operating-profile.md because the escalation/approval line was missing"
+        ]
+    line_end = content.find("\n", anchor_index)
+    if line_end == -1:
+        return [], [
+            "could not safely add durable capture rule to operating-profile.md because the escalation/approval line was malformed"
+        ]
+    insertion = f"- Durable capture rule: {DEFAULT_DURABLE_CAPTURE_RULE}\n"
+    updated = content[: line_end + 1] + insertion + content[line_end + 1 :]
+    actions = backup_user_owned_file(profile_path, backups_dir, stamp)
+    profile_path.write_text(updated, encoding="utf-8")
+    actions.append("added missing durable capture rule to operating-profile.md")
+    return actions, []
+
+
+def write_review_note(review_notes_dir: Path, review_items: list[str], stamp: str) -> Path | None:
+    if not review_items:
         return None
     path = review_notes_dir / f"{stamp}-warning-review.md"
-    content = ["# DAOS Update Review Note", "", f"Generated: {iso_now()}", "", "## Why this exists", "", "The updater found warning-level items that were not rewritten automatically.", "", "## Review items", ""]
-    content.extend(f"- {warning}" for warning in warnings)
+    content = [
+        "# DAOS Update Review Note",
+        "",
+        f"Generated: {iso_now()}",
+        "",
+        "## Why this exists",
+        "",
+        "The updater found warning-level or review-required items that were not rewritten automatically.",
+        "",
+        "## Review items",
+        "",
+    ]
+    content.extend(f"- {item}" for item in review_items)
     path.write_text("\n".join(content) + "\n", encoding="utf-8")
     return path
 
@@ -181,11 +231,16 @@ def apply_updates(pack_dir: Path) -> str:
     restore_actions = restore_framework_owned_files(pack_dir)
     actions.extend(restore_actions)
 
-    review_note_path = write_review_note(review_notes_dir, validation.warnings, stamp)
+    mixed_actions, review_items = add_durable_capture_rule_if_safe(pack_dir, backups_dir, stamp)
+    action_log.extend(item for item in mixed_actions if item.startswith("backed up "))
+    actions.extend(item for item in mixed_actions if not item.startswith("backed up "))
+
+    review_items.extend(validation.warnings)
+    review_note_path = write_review_note(review_notes_dir, review_items, stamp)
     if review_note_path is not None:
         actions.append(f"wrote review note: {review_note_path.name}")
 
-    mode = "metadata-plus-additive-safe-migrations" if restore_actions or review_note_path else "metadata-only"
+    mode = "metadata-plus-additive-safe-migrations" if restore_actions or mixed_actions or review_note_path else "metadata-only"
     migration_record = {
         "applied_at": iso_now(),
         "mode": mode,
@@ -194,6 +249,7 @@ def apply_updates(pack_dir: Path) -> str:
         "actions": actions,
         "backups": action_log,
         "warnings_seen": validation.warnings,
+        "review_items": review_items,
     }
     migration_path = migrations_dir / f"{stamp}-apply.json"
     migration_path.write_text(json.dumps(migration_record, indent=2) + "\n", encoding="utf-8")
@@ -258,6 +314,14 @@ def render_plan(pack_dir: Path) -> str:
     for filename in FRAMEWORK_OWNED_FILES:
         if not (pack_dir / filename).exists():
             lines.append(f"- restore missing framework-owned support file: {filename}")
+    profile_path = pack_dir / "operating-profile.md"
+    if profile_path.is_file():
+        profile_text = profile_path.read_text(encoding="utf-8")
+        if "- Durable capture rule:" not in profile_text:
+            if "## 5. Memory / trust defaults\n\n" in profile_text and "- Escalation / approval rule:" in profile_text:
+                lines.append("- add missing durable capture rule to operating-profile.md")
+            else:
+                lines.append("- write review note for missing durable capture rule because the operating-profile shape is not safely patchable")
     if validation.errors:
         lines.append("apply blockers:")
         lines.extend(f"- {error}" for error in validation.errors)
