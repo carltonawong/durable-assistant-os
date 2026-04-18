@@ -49,6 +49,7 @@ When the initial setup is in place, maintain it with:
 16. `examples/cadence-review-example.md` — worked example of a lightweight review/calibration pass
 17. `examples/setup-conversation-example.md` — worked example of what a first DAOS setup conversation can sound like
 18. `examples/user-operating-profile-example.md` — worked example of what a filled profile can look like
+19. `examples/starter-pack-example/` — worked folder-level example of a filled DAOS starter pack
 
 ## Current artifact map
 
@@ -84,6 +85,7 @@ When the initial setup is in place, maintain it with:
 - `examples/cadence-review-example.md` — generic worked example of a lightweight review/calibration pass
 - `examples/setup-conversation-example.md` — generic worked example of the setup conversation shape itself
 - `examples/user-operating-profile-example.md` — generic worked example showing what a filled profile can look like without becoming framework canon
+- `examples/starter-pack-example/` — generic worked folder showing the copyable starter-pack in a filled state
 
 ## Document roles
 
@@ -130,6 +132,7 @@ Current first-pass packaging status:
 - the first cadence/review template exists
 - the first cadence review example exists
 - the first setup conversation example exists
+- the first filled starter-pack example exists
 - the first generic worked example exists
 
 So the repo now has a usable first-pass stack across doctrine, installation, templates, and example material.

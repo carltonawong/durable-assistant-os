@@ -31,6 +31,7 @@ Read these worked examples first:
 - `examples/lane-snapshot-example.md`
 - `examples/cadence-review-example.md`
 - `examples/setup-conversation-example.md`
+- `examples/starter-pack-example/`
 
 Use them to understand the target shape.
 Do not copy them blindly.

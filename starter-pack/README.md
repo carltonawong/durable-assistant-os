@@ -19,6 +19,7 @@ It is not the canonical doctrine source.
 Use the files here when you want to operate.
 Use `templates/` when you want reusable source templates.
 Use `examples/` when you want to see filled shapes.
+Use `examples/starter-pack-example/` when you want to see this exact folder structure already filled.
 
 ## Minimum good outcome
 
