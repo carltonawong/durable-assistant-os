@@ -35,30 +35,32 @@ After first install, use:
 ## Read this repo in this order
 
 1. `docs/quickstart.md` — the shortest path to trying DAOS right away
-2. `docs/thesis.md` — the product thesis and framing for why DAOS exists
-3. `docs/public-memory-page.md` — the front-door public explanation of the DAOS memory model
-4. `docs/memory.md` — the deeper reference layer for DAOS memory doctrine
-5. `docs/trust.md` — the public trust and behavior model for ask-vs-act, approval, and verification posture
-6. `docs/setup.md` — the public setup philosophy for progressive install and early usefulness
-7. `docs/lane-model.md` — the public lane model for lightweight domain mapping and foreground control
-8. `harness/core-setup.md` — the minimum viable install path
-9. `harness/first-week.md` — the first-week stabilization guide after initial setup
-10. `templates/assistant-charter-template.md` — reusable blank charter for locking assistant behavior defaults early
-11. `examples/assistant-charter-example.md` — worked example of a filled first-pass charter
-12. `templates/operating-profile-template.md` — reusable fill-in structure for a first DAOS profile
-13. `examples/first-pass-setup-output-example.md` — worked example of what one finished first sitting can produce
-14. `templates/lane-snapshot-template.md` — reusable single-lane operating snapshot for higher-friction lanes
-15. `examples/lane-snapshot-example.md` — worked example of a filled lane-specific snapshot
-16. `templates/cadence-review-template.md` — reusable upkeep template for heartbeat, weekly, and monthly review
-17. `examples/cadence-review-example.md` — worked example of a lightweight review/calibration pass
-18. `examples/setup-conversation-example.md` — worked example of what a first DAOS setup conversation can sound like
-19. `examples/user-operating-profile-example.md` — worked example of what a filled profile can look like
-20. `examples/starter-pack-example/` — worked folder-level example of a filled DAOS starter pack
+2. `docs/adoption-path.md` — the staged path from trying DAOS to deeper structure
+3. `docs/thesis.md` — the product thesis and framing for why DAOS exists
+4. `docs/public-memory-page.md` — the front-door public explanation of the DAOS memory model
+5. `docs/memory.md` — the deeper reference layer for DAOS memory doctrine
+6. `docs/trust.md` — the public trust and behavior model for ask-vs-act, approval, and verification posture
+7. `docs/setup.md` — the public setup philosophy for progressive install and early usefulness
+8. `docs/lane-model.md` — the public lane model for lightweight domain mapping and foreground control
+9. `harness/core-setup.md` — the minimum viable install path
+10. `harness/first-week.md` — the first-week stabilization guide after initial setup
+11. `templates/assistant-charter-template.md` — reusable blank charter for locking assistant behavior defaults early
+12. `examples/assistant-charter-example.md` — worked example of a filled first-pass charter
+13. `templates/operating-profile-template.md` — reusable fill-in structure for a first DAOS profile
+14. `examples/first-pass-setup-output-example.md` — worked example of what one finished first sitting can produce
+15. `templates/lane-snapshot-template.md` — reusable single-lane operating snapshot for higher-friction lanes
+16. `examples/lane-snapshot-example.md` — worked example of a filled lane-specific snapshot
+17. `templates/cadence-review-template.md` — reusable upkeep template for heartbeat, weekly, and monthly review
+18. `examples/cadence-review-example.md` — worked example of a lightweight review/calibration pass
+19. `examples/setup-conversation-example.md` — worked example of what a first DAOS setup conversation can sound like
+20. `examples/user-operating-profile-example.md` — worked example of what a filled profile can look like
+21. `examples/starter-pack-example/` — worked folder-level example of a filled DAOS starter pack
 
 ## Current artifact map
 
 ### docs/
 - `docs/quickstart.md` — fastest newcomer path to a first useful DAOS install
+- `docs/adoption-path.md` — staged adoption map from first try through deeper structure decisions
 - `docs/thesis.md` — the repo's core claim, framing, and design stance
 - `docs/public-memory-page.md` — the public-facing memory overview
 - `docs/memory.md` — deeper DAOS memory doctrine and architecture notes
@@ -98,6 +100,7 @@ A few files are intentionally close together but do different jobs:
 
 - `docs/thesis.md` explains **why** DAOS exists
 - `docs/quickstart.md` explains **how to try it quickly without reading everything first**
+- `docs/adoption-path.md` explains **how DAOS should mature after first install and week-one use**
 - `docs/public-memory-page.md` explains the memory model in the cleanest public-facing form
 - `docs/memory.md` is the deeper doctrine/reference layer behind that public page
 - `docs/trust.md` explains the public behavior and trust model
@@ -124,6 +127,7 @@ Current first-pass packaging status:
 - the first quickstart path exists
 - the first starter-pack scaffold exists
 - the first post-setup first-week guide exists
+- the first staged adoption-path guide exists
 - the public memory front door exists
 - the deeper memory reference layer exists
 - the public trust/behavior page exists

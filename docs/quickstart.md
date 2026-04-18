@@ -24,6 +24,8 @@ Fastest option:
 
 That is enough to install a first-pass DAOS baseline.
 
+If you want to understand what comes after setup and the first week, read `docs/adoption-path.md`.
+
 ## If you want examples before filling anything
 
 Read these worked examples first:
