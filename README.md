@@ -29,6 +29,9 @@ If one lane needs more structure, add:
 When the initial setup is in place, maintain it with:
 - `templates/cadence-review-template.md`
 
+After first install, use:
+- `harness/first-week.md`
+
 ## Read this repo in this order
 
 1. `docs/quickstart.md` — the shortest path to trying DAOS right away
@@ -39,17 +42,18 @@ When the initial setup is in place, maintain it with:
 6. `docs/setup.md` — the public setup philosophy for progressive install and early usefulness
 7. `docs/lane-model.md` — the public lane model for lightweight domain mapping and foreground control
 8. `harness/core-setup.md` — the minimum viable install path
-9. `templates/assistant-charter-template.md` — reusable blank charter for locking assistant behavior defaults early
-10. `examples/assistant-charter-example.md` — worked example of a filled first-pass charter
-11. `templates/operating-profile-template.md` — reusable fill-in structure for a first DAOS profile
-12. `examples/first-pass-setup-output-example.md` — worked example of what one finished first sitting can produce
-13. `templates/lane-snapshot-template.md` — reusable single-lane operating snapshot for higher-friction lanes
-14. `examples/lane-snapshot-example.md` — worked example of a filled lane-specific snapshot
-15. `templates/cadence-review-template.md` — reusable upkeep template for heartbeat, weekly, and monthly review
-16. `examples/cadence-review-example.md` — worked example of a lightweight review/calibration pass
-17. `examples/setup-conversation-example.md` — worked example of what a first DAOS setup conversation can sound like
-18. `examples/user-operating-profile-example.md` — worked example of what a filled profile can look like
-19. `examples/starter-pack-example/` — worked folder-level example of a filled DAOS starter pack
+9. `harness/first-week.md` — the first-week stabilization guide after initial setup
+10. `templates/assistant-charter-template.md` — reusable blank charter for locking assistant behavior defaults early
+11. `examples/assistant-charter-example.md` — worked example of a filled first-pass charter
+12. `templates/operating-profile-template.md` — reusable fill-in structure for a first DAOS profile
+13. `examples/first-pass-setup-output-example.md` — worked example of what one finished first sitting can produce
+14. `templates/lane-snapshot-template.md` — reusable single-lane operating snapshot for higher-friction lanes
+15. `examples/lane-snapshot-example.md` — worked example of a filled lane-specific snapshot
+16. `templates/cadence-review-template.md` — reusable upkeep template for heartbeat, weekly, and monthly review
+17. `examples/cadence-review-example.md` — worked example of a lightweight review/calibration pass
+18. `examples/setup-conversation-example.md` — worked example of what a first DAOS setup conversation can sound like
+19. `examples/user-operating-profile-example.md` — worked example of what a filled profile can look like
+20. `examples/starter-pack-example/` — worked folder-level example of a filled DAOS starter pack
 
 ## Current artifact map
 
@@ -64,6 +68,7 @@ When the initial setup is in place, maintain it with:
 
 ### harness/
 - `harness/core-setup.md` — first runnable one-sitting setup flow for installing DAOS defaults
+- `harness/first-week.md` — post-setup stabilization guide for the first week of real use
 
 ### starter-pack/
 - `starter-pack/README.md` — copyable scaffold for trying DAOS on a real instance quickly
@@ -99,6 +104,7 @@ A few files are intentionally close together but do different jobs:
 - `docs/setup.md` explains the public setup philosophy and progressive-install stance
 - `docs/lane-model.md` explains the public lane model, including statuses, foreground, and pressure
 - `harness/core-setup.md` explains **how to install** a minimum viable DAOS setup
+- `harness/first-week.md` explains **how to keep the first install from drifting during real use**
 - `starter-pack/` provides a copyable real-world working scaffold for first-time adopters
 - `templates/` provides reusable blank structures
 - `examples/` demonstrates what a filled instance or setup interaction can look like, including both smaller setup artifacts and fuller profile outputs
@@ -117,6 +123,7 @@ Current first-pass packaging status:
 - the core thesis exists
 - the first quickstart path exists
 - the first starter-pack scaffold exists
+- the first post-setup first-week guide exists
 - the public memory front door exists
 - the deeper memory reference layer exists
 - the public trust/behavior page exists

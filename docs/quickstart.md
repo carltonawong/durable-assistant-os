@@ -20,6 +20,7 @@ Fastest option:
 4. Fill `templates/operating-profile-template.md`
 5. If one lane needs more structure, fill `templates/lane-snapshot-template.md`
 6. When the first setup is done, use `templates/cadence-review-template.md` for upkeep
+7. During real use, use `harness/first-week.md` to keep the system light and calibrated
 
 That is enough to install a first-pass DAOS baseline.
 
@@ -64,6 +65,9 @@ A good first sitting should leave you with:
 - one filled operating profile
 - optionally one lane snapshot for the highest-friction lane
 - a clear note that cadence review happens later, not during setup
+
+Then the next step is not more setup.
+The next step is the first week of real use guided by `harness/first-week.md`.
 
 ## What to skip at first
 

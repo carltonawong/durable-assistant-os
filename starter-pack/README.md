@@ -33,3 +33,5 @@ A first pass is good enough when:
 
 Do not try to perfect everything before first use.
 The point of this pack is to get to a usable baseline quickly.
+
+After the initial fill, use `harness/first-week.md` as the default next guide.
