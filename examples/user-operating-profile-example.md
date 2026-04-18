@@ -61,6 +61,7 @@
 - Verified reality rule: verified files, runtime, or state outrank remembered context for live facts
 - Ask-vs-act rule: ask when ambiguity changes action; act when intent is clear and stakes are low or reversible
 - Escalation / approval rule: critical, sticky, costly, or socially consequential actions require explicit confirmation
+- Durable capture rule: if a second review shows something should not live mainly in hot cache or chat, create or update durable memory in the same pass
 
 ## 6. Calibration later
 

@@ -48,6 +48,7 @@ For each active lane, capture:
 - Verified reality rule:
 - Ask-vs-act rule:
 - Escalation / approval rule:
+- Durable capture rule: if a second review shows something should not live mainly in hot cache or chat, create/update a durable note in the same pass
 
 ## 6. Calibration later
 
