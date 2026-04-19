@@ -2,6 +2,8 @@
 
 ## The simple progression
 
+The thing being adopted here is the operating pack and workflow, not a monolithic runtime.
+
 DAOS is meant to be adopted in stages, not all at once:
 1. **try the shape**
 2. **install a small baseline**
@@ -23,6 +25,9 @@ Use:
 - `examples/`
 - `starter-pack/`
 
+Rule:
+- choose only one install path when you start: copy `starter-pack/`, run bootstrap, or run the wizard
+
 Success looks like:
 - you can picture how the baseline would work for you
 - the repo feels actionable rather than abstract
@@ -30,7 +35,7 @@ Success looks like:
 Failure mode:
 - reading doctrine for too long without trying the operating surface
 
-## Stage 2 — Install a small baseline
+## Stage 2 — Create your first operating pack
 
 Goal:
 - create the smallest useful DAOS setup in one sitting

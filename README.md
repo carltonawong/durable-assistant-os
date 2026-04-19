@@ -8,13 +8,24 @@ DAOS is currently strongest as:
 
 It is **not** yet a full runtime integration layer by itself.
 
+Think of DAOS as a way to structure memory and operating behavior, plus scripts/templates to help you instantiate that structure.
+
+## Who this is for
+
+DAOS is most useful if you are:
+- setting up one assistant for yourself
+- configuring an assistant for another person or team
+- building a repeatable assistant operating pack
+
+If that sounds like you, start with `docs/quickstart.md` and `starter-pack/`.
+
 ## The simple mental model
 
 DAOS tries to keep assistant memory from collapsing into one blurry pile.
 
 It separates:
 - **the local thread** — what is being asked right now
-- **a hot front door** — what matters now across active work
+- **a hot front door** — the shortest shared summary of what matters now
 - **durable wiki/docs memory** — what should survive and be shared
 - **live reality** — the files, systems, and runtime state that must be checked before acting
 
@@ -37,12 +48,28 @@ Short version:
 
 ## Try DAOS in the shortest possible path
 
-1. Install Obsidian and skim the LLM Wiki note above.
-2. Read `docs/quickstart.md`.
-3. Copy `starter-pack/` into your own workspace **or** run `python scripts/daos_bootstrap.py /path/to/my-daos-pack`.
-4. Fill the copied/generated pack.
-5. Run `python scripts/daos_validate.py /path/to/my-daos-pack`.
-6. Use `harness/first-week.md` once the baseline is live.
+Choose **one** of these three start modes:
+
+### Option A — Copy the ready-made pack
+Best if you want the most literal first run.
+1. Copy `starter-pack/` into your own workspace.
+2. Open `starter-pack/README.md` and fill the files in that order.
+3. Run `python scripts/daos_validate.py /path/to/my-daos-pack`.
+4. Use `harness/first-week.md` once the baseline is live.
+
+### Option B — Generate a new pack
+Best if you want a clean generated scaffold.
+1. Run `python scripts/daos_bootstrap.py /path/to/my-daos-pack`.
+2. Fill the generated files.
+3. Run `python scripts/daos_validate.py /path/to/my-daos-pack`.
+4. Use `harness/first-week.md` once the baseline is live.
+
+### Option C — Use the guided wizard
+Best if you want the repo to walk you through setup.
+1. Run `python scripts/daos_wizard.py /path/to/my-daos-pack`.
+2. Review/fill anything still missing.
+3. Run `python scripts/daos_validate.py /path/to/my-daos-pack`.
+4. Use `harness/first-week.md` once the baseline is live.
 
 Default path rule:
 - operate from `starter-pack/` or a generated pack

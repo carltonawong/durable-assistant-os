@@ -2,7 +2,10 @@
 
 ## Who this is for
 
-Use this page if you want the fastest path to trying DAOS without reading the entire repo first.
+This page is for assistant operators/builders who want a first usable DAOS pack without reading the whole repo first.
+
+The operator fills the pack.
+The assistant later uses it.
 
 This is not the full doctrine path.
 It is the shortest path to a first useful setup.
@@ -22,34 +25,49 @@ But DAOS will make more sense if you understand that the durable memory target i
 
 ## The 15-minute path
 
-If you want to try DAOS right now, do these in order:
+## Step 1 — Choose one start mode
 
-Fastest option:
-- copy `starter-pack/` into your own workspace and fill the files there
-- treat that copied pack as your working instance
-- treat `templates/` as reusable source blanks, not the default first-user starting point
+Pick exactly one:
 
-Fastest generated option:
+### Option A — Copy `starter-pack/`
+Best if you want the most literal first run.
+- copy `starter-pack/` into your own workspace
+- open `starter-pack/README.md`
+- fill the files in that order
+
+### Option B — Generate a new pack
+Best if you want a clean scaffold.
 - run `python scripts/daos_bootstrap.py /path/to/my-daos-pack`
-- add `--filled-example` if you want a filled starter-pack instead of a blank scaffold
-- generated packs include `daos-pack.json` as the machine-readable manifest
-- then run `python scripts/daos_validate.py /path/to/my-daos-pack` once you have filled the pack
-- expect lint/calibration warnings when the pack shape looks operable but still fragile
+- fill the generated files
 
-Fastest interactive option:
+### Option C — Use the guided wizard
+Best if you want interactive setup.
 - run `python scripts/daos_wizard.py /path/to/my-daos-pack`
-- the wizard supports optional lane-by-lane customization and a review summary before it writes files
-- then run `python scripts/daos_validate.py /path/to/my-daos-pack`
+- review/fill anything still missing
 
+## Step 2 — Know what you are creating
+
+A first DAOS install should leave you with:
+- a filled assistant charter
+- a filled operating profile
+- optional lane/continuity notes only where they help
+- a durable markdown memory surface the assistant can later use
+
+## Step 3 — Fill the baseline in order
+
+For the default path, use this order:
 1. Read `docs/setup.md`
 2. Read `docs/public-memory-page.md`
 3. Run `harness/core-setup.md`
-4. Fill the copied/generated pack first
-5. Use `templates/assistant-charter-template.md` only if you need the reusable source blank
-6. Use `templates/operating-profile-template.md` only if you need the reusable source blank
-7. If one lane needs more structure, fill `templates/lane-snapshot-template.md`
-8. When the first setup is done, use `templates/cadence-review-template.md` for upkeep
-9. During real use, use `harness/first-week.md` to keep the system light and calibrated
+4. Fill `assistant-charter.md`
+5. Fill `operating-profile.md`
+6. Fill `lane-snapshot.md` only if one lane needs more structure
+7. Save `cadence-review.md` for later upkeep, not first install
+
+## Step 4 — Validate and use it
+
+- run `python scripts/daos_validate.py /path/to/my-daos-pack`
+- then use `harness/first-week.md` to keep the system light and calibrated
 
 That is enough to install a first-pass DAOS baseline.
 

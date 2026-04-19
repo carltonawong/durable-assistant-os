@@ -26,6 +26,8 @@ When recovering context, DAOS prefers:
 
 This keeps the assistant responsive to the exact conversation without pretending old notes are always current.
 
+These are operating layers, not mandatory built-in DAOS runtime components.
+
 ## What each layer is for
 
 ### 1) Local thread
@@ -54,6 +56,7 @@ Its job is narrow:
 - what it should verify before continuing
 
 It should not replace the local thread or become a hidden work log.
+Not every DAOS install needs a formal continuity note on day one.
 
 ### 4) Durable wiki/docs memory
 Use this for knowledge that should survive:
@@ -90,6 +93,14 @@ The point is to:
 ## Why Obsidian and the LLM Wiki pattern matter
 
 DAOS strongly fits a markdown-wiki workflow.
+
+## How these layers usually map in practice
+
+- local thread → the current chat/session context
+- hot front door → a short active summary or current-state note
+- agent continuity → an optional resumable note for one agent or one lane
+- durable wiki/docs memory → markdown pages in a repo, wiki, or vault
+- live reality → files, tools, systems, and logs checked at action time
 
 Recommended companions:
 - **Obsidian** — browse and edit the durable memory surface as a real vault  
