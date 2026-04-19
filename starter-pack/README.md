@@ -4,6 +4,13 @@ This folder is the fastest copyable scaffold in the repo.
 
 If you want to try DAOS on a real assistant or real user context, copy this folder into your own workspace and fill the files in order.
 
+## Quick translation of DAOS terms
+
+- **assistant charter** — what this assistant is for and how it should behave
+- **operating profile** — your working context, priorities, and support preferences
+- **lane snapshot** — the current state of one workstream
+- **cadence review** — a recurring cleanup and calibration pass
+
 ## Suggested order
 
 1. `assistant-charter.md`
@@ -16,6 +23,13 @@ If you want to try DAOS on a real assistant or real user context, copy this fold
 This is a ready-to-copy instance scaffold.
 It is the default first-user starting point in the repo.
 It is not the canonical doctrine source.
+
+## How the starter pack maps to the model
+
+- `assistant-charter.md` — what this assistant is for and how it should behave
+- `operating-profile.md` — durable working context, priorities, and support preferences
+- `lane-snapshot.md` — optional current state for one workstream
+- `cadence-review.md` — later cleanup and calibration surface
 
 Use the files here when you want to operate.
 Use `templates/` when you want reusable source templates or want to extend the framework itself.

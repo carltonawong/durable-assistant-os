@@ -10,6 +10,13 @@ The assistant later uses it.
 This is not the full doctrine path.
 It is the shortest path to a first useful setup.
 
+## Quick translation of DAOS terms
+
+- **assistant charter** — what this assistant is for and how it should behave
+- **operating profile** — your working context, priorities, and support preferences
+- **lane snapshot** — the current state of one workstream
+- **cadence review** — a recurring cleanup and calibration pass
+
 ## Recommended companions first
 
 DAOS works best when your durable memory actually lives in readable markdown surfaces.
@@ -25,22 +32,23 @@ But DAOS will make more sense if you understand that the durable memory target i
 
 ## The 15-minute path
 
-## Step 1 — Choose one start mode
+## Step 1 — Start with the default path
 
-Pick exactly one:
+**Recommended default:** copy `starter-pack/` first.
+It is the simplest path and the best place to understand DAOS before using bootstrap or the wizard.
 
-### Option A — Copy `starter-pack/`
+### Default path — Copy `starter-pack/`
 Best if you want the most literal first run.
 - copy `starter-pack/` into your own workspace
 - open `starter-pack/README.md`
 - fill the files in that order
 
-### Option B — Generate a new pack
+### Alternate path — Generate a new pack
 Best if you want a clean scaffold.
 - run `python scripts/daos_bootstrap.py /path/to/my-daos-pack`
 - fill the generated files
 
-### Option C — Use the guided wizard
+### Alternate path — Use the guided wizard
 Best if you want interactive setup.
 - run `python scripts/daos_wizard.py /path/to/my-daos-pack`
 - review/fill anything still missing
@@ -52,6 +60,14 @@ A first DAOS install should leave you with:
 - a filled operating profile
 - optional lane/continuity notes only where they help
 - a durable markdown memory surface the assistant can later use
+
+## What you should have after the first setup
+
+After one sitting, you should have:
+- a clear definition of what your assistant is for
+- explicit trust and approval boundaries
+- a durable place for key working context
+- a simple structure for keeping active work from drifting
 
 ## Step 3 — Fill the baseline in order
 

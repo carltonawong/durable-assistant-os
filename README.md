@@ -24,6 +24,8 @@ The goal is an assistant that stays usable, trustworthy, and repairable over tim
 
 ## What DAOS is
 
+DAOS gives you a structured assistant operating pack plus docs and scripts for keeping memory, trust, and upkeep from degrading over time.
+
 DAOS is currently strongest as:
 - a methodology for durable assistant operation
 - a tooling kit for generating, validating, updating, and porting that structure
@@ -70,23 +72,24 @@ Short version:
 
 ## Try DAOS in the shortest possible path
 
-Choose **one** of these three start modes:
+**Recommended default:** copy `starter-pack/` first.
+It is the simplest path and the best place to understand DAOS before using bootstrap or the wizard.
 
-### Option A — Copy the ready-made pack
+### Default path — Copy the ready-made pack
 Best if you want the most literal first run.
 1. Copy `starter-pack/` into your own workspace.
 2. Open `starter-pack/README.md` and fill the files in that order.
 3. Run `python scripts/daos_validate.py /path/to/my-daos-pack`.
 4. Use `harness/first-week.md` once the baseline is live.
 
-### Option B — Generate a new pack
+### Alternate path — Generate a new pack
 Best if you want a clean generated scaffold.
 1. Run `python scripts/daos_bootstrap.py /path/to/my-daos-pack`.
 2. Fill the generated files.
 3. Run `python scripts/daos_validate.py /path/to/my-daos-pack`.
 4. Use `harness/first-week.md` once the baseline is live.
 
-### Option C — Use the guided wizard
+### Alternate path — Use the guided wizard
 Best if you want the repo to walk you through setup.
 1. Run `python scripts/daos_wizard.py /path/to/my-daos-pack`.
 2. Review/fill anything still missing.
@@ -96,6 +99,14 @@ Best if you want the repo to walk you through setup.
 Default path rule:
 - operate from `starter-pack/` or a generated pack
 - use `templates/` only when you are extending or reusing framework blanks
+
+## What you should have after the first setup
+
+After one sitting, you should have:
+- a clear definition of what your assistant is for
+- explicit trust and approval boundaries
+- a durable place for key working context
+- a simple structure for keeping active work from drifting
 
 If you want the interactive path instead:
 - run `python scripts/daos_wizard.py /path/to/my-daos-pack`
