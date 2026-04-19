@@ -2,6 +2,28 @@
 
 Durable Assistant OS (DAOS) is a framework for building assistants that stay useful over time instead of degrading into clutter, drift, and unreliable memory.
 
+## Why DAOS was created
+
+Most assistants do not fail at setup.
+They fail after they start being used.
+
+At first, they seem useful. Then memory gets noisy, context drifts, trust drops, and the system becomes harder to operate. Over time, the user can end up spending more energy fixing the assistant than benefiting from it.
+
+Worse, those fixes often happen outside the assistant’s own runtime. One tool runs the system. Another tool repairs it. Continuity depends on manual rescue instead of a durable operating model.
+
+DAOS was created to solve that problem.
+
+It is built to help assistants:
+- resist drift, clutter, and stale memory
+- stay useful under repeated real-world use
+- remain portable across tools, sessions, and agent swaps
+- get easier to operate as they mature, not harder
+
+The goal is not maximum complexity.
+The goal is an assistant that stays usable, trustworthy, and repairable over time.
+
+## What DAOS is
+
 DAOS is currently strongest as:
 - a methodology for durable assistant operation
 - a tooling kit for generating, validating, updating, and porting that structure

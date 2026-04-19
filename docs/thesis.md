@@ -4,6 +4,17 @@
 
 Build a useful personal assistant first, then distill an agent-agnostic operating harness and shared memory system from what actually worked.
 
+## Why this problem matters
+
+Many assistant systems do not fail at installation.
+They fail after initial success.
+
+At first, the assistant feels useful. It can perform, remember some context, and help with real work. But over time, many systems degrade instead of improving. Memory gets noisy. Context drifts. Old assumptions survive too long. New layers get added faster than they get cleaned up. Trust drops. Eventually, the user can spend more time maintaining the assistant than benefiting from it.
+
+A deeper problem sits underneath that degradation: the repair loop often lives outside the system’s own operating surface. One tool runs the assistant. Another tool debugs it. Another workflow repairs or re-architects it. Continuity depends on ad hoc rescue work instead of a durable operating model.
+
+DAOS exists because long-running assistants should not get harder to operate as they mature.
+
 ## The problem
 
 Many AI assistant projects fail in predictable ways.
