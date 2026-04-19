@@ -34,6 +34,17 @@ It is **not** yet a full runtime integration layer by itself.
 
 Think of DAOS as a way to structure memory and operating behavior, plus scripts/templates to help you instantiate that structure.
 
+## If you're new, do this first
+
+Most users should start here instead of reading the whole repo:
+
+1. Copy `starter-pack/` into your own workspace.
+2. Fill `assistant-charter.md` and `operating-profile.md` first.
+3. Run `python scripts/daos_validate.py /path/to/my-daos-pack`.
+4. Use `harness/first-week.md` once the baseline is live.
+
+If you want the fuller first-run walkthrough, go next to `docs/quickstart.md`.
+
 ## Who this is for
 
 DAOS is most useful if you are:
@@ -41,7 +52,7 @@ DAOS is most useful if you are:
 - configuring an assistant for another person or team
 - building a repeatable assistant operating pack
 
-If that sounds like you, start with `docs/quickstart.md` and `starter-pack/`.
+If that sounds like you, use the quick-start block above first, then `docs/quickstart.md` if you want the fuller walkthrough.
 
 ## The simple mental model
 
@@ -71,6 +82,9 @@ Short version:
 - Karpathy's LLM Wiki pattern explains why DAOS prefers a maintained wiki over re-deriving knowledge from raw files every time.
 
 ## Try DAOS in the shortest possible path
+
+You do not need all three options below.
+Most people should use the default path and ignore the alternates.
 
 **Recommended default:** copy `starter-pack/` first.
 It is the simplest path and the best place to understand DAOS before using bootstrap or the wizard.
