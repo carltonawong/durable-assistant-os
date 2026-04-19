@@ -22,6 +22,9 @@ venv/
 .env
 .env.*
 
+# Local agent artifacts
+.hermes/
+
 # Build / packaging artifacts
 build/
 dist/
