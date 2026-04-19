@@ -61,6 +61,17 @@ A first DAOS install should leave you with:
 - optional lane/continuity notes only where they help
 - a durable markdown memory surface the assistant can later use
 
+## The three files that matter most on day one
+
+If you are using the default path, most first-run value comes from just three files:
+
+1. `starter-pack/assistant-charter.md` — locks how the assistant should behave
+2. `starter-pack/operating-profile.md` — locks your active lanes, memory defaults, and support posture
+3. `harness/first-week.md` — tells you what to tune after real use starts
+
+Everything else is support material.
+Do not treat the rest of the repo as required reading before first value.
+
 ## What you should have after the first setup
 
 After one sitting, you should have:
@@ -72,13 +83,25 @@ After one sitting, you should have:
 ## Step 3 — Fill the baseline in order
 
 For the default path, use this order:
-1. Read `docs/setup.md`
-2. Read `docs/public-memory-page.md`
-3. Run `harness/core-setup.md`
-4. Fill `assistant-charter.md`
-5. Fill `operating-profile.md`
-6. Fill `lane-snapshot.md` only if one lane needs more structure
-7. Save `cadence-review.md` for later upkeep, not first install
+1. Open `starter-pack/README.md`
+2. Fill `assistant-charter.md`
+3. Fill `operating-profile.md`
+4. Read `docs/public-memory-page.md` only if the memory fields feel unclear
+5. Fill `lane-snapshot.md` only if one lane needs more structure
+6. Save `cadence-review.md` for later upkeep, not first install
+
+If you want the fuller operator script behind this flow, then read `harness/core-setup.md`.
+
+## If you get stuck on the memory fields
+
+Use these default starter answers and refine later:
+
+- **Memory front door** — current chat/session first, then a short active summary, then any agent-specific continuity note
+- **Durable memory home** — markdown wiki or docs space first
+- **Verified reality rule** — live files, systems, and runtime state outrank remembered notes
+- **Ask-vs-act rule** — ask when ambiguity would change the action; otherwise act on clear low-stakes intent
+- **Escalation / approval rule** — pause for approval on costly, risky, sticky, or socially consequential actions
+- **Durable capture rule** — if something would be annoying to rediscover, move it into durable notes instead of leaving it only in chat or hot context
 
 ## Step 4 — Validate and use it
 

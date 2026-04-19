@@ -18,6 +18,13 @@ If you want to try DAOS on a real assistant or real user context, copy this fold
 3. `lane-snapshot.md` *(only if one lane needs extra structure)*
 4. `cadence-review.md` *(for later upkeep, not first install)*
 
+## What each file answers
+
+- `assistant-charter.md` answers: what should this assistant do, how should it act when uncertain, and what requires approval?
+- `operating-profile.md` answers: what reality is this assistant operating inside, what lanes matter, and where should memory/trust defaults live?
+- `lane-snapshot.md` answers: what is happening inside one high-friction lane right now?
+- `cadence-review.md` answers: after real use starts, what should be kept, tuned, or simplified?
+
 ## What this folder is
 
 This is a ready-to-copy instance scaffold.
@@ -30,6 +37,11 @@ It is not the canonical doctrine source.
 - `operating-profile.md` — durable working context, priorities, and support preferences
 - `lane-snapshot.md` — optional current state for one workstream
 - `cadence-review.md` — later cleanup and calibration surface
+
+Practical memory mapping inside the pack:
+- `operating-profile.md` is where you lock the default memory and trust posture
+- `lane-snapshot.md` is optional extra context for one lane, not the main memory home
+- your durable wiki/docs space is still the long-lived memory home outside this starter folder
 
 Use the files here when you want to operate.
 Use `templates/` when you want reusable source templates or want to extend the framework itself.
@@ -48,5 +60,11 @@ A first pass is good enough when:
 
 Do not try to perfect everything before first use.
 The point of this pack is to get to a usable baseline quickly.
+
+If you are unsure what to write, use these starter defaults:
+- memory front door = current thread/session first, then short active summary, then any continuity note
+- durable memory home = markdown wiki or docs space first
+- verified reality rule = live files and systems outrank remembered notes
+- approval rule = ask before risky, costly, sticky, or social actions
 
 After the initial fill, use `harness/first-week.md` as the default next guide.

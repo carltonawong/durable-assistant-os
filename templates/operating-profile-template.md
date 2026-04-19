@@ -6,6 +6,8 @@ Keep it lean. Capture only what is needed to start, then refine later through us
 
 ## 1. Assistant charter
 
+Copy the locked answers from the assistant charter into short operating defaults here.
+
 - Primary outcome:
 - Primary failure mode:
 - Uncertainty behavior:
@@ -16,6 +18,7 @@ Keep it lean. Capture only what is needed to start, then refine later through us
 ## 2. Top-level lane map
 
 List the user's current top-level lanes.
+Keep the map small enough to stay real.
 
 - Personal
 - Business / operations
@@ -26,6 +29,7 @@ List the user's current top-level lanes.
 ## 3. Per-lane snapshot
 
 For each active lane, capture:
+If one lane needs much more detail, move it to a dedicated lane snapshot instead of expanding this section too far.
 
 ### Lane: [name]
 - Status: active / stalled / hiatus / archive / pending
@@ -35,6 +39,8 @@ For each active lane, capture:
 
 ## 4. Reminder / planning defaults
 
+Keep these behavioral and light.
+
 - Master list source:
 - Review layer / dashboard:
 - Same-day overdue follow-up:
@@ -42,6 +48,14 @@ For each active lane, capture:
 - Importance / urgency rules:
 
 ## 5. Memory / trust defaults
+
+Good starter defaults if the operator is unsure:
+- Memory front door: current thread/session first, then short active summary, then continuity note if one exists
+- Durable memory home: markdown wiki or docs space first
+- Verified reality rule: live files, systems, and runtime state outrank remembered notes
+- Ask-vs-act rule: ask when ambiguity changes the action; otherwise act on clear low-stakes intent
+- Escalation / approval rule: pause for approval on risky, costly, sticky, or socially consequential actions
+- Durable capture rule: if something would be annoying to rediscover, move it into durable notes in the same pass
 
 - Memory front door:
 - Durable memory home:
