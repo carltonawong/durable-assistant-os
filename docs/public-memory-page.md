@@ -90,6 +90,23 @@ The point is to:
 - verify reality before acting when stakes depend on freshness
 - compress memory before it turns into clutter
 
+## Volatility in multi-lane systems
+
+Shared front-door memory is useful, but it is intentionally volatile.
+
+The main reason is not only multiple agents.
+It is that multiple lanes can compete for the foreground.
+As the active lane changes, the shared front door may be rewritten or re-scoped even if only one agent is operating.
+Multiple agents can intensify that churn, but lane pressure is the deeper cause.
+
+That means active/front-door memory should not be treated as the sole durable home for:
+- important findings
+- meaningful clarifications
+- cross-lane decisions
+- anything another agent or future session would be annoyed to reconstruct
+
+Those belong in a more stable layer such as the durable wiki/docs memory surface.
+
 ## Why Obsidian and the LLM Wiki pattern matter
 
 DAOS strongly fits a markdown-wiki workflow.

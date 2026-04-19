@@ -166,6 +166,23 @@ A better pattern is:
 
 This keeps the system faster, cleaner, and less likely to confuse stale notes for truth.
 
+## Volatility in multi-lane systems
+
+A durable memory model also needs to explain why active memory is not enough.
+
+In practice, shared front-door memory is volatile because multiple lanes may all be real at once.
+As the foreground shifts between them, the active-memory surface may be rewritten, compressed, or re-scoped.
+That can happen with one agent or many.
+Multiple agents may intensify the churn, but lane competition is the deeper source of the problem.
+
+This is why DAOS separates:
+- durable facts
+- current active context
+- live operational truth
+
+If a finding, clarification, or decision should survive foreground churn, it should not rely only on a volatile active-memory surface.
+It should be captured in a more stable durable layer.
+
 ## What this means in practice
 
 In public terms:
