@@ -15,6 +15,25 @@ A deeper problem sits underneath that degradation: the repair loop often lives o
 
 DAOS exists because long-running assistants should not get harder to operate as they mature.
 
+## Why external repair loops are a structural problem
+
+The maintenance burden is not only about inconvenience.
+It changes the nature of the system.
+
+When one surface runs the assistant but a different surface is required to debug, repair, or redesign it, the assistant stops being self-coherent as an operating model. Day-to-day use happens in one place. Recovery happens somewhere else. The user has to remember which layer is real, which layer is broken, and which tool can still be trusted to fix the damage.
+
+That creates several predictable failures:
+- upkeep starts to depend on specialist rescue work instead of normal operation
+- continuity lives in scattered handoffs rather than the assistant’s own durable surfaces
+- repairing drift becomes harder than using the system for real work
+- the system becomes fragile across tool swaps, model swaps, or agent swaps because health depends on hidden maintenance knowledge
+
+A durable assistant should still be maintainable when conditions change.
+It should not require constant out-of-band intervention from a second toolchain just to stay usable.
+
+DAOS is therefore not only trying to improve memory quality or trust behavior.
+It is trying to reduce the gap between operating the assistant and maintaining the assistant, so long-term health does not depend on perpetual manual rescue.
+
 ## The problem
 
 Many AI assistant projects fail in predictable ways.
