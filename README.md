@@ -2,48 +2,30 @@
 
 Durable Assistant OS (DAOS) is a framework for building assistants that stay useful over time instead of degrading into clutter, drift, and unreliable memory.
 
-## Why DAOS was created
-
-Most assistants do not fail at setup.
-They fail after they start being used.
-
-At first, they seem useful. Then memory gets noisy, context drifts, trust drops, and the system becomes harder to operate. Over time, the user can end up spending more energy fixing the assistant than benefiting from it.
-
-Worse, those fixes often happen outside the assistant’s own runtime. One tool runs the system. Another tool repairs it. Continuity depends on manual rescue instead of a durable operating model.
-
-DAOS was created to solve that problem.
-
-It is built to help assistants:
-- resist drift, clutter, and stale memory
-- stay useful under repeated real-world use
-- remain portable across tools, sessions, and agent swaps
-- get easier to operate as they mature, not harder
-
-The goal is not maximum complexity.
-The goal is an assistant that stays usable, trustworthy, and repairable over time.
-
-## What DAOS is
-
 DAOS gives you a structured assistant operating pack plus docs and scripts for keeping memory, trust, and upkeep from degrading over time.
 
-DAOS is currently strongest as:
+It is strongest today as:
 - a methodology for durable assistant operation
 - a tooling kit for generating, validating, updating, and porting that structure
 
 It is **not** yet a full runtime integration layer by itself.
 
-Think of DAOS as a way to structure memory and operating behavior, plus scripts/templates to help you instantiate that structure.
-
 ## If you're new, do this first
-
-Most users should start here instead of reading the whole repo:
 
 1. Copy `starter-pack/` into your own workspace.
 2. Fill `assistant-charter.md` and `operating-profile.md` first.
 3. Run `python scripts/daos_validate.py /path/to/my-daos-pack`.
 4. Use `harness/first-week.md` once the baseline is live.
 
-If you want the fuller first-run walkthrough, go next to `docs/quickstart.md`.
+If you want the fuller walkthrough after that, go to `docs/quickstart.md`.
+
+## Why DAOS exists
+
+Most assistants do not fail at setup.
+They fail after they start being used.
+
+Memory gets noisy, context drifts, trust drops, and upkeep starts costing more than the help is worth.
+DAOS exists to reduce that degradation and make assistants more usable, trustworthy, and repairable over time.
 
 ## Who this is for
 
@@ -51,8 +33,6 @@ DAOS is most useful if you are:
 - setting up one assistant for yourself
 - configuring an assistant for another person or team
 - building a repeatable assistant operating pack
-
-If that sounds like you, use the quick-start block above first, then `docs/quickstart.md` if you want the fuller walkthrough.
 
 ## The simple mental model
 
@@ -70,7 +50,7 @@ If you want the fuller explanation, read `docs/public-memory-page.md` first and 
 
 ## Recommended companions
 
-DAOS is easier to operate the intended way if you use these alongside it:
+Useful companions, not required before first value:
 
 - **Obsidian** for browsing and editing the durable markdown memory surface  
   https://obsidian.md/download
