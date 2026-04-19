@@ -7,6 +7,19 @@ Use this page if you want the fastest path to trying DAOS without reading the en
 This is not the full doctrine path.
 It is the shortest path to a first useful setup.
 
+## Recommended companions first
+
+DAOS works best when your durable memory actually lives in readable markdown surfaces.
+Before you start, install or review:
+
+- **Obsidian** — best operator-facing way to browse/edit the markdown memory surface  
+  https://obsidian.md/download
+- **Karpathy's LLM Wiki pattern** — the clearest public explanation of the persistent-wiki model DAOS is leaning toward  
+  https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f
+
+You do not need to master both before trying DAOS.
+But DAOS will make more sense if you understand that the durable memory target is a maintained markdown wiki, not just chat residue.
+
 ## The 15-minute path
 
 If you want to try DAOS right now, do these in order:
@@ -19,36 +32,37 @@ Fastest option:
 Fastest generated option:
 - run `python scripts/daos_bootstrap.py /path/to/my-daos-pack`
 - add `--filled-example` if you want a filled starter-pack instead of a blank scaffold
-- generated packs now include `daos-pack.json` as the machine-readable manifest
-- then run `python scripts/daos_validate.py /path/to/my-daos-pack` once you have actually filled the pack
-- expect lint/calibration warnings when the pack shape looks operable but still likely fragile
+- generated packs include `daos-pack.json` as the machine-readable manifest
+- then run `python scripts/daos_validate.py /path/to/my-daos-pack` once you have filled the pack
+- expect lint/calibration warnings when the pack shape looks operable but still fragile
 
 Fastest interactive option:
 - run `python scripts/daos_wizard.py /path/to/my-daos-pack`
-- the wizard now supports optional lane-by-lane customization and a review summary before it writes files
+- the wizard supports optional lane-by-lane customization and a review summary before it writes files
 - then run `python scripts/daos_validate.py /path/to/my-daos-pack`
 
 1. Read `docs/setup.md`
-2. Run `harness/core-setup.md`
-3. Fill the copied/generated pack first
-4. Use `templates/assistant-charter-template.md` only if you need the reusable source blank
-5. Use `templates/operating-profile-template.md` only if you need the reusable source blank
-6. If one lane needs more structure, fill `templates/lane-snapshot-template.md`
-7. When the first setup is done, use `templates/cadence-review-template.md` for upkeep
-8. During real use, use `harness/first-week.md` to keep the system light and calibrated
+2. Read `docs/public-memory-page.md`
+3. Run `harness/core-setup.md`
+4. Fill the copied/generated pack first
+5. Use `templates/assistant-charter-template.md` only if you need the reusable source blank
+6. Use `templates/operating-profile-template.md` only if you need the reusable source blank
+7. If one lane needs more structure, fill `templates/lane-snapshot-template.md`
+8. When the first setup is done, use `templates/cadence-review-template.md` for upkeep
+9. During real use, use `harness/first-week.md` to keep the system light and calibrated
 
 That is enough to install a first-pass DAOS baseline.
 
 If you want to understand what comes after setup and the first week, read `docs/adoption-path.md`.
 
-If you need more than first install, the next tools are:
+## If you need the tooling list
+
+You do not need all of these before first value, but these are the next tools:
 - `scripts/daos_bootstrap.py` — generate a blank or filled pack
 - `scripts/daos_wizard.py` — interactive setup
 - `scripts/daos_validate.py` — readiness + lint/calibration checks
 - `scripts/daos_update.py` — safe in-place pack inspection/apply
 - `scripts/daos_portability.py` — durable wiki export/inspect/plan/apply when moving installs
-
-You do not need all of those before first value.
 
 ## If you want examples before filling anything
 

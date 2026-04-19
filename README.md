@@ -2,23 +2,47 @@
 
 Durable Assistant OS (DAOS) is a framework for building assistants that stay useful over time instead of degrading into clutter, drift, and unreliable memory.
 
-## What DAOS is
+DAOS is currently strongest as:
+- a methodology for durable assistant operation
+- a tooling kit for generating, validating, updating, and porting that structure
 
-DAOS is aimed at a simple problem: most assistants feel impressive once, then slowly get worse. Memory gets noisy, the wrong context takes the foreground, setup becomes heavy, and trust drops.
+It is **not** yet a full runtime integration layer by itself.
 
-DAOS is the attempt to package a more durable model:
-- clear memory boundaries
-- lightweight but explicit behavior defaults
-- progressive setup instead of giant intake
-- reusable repo files that can be explained, installed, templated, and demonstrated
+## The simple mental model
+
+DAOS tries to keep assistant memory from collapsing into one blurry pile.
+
+It separates:
+- **the local thread** — what is being asked right now
+- **a hot front door** — what matters now across active work
+- **durable wiki/docs memory** — what should survive and be shared
+- **live reality** — the files, systems, and runtime state that must be checked before acting
+
+![DAOS memory model](docs/assets/daos-memory-model.svg)
+
+If you want the fuller explanation, read `docs/public-memory-page.md` first and `docs/memory.md` only after that.
+
+## Recommended companions
+
+DAOS is easier to operate the intended way if you use these alongside it:
+
+- **Obsidian** for browsing and editing the durable markdown memory surface  
+  https://obsidian.md/download
+- **Karpathy's LLM Wiki pattern** for the persistent-wiki mental model behind DAOS memory  
+  https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f
+
+Short version:
+- Obsidian is the easiest way to inspect the wiki as a living graph of markdown pages.
+- Karpathy's LLM Wiki pattern explains why DAOS prefers a maintained wiki over re-deriving knowledge from raw files every time.
 
 ## Try DAOS in the shortest possible path
 
-1. Read `docs/quickstart.md`
-2. Copy `starter-pack/` into your own workspace **or** run `python scripts/daos_bootstrap.py /path/to/my-daos-pack`
-3. Fill the copied/generated pack
-4. Run `python scripts/daos_validate.py /path/to/my-daos-pack`
-5. Use `harness/first-week.md` once the baseline is live
+1. Install Obsidian and skim the LLM Wiki note above.
+2. Read `docs/quickstart.md`.
+3. Copy `starter-pack/` into your own workspace **or** run `python scripts/daos_bootstrap.py /path/to/my-daos-pack`.
+4. Fill the copied/generated pack.
+5. Run `python scripts/daos_validate.py /path/to/my-daos-pack`.
+6. Use `harness/first-week.md` once the baseline is live.
 
 Default path rule:
 - operate from `starter-pack/` or a generated pack
@@ -29,17 +53,22 @@ If you want the interactive path instead:
 
 ## What the repo gives you today
 
+### Start here
+- `docs/quickstart.md` — fastest path to first value
+- `docs/public-memory-page.md` — the memory model in plain English
+- `docs/adoption-path.md` — what to do after first install
+
 ### Core doctrine
 - `docs/thesis.md` — why DAOS exists
-- `docs/quickstart.md` — fastest path to first value
-- `docs/adoption-path.md` — how to mature a baseline after first use
-- `docs/public-memory-page.md` and `docs/memory.md` — memory model
-- `docs/trust.md`, `docs/setup.md`, `docs/lane-model.md` — behavior/setup/lane doctrine
+- `docs/memory.md` — deeper memory doctrine
+- `docs/trust.md` — behavior and trust posture
+- `docs/setup.md` — setup philosophy
+- `docs/lane-model.md` — lane framing
 
 ### Working surfaces
 - `starter-pack/` — default copyable operating instance
 - `templates/` — reusable source blanks
-- `examples/` — worked examples of filled artifacts and flows, including less Carlton-shaped profiles such as a creative-studio example
+- `examples/` — worked examples, including non-Carlton-shaped profiles such as a creative studio
 - `harness/core-setup.md` and `harness/first-week.md` — install + stabilization guidance
 
 ### Tooling
@@ -49,14 +78,15 @@ If you want the interactive path instead:
 - `scripts/daos_update.py` — safe in-place pack inspection/apply
 - `scripts/daos_portability.py` — wiki-first export/inspect/plan/apply for durable memory portability
 
-## Read deeper only if you need it
+## Suggested reading order
 
-Use this lighter reading path instead of a giant catalog:
+Use this lighter path instead of reading the whole repo front to back:
 1. `docs/quickstart.md`
-2. `docs/adoption-path.md`
-3. `docs/thesis.md`
-4. `docs/public-memory-page.md`
-5. `docs/pack-schema.md` or `docs/portability.md` only if you need those specific mechanics
+2. `docs/public-memory-page.md`
+3. `docs/adoption-path.md`
+4. `docs/thesis.md`
+5. `docs/memory.md` only if you want the deeper doctrine
+6. `docs/pack-schema.md` or `docs/portability.md` only if you need those mechanics
 
 ## One-line repo map
 
@@ -66,14 +96,6 @@ Use this lighter reading path instead of a giant catalog:
 - `templates/` are source blanks
 - `examples/` demonstrate filled outcomes
 - `scripts/` generate, validate, update, and port
-
-## Current status
-
-DAOS is currently strongest as:
-- a methodology for durable assistant operation
-- a tooling kit for generating, validating, updating, and porting that structure
-
-It is **not** yet a full runtime integration layer by itself.
 
 ## Near-term direction
 

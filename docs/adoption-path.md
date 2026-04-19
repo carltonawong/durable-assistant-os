@@ -1,66 +1,59 @@
 # DAOS Adoption Path
 
-## Why this page exists
+## The simple progression
 
-DAOS now has a stronger first install path.
-But first install is not the whole adoption story.
+DAOS is meant to be adopted in stages, not all at once:
+1. **try the shape**
+2. **install a small baseline**
+3. **use it for a week**
+4. **stabilize what actually helped**
+5. **only add structure if reality earns it**
 
-This page explains the intended progression from:
-- trying DAOS
-- to installing a baseline
-- to stabilizing it in real use
-- to deciding whether deeper structure is actually warranted
+That progression is the point.
+DAOS should feel more like progressive hardening than a giant upfront framework install.
 
-## Stage 1: Try it quickly
+## Stage 1 — Try the shape
 
 Goal:
-- understand the shape of DAOS without overcommitting
+- understand the operating model without overcommitting
 
 Use:
 - `docs/quickstart.md`
-- `starter-pack/`
-- `scripts/daos_bootstrap.py`
-- `scripts/daos_wizard.py`
+- `docs/public-memory-page.md`
 - `examples/`
+- `starter-pack/`
 
 Success looks like:
-- you understand the core artifacts
-- you can picture a usable baseline
+- you can picture how the baseline would work for you
 - the repo feels actionable rather than abstract
 
 Failure mode:
-- reading doctrine for too long without actually trying the operating baseline
+- reading doctrine for too long without trying the operating surface
 
-## Stage 2: Install a first-pass baseline
+## Stage 2 — Install a small baseline
 
 Goal:
 - create the smallest useful DAOS setup in one sitting
 
 Use:
 - `harness/core-setup.md`
-- a generated folder from `python scripts/daos_bootstrap.py /path/to/my-daos-pack`
-- `python scripts/daos_validate.py /path/to/my-daos-pack` after the pack is filled
-- `starter-pack/assistant-charter.md`
-- `starter-pack/operating-profile.md`
-- optionally `starter-pack/lane-snapshot.md`
-
-Interpretation note:
-- `starter-pack/` and generated packs are the operating instance surface
-- `templates/` are reusable source blanks for extension, not the default first-user path
+- `starter-pack/` or `python scripts/daos_bootstrap.py /path/to/my-daos-pack`
+- `python scripts/daos_validate.py /path/to/my-daos-pack`
+- `python scripts/daos_wizard.py /path/to/my-daos-pack` if you want guided setup
 
 Success looks like:
 - you have a filled charter
-- you have a lane map
-- trust and reminder defaults are explicit
-- you have not turned setup into a giant intake exercise
+- you have a usable operating profile
+- memory and trust defaults are explicit
+- setup stayed smaller than your whole life
 
 Failure mode:
-- adding too much structure before the assistant is useful
+- turning setup into an ontology project before the assistant is useful
 
-## Stage 3: Survive the first week
+## Stage 3 — Survive the first week
 
 Goal:
-- test whether the baseline actually helps in real use
+- learn from real use instead of premature redesign
 
 Use:
 - `harness/first-week.md`
@@ -69,78 +62,70 @@ Use:
 
 Success looks like:
 - the system is still light enough to use
-- one or two useful corrections emerge
-- noise is reduced rather than expanded
+- the first real corrections come from evidence
+- support gets clearer instead of noisier
 
 Failure mode:
-- overreacting to every annoyance and rebuilding the framework instead of learning from use
+- rebuilding the framework every time one annoyance appears
 
-## Stage 4: Stabilize an operating rhythm
+## Stage 4 — Stabilize what works
 
 Goal:
-- move from “trial install” to a repeatable operating pattern
+- convert a trial install into a repeatable operating rhythm
 
 Common moves:
 - keep one durable task source of truth
-- run cadence review regularly enough to catch drift
+- run cadence review often enough to catch drift
 - add lane snapshots only where they clearly help
-- tighten trust/memory defaults based on repeated evidence
+- tighten trust or memory defaults based on repeated evidence
 
 Success looks like:
 - the assistant behaves predictably
-- lane foreground is usually right
-- reminders are more helpful than noisy
-- calibration happens without constant redesign
+- the foreground is usually right
+- maintenance burden stays lower than the value created
 
 Failure mode:
-- the system becomes a maintenance hobby instead of a support tool
+- the system becomes a maintenance hobby
 
-## Stage 5: Decide whether deeper structure is warranted
+## Stage 5 — Earn deeper structure
 
 Goal:
-- choose whether DAOS should stay lightweight or grow into something more elaborate
+- decide whether more structure is truly justified
 
-Only consider deeper structure when:
+Only add more when all of these are true:
 - the baseline is already useful
 - the same friction appears repeatedly
-- a new layer would clearly reduce confusion or drift
-- the maintenance cost feels justified
+- the new layer would clearly reduce confusion or drift
+- the maintenance cost is worth it
 
-Examples of deeper structure:
+Examples of structure that may be earned later:
 - richer lane-specific notes
 - stronger review surfaces
-- more durable publishable doctrine for a shared assistant operating model
-- eventually, more runnable/generated install flows
-
-Current note:
-- DAOS now has its first schema-backed generated install step (`scripts/daos_bootstrap.py`) and generated packs now include `daos-pack.json`
-- DAOS now also has its first readiness check (`scripts/daos_validate.py`) for determining whether a filled pack is minimally operable
-- DAOS now also has a richer compact wizard (`scripts/daos_wizard.py`) with optional lane customization and a review summary before write
+- more publishable doctrine for shared operating models
+- deeper generated or runtime-integrated flows
 
 Failure mode:
-- treating complexity as maturity
+- mistaking complexity for maturity
 
-## Simple decision rule
+## The default decision rule
 
-Before adding a new layer, ask:
+Before adding any new layer, ask:
 - is the current baseline already helping?
 - is this a repeated problem or a one-off irritation?
-- will this change reduce friction more than it creates maintenance?
+- will this reduce friction more than it creates maintenance?
 - can I make the smallest useful change first?
 
-If the answer is unclear, keep the system lighter.
+If the answer is unclear, keep DAOS lighter.
 
-## Recommended reading path by stage
+## Suggested reading path by stage
 
 - Stage 1: `docs/quickstart.md`
 - Stage 2: `harness/core-setup.md`
 - Stage 3: `harness/first-week.md`
-- Stage 4: `templates/cadence-review-template.md` and `starter-pack/cadence-review.md`
+- Stage 4: `starter-pack/cadence-review.md`
 - Stage 5: `docs/thesis.md`, `docs/memory.md`, `docs/trust.md`, `docs/lane-model.md`
 
 ## Bottom line
-
-DAOS adoption should feel progressive.
 
 Do not start with full complexity.
 Do not stop at setup.
