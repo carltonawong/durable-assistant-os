@@ -137,6 +137,7 @@ Lock these defaults:
 - durable memory home: wiki first, with docs/repo files for publishable framework outputs
 - verified reality rule: files, runtime, and live state outrank remembered context for operational facts
 - durable capture rule: if a second review shows something should not live mainly in hot cache or chat, create or update durable memory in the same pass
+- active continuity rule: when one lane is likely to be resumed later, preserve the next concrete move and first verification point if that would otherwise be ambiguous
 
 Recommended explanation to the user:
 - thread = exact current handoff
@@ -144,6 +145,9 @@ Recommended explanation to the user:
 - continuity = per-agent resumable note
 - wiki / docs = durable shared truth
 - runtime / files = final source of truth for live state
+
+The continuity rule is intentionally small.
+It is there to improve exact resume quality without adding another memory layer or turning every lane into a heavy schema.
 
 ### 5. Trust defaults
 

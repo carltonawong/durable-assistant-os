@@ -161,6 +161,7 @@ The assistant should not load everything all the time.
 A better pattern is:
 - start with the immediate conversation context
 - load the minimum front-door context needed to recover the lane
+- when resuming active work, preserve enough continuity to recover the next concrete move, not just the broad lane
 - retrieve deeper memory only when it is actually relevant
 - verify against live sources when correctness depends on current reality
 
@@ -193,6 +194,17 @@ In public terms:
 
 This is how memory stays helpful without pretending to be omniscient.
 
+## Useful memory health
+
+Memory health should be judged by usefulness and trustworthiness, not just by whether files exist.
+
+Useful checks include:
+- whether active continuity can recover the next concrete move when needed
+- whether durable claims still match live repo/runtime reality where freshness matters
+- whether front-door memory is staying compact instead of becoming a second wiki
+
+If the artifacts are present but the assistant still resumes the wrong lane, trusts stale claims, or forces repeated re-derivation, the memory system is not healthy enough yet.
+
 ## Memory write rules
 
 A useful write policy is conservative but proactive.
@@ -223,6 +235,9 @@ The assistant should be able to distinguish:
 - what it still needs to verify
 
 A user should not have to guess whether a statement came from durable knowledge, current context, or a live check.
+
+That is also why durable claims should be checked against live reality on a recurring basis when the stack depends on freshness.
+The goal is not constant re-verification of everything; it is a lean mismatch audit for the claims that would meaningfully damage trust if they silently drifted.
 
 ## Public-framework guidance
 

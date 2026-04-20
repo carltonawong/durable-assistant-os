@@ -53,6 +53,7 @@ Use this when one specific agent needs help resuming its own lane.
 
 Its job is narrow:
 - what that agent was last doing
+- the next concrete move when resume ambiguity is real
 - what it should verify before continuing
 
 It should not replace the local thread or become a hidden work log.

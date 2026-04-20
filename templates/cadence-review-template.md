@@ -17,6 +17,7 @@ Keep it light enough to run regularly.
 - What stalled this week?
 - Which lane carried the most pressure?
 - Which reminders were useful versus noisy?
+- Did any active lane become hard to resume because the next concrete move was not captured clearly enough?
 - What should be promoted, paused, or dropped?
 
 ## 3. Monthly reset
@@ -41,6 +42,7 @@ Questions:
 - What layer should absorb the change?
 - Does a default need to be updated?
 - Does something need to be reclassified?
+- Did a durable claim drift away from live reality enough to require a correction?
 
 ## 5. Keep / add / remove
 

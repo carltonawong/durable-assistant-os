@@ -14,7 +14,7 @@ Do not add entries for every typo fix or private WIP note.
 
 ## Unreleased
 
-No unreleased framework-facing changes are staged after `v0.1.0` yet.
+No unreleased framework-facing changes are staged after `v0.1.1` yet.
 
 ## v0.1.0 - 2026-04-20
 
@@ -31,7 +31,7 @@ No unreleased framework-facing changes are staged after `v0.1.0` yet.
 - This release captures DAOS in its current public shape: starter pack + toolkit, with strongest maturity today in methodology, memory/trust doctrine, and supporting scripts.
 - DAOS remains pre-1.0 and should still be treated as a fast-evolving framework/toolkit rather than a locked runtime platform.
 
-## Planned - v0.1.1
+## v0.1.1 - 2026-04-20
 
 ### Hardened
 - Clarify that exact resume quality matters, not just lane recovery.
