@@ -109,6 +109,9 @@ Examples of structure that may be earned later:
 - more publishable doctrine for shared operating models
 - deeper generated or runtime-integrated flows
 
+Optional runtime-specific hardening after the baseline is stable:
+- `docs/agent-integrations.md`
+
 Failure mode:
 - mistaking complexity for maturity
 

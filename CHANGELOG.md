@@ -16,11 +16,13 @@ Do not add entries for every typo fix or private WIP note.
 
 ### Added
 - Public named reset/wake-up artifact: `wiki/cache/reset-handoff.md` in the locked starter-pack baseline.
+- Optional runtime-specific install layer: `docs/agent-integrations.md`, with the first Hermes integration section.
 
 ### Changed
 - DAOS read-order doctrine now places reset handoff ahead of broader agent continuity when resuming after reset or long idle.
 - Validation and safe-update tooling now recognize and restore the public reset-handoff baseline artifact.
 - Public/docs-facing memory model now describes reset handoff as a first-class DAOS surface rather than an implicit implementation detail.
+- Front-door adoption docs now point baseline users to optional agent integrations only after the portable baseline is working.
 
 ## v0.1.0 - 2026-04-20
 

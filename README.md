@@ -73,6 +73,8 @@ If you want the fuller explanation, read `docs/public-memory-page.md` first and 
 
 If you want the specific wake-up continuity surface, read `docs/reset-handoff.md`.
 
+If you want runtime-specific install guidance, read `docs/agent-integrations.md`.
+
 ## Optional companions
 
 Useful, but not required before first value:
@@ -129,6 +131,7 @@ Default path rule:
 - `docs/thesis.md` — why DAOS exists
 - `docs/memory.md` — deeper memory doctrine
 - `docs/reset-handoff.md` — named reset/wake-up continuity artifact and runtime contract
+- `docs/agent-integrations.md` — optional runtime-specific install layer (Hermes first)
 - `docs/trust.md` — behavior and trust posture
 - `docs/setup.md` — setup philosophy
 - `docs/lane-model.md` — lane framing

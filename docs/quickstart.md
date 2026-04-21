@@ -112,6 +112,8 @@ That is enough to install a first-pass DAOS baseline.
 
 If you want to understand what comes after setup and the first week, read `docs/adoption-path.md`.
 
+If you want runtime-specific enforcement after the baseline is working, read `docs/agent-integrations.md`.
+
 ## If you need the tooling list
 
 You do not need all of these before first value, but these are the next tools:
