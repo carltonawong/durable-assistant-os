@@ -31,6 +31,22 @@ This is a ready-to-copy instance scaffold.
 It is the default first-user starting point in the repo.
 It is not the canonical doctrine source.
 
+It now includes a locked DAOS baseline spine:
+- `AGENTS.md`
+- `wiki/WIKI.md`
+- `wiki/cache/`
+- `wiki/index.md`
+- `wiki/log.md`
+- `wiki/raw/README.md`
+- `wiki/sources/README.md`
+
+Those files are intentionally written as exact starter payloads so installs get the same baseline memory/doctrine behavior instead of relying on free regeneration.
+
+That baseline now includes a named public reset/wake-up artifact:
+- `wiki/cache/reset-handoff.md`
+
+Use it as the exact next-session handoff after reset or long idle. Keep it overwritten rather than appended.
+
 ## How the starter pack maps to the model
 
 - `assistant-charter.md` — what this assistant is for and how it should behave
@@ -51,6 +67,7 @@ Use `examples/starter-pack-example/` when you want to see this exact folder stru
 ## Minimum good outcome
 
 A first pass is good enough when:
+- the locked baseline files are present and left structurally intact
 - `assistant-charter.md` is filled
 - `operating-profile.md` is filled enough to orient lanes, trust, and reminder defaults
 - `lane-snapshot.md` is either unused or filled for the highest-friction lane

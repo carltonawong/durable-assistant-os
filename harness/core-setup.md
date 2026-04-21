@@ -42,6 +42,8 @@ By the end of core setup, you should be able to fill:
 - a first reminder / planning posture
 - a first memory / trust posture
 
+The install should also already have the locked baseline doctrine files written exactly, with setup focused on filling the operator-owned files rather than regenerating the memory spine from scratch.
+
 If useful, save the resulting instance profile separately and keep the framework files generic.
 
 Useful companion artifacts:
@@ -133,7 +135,7 @@ A usable rough map is better than an elegant taxonomy the user will not maintain
 Goal: install the default memory posture early so future behavior stays grounded.
 
 Lock these defaults:
-- memory front door: local thread first, then hot cache, then agent continuity
+- memory front door: local thread first, then hot cache, then reset handoff when resuming after idle, then agent continuity
 - durable memory home: wiki first, with docs/repo files for publishable framework outputs
 - verified reality rule: files, runtime, and live state outrank remembered context for operational facts
 - durable capture rule: if a second review shows something should not live mainly in hot cache or chat, create or update durable memory in the same pass
@@ -142,6 +144,7 @@ Lock these defaults:
 Recommended explanation to the user:
 - thread = exact current handoff
 - hot cache = shared front door for what matters now
+- reset handoff = exact post-reset next move when a long idle or session reset happened
 - continuity = per-agent resumable note
 - wiki / docs = durable shared truth
 - runtime / files = final source of truth for live state

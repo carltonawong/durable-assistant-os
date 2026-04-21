@@ -4,9 +4,10 @@
 
 DAOS tries to stop assistant memory from collapsing into one blurry pile.
 
-It keeps four things distinct:
+It keeps five things distinct:
 - **local thread** — what is being asked right now
 - **hot cache / active front door** — what matters now across active work
+- **reset handoff** — the exact next move after reset or long idle
 - **durable wiki/docs memory** — what should survive and be shared
 - **live reality** — files, systems, and runtime state that must be checked before acting
 
@@ -14,15 +15,17 @@ It keeps four things distinct:
 
 If you only need the public framing, this page is enough.
 If you want the deeper doctrine, then read `memory.md`.
+If you want the exact reset/wake-up artifact, read `reset-handoff.md`.
 
 ## The practical read order
 
 When recovering context, DAOS prefers:
 1. **local thread first**
 2. **hot cache second**
-3. **agent continuity third**
-4. **deeper durable memory after that**
-5. **live verification whenever current reality matters**
+3. **reset handoff third when resuming after reset or long idle**
+4. **agent continuity after that if still needed**
+5. **deeper durable memory after that**
+6. **live verification whenever current reality matters**
 
 This keeps the assistant responsive to the exact conversation without pretending old notes are always current.
 
@@ -48,7 +51,16 @@ Use this as the shared quick-orientation layer:
 This should stay short.
 It is not meant to become a second wiki.
 
-### 3) Agent continuity
+### 3) Reset handoff
+Use this for the exact post-reset resume point:
+- the next concrete move
+- the first thing to verify
+- the narrow handoff that should survive one reset or long idle gap
+
+This should stay overwritten and compact.
+It is not a log and not a substitute for durable memory.
+
+### 4) Agent continuity
 Use this when one specific agent needs help resuming its own lane.
 
 Its job is narrow:
@@ -59,7 +71,7 @@ Its job is narrow:
 It should not replace the local thread or become a hidden work log.
 Not every DAOS install needs a formal continuity note on day one.
 
-### 4) Durable wiki/docs memory
+### 5) Durable wiki/docs memory
 Use this for knowledge that should survive:
 - stable definitions
 - durable decisions
@@ -69,7 +81,7 @@ Use this for knowledge that should survive:
 
 This is where the cumulative value should live.
 
-### 5) Live reality
+### 6) Live reality
 Use this whenever correctness depends on what is true now:
 - repo files
 - runtime state
@@ -116,6 +128,7 @@ DAOS strongly fits a markdown-wiki workflow.
 
 - local thread → the current chat/session context
 - hot front door → a short active summary or current-state note
+- reset handoff → a named post-reset wake-up note such as `wiki/cache/reset-handoff.md`
 - agent continuity → an optional resumable note for one agent or one lane
 - durable wiki/docs memory → markdown pages in a repo, wiki, or vault
 - live reality → files, tools, systems, and logs checked at action time

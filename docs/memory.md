@@ -161,6 +161,7 @@ The assistant should not load everything all the time.
 A better pattern is:
 - start with the immediate conversation context
 - load the minimum front-door context needed to recover the lane
+- when resuming after reset or long idle, use a compact exact handoff before broader continuity
 - when resuming active work, preserve enough continuity to recover the next concrete move, not just the broad lane
 - retrieve deeper memory only when it is actually relevant
 - verify against live sources when correctness depends on current reality
@@ -199,6 +200,7 @@ This is how memory stays helpful without pretending to be omniscient.
 Memory health should be judged by usefulness and trustworthiness, not just by whether files exist.
 
 Useful checks include:
+- whether the reset handoff can recover the exact next move after reset or long idle when needed
 - whether active continuity can recover the next concrete move when needed
 - whether durable claims still match live repo/runtime reality where freshness matters
 - whether front-door memory is staying compact instead of becoming a second wiki

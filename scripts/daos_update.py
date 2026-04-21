@@ -24,6 +24,18 @@ FRAMEWORK_OWNED_FILES = (
     "README.md",
     "lane-snapshot.md",
     "cadence-review.md",
+    "AGENTS.md",
+    "wiki/WIKI.md",
+    "wiki/cache/MEMORY-OPERATING-MODEL.md",
+    "wiki/cache/HOT-CACHE-SPEC.md",
+    "wiki/cache/hot-cache.md",
+    "wiki/cache/hot-cache-log.md",
+    "wiki/cache/reset-handoff.md",
+    "wiki/cache/agent-continuity.md",
+    "wiki/index.md",
+    "wiki/log.md",
+    "wiki/raw/README.md",
+    "wiki/sources/README.md",
 )
 MANAGED_METADATA_FILE = "daos-pack.json"
 OPTIONAL_METADATA_FIELDS = (
@@ -148,6 +160,7 @@ def restore_framework_owned_files(pack_dir: Path) -> list[str]:
         source = STARTER_PACK_DIR / filename
         if not source.is_file():
             continue
+        target.parent.mkdir(parents=True, exist_ok=True)
         shutil.copy2(source, target)
         actions.append(f"restored {filename}")
     return actions

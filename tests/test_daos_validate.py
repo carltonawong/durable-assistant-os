@@ -121,6 +121,20 @@ class DaosValidateScriptTests(unittest.TestCase):
             self.assertIn("warnings: 1", result.stdout)
             self.assertIn("cadence-review.md looks blank", result.stdout)
 
+    def test_validation_warns_when_locked_reset_handoff_artifact_is_missing(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            destination = Path(tmpdir) / "missing-baseline-pack"
+            bootstrap = self.run_bootstrap("--filled-example", str(destination))
+            self.assertEqual(bootstrap.returncode, 0, msg=bootstrap.stderr)
+
+            (destination / "wiki" / "cache" / "reset-handoff.md").unlink()
+
+            result = self.run_validate(destination)
+
+            self.assertEqual(result.returncode, 0, msg=result.stderr)
+            self.assertIn("warnings:", result.stdout)
+            self.assertIn("wiki/cache/reset-handoff.md", result.stdout)
+
     def test_validation_warns_on_calibration_and_lane_consistency_smells(self) -> None:
         with tempfile.TemporaryDirectory() as tmpdir:
             destination = Path(tmpdir) / "lint-pack"

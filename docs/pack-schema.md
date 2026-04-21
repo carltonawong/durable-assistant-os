@@ -69,6 +69,20 @@ A generated pack currently centers on:
 - `operating-profile.md`
 - `daos-pack.json`
 
+A hardened starter pack also includes a locked baseline doctrine spine:
+- `AGENTS.md`
+- `wiki/WIKI.md`
+- `wiki/cache/MEMORY-OPERATING-MODEL.md`
+- `wiki/cache/HOT-CACHE-SPEC.md`
+- `wiki/cache/hot-cache.md`
+- `wiki/cache/hot-cache-log.md`
+- `wiki/cache/reset-handoff.md`
+- `wiki/cache/agent-continuity.md`
+- `wiki/index.md`
+- `wiki/log.md`
+- `wiki/raw/README.md`
+- `wiki/sources/README.md`
+
 The manifest currently includes:
 - `schema_version`
 - `framework_version`
@@ -81,6 +95,9 @@ And usually includes these supporting files:
 - `README.md`
 - `lane-snapshot.md`
 - `cadence-review.md`
+
+Related doctrine page:
+- `docs/reset-handoff.md` explains the public contract for `wiki/cache/reset-handoff.md`.
 
 ## Compatibility note
 

@@ -8,6 +8,11 @@
 
 Use this if you want to see the copyable `starter-pack/` in a filled state.
 
+This example now includes the same locked baseline doctrine files as the starter pack, alongside filled operator-owned files.
+
+That includes the public reset/wake-up artifact:
+- `wiki/cache/reset-handoff.md`
+
 This is useful when:
 - you want to understand the target shape before filling your own pack
 - you want a folder-level example instead of jumping between separate example files

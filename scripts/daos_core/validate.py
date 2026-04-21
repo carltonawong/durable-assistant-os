@@ -6,6 +6,20 @@ from pathlib import Path
 
 
 REQUIRED_FILES = ("assistant-charter.md", "operating-profile.md")
+BASELINE_FRAMEWORK_FILES = (
+    "AGENTS.md",
+    "wiki/WIKI.md",
+    "wiki/cache/MEMORY-OPERATING-MODEL.md",
+    "wiki/cache/HOT-CACHE-SPEC.md",
+    "wiki/cache/hot-cache.md",
+    "wiki/cache/hot-cache-log.md",
+    "wiki/cache/reset-handoff.md",
+    "wiki/cache/agent-continuity.md",
+    "wiki/index.md",
+    "wiki/log.md",
+    "wiki/raw/README.md",
+    "wiki/sources/README.md",
+)
 REQUIRED_LABELS = {
     "assistant-charter.md": (
         "- Primary outcome:",
@@ -167,6 +181,14 @@ def validate_operating_profile_lints(lines: list[str], lane_sections: list[tuple
         )
 
 
+def validate_baseline_framework_files(root: Path, result: ValidationResult) -> None:
+    missing = [name for name in BASELINE_FRAMEWORK_FILES if not (root / name).is_file()]
+    if missing:
+        result.warnings.append(
+            "pack is missing locked baseline framework files: " + ", ".join(missing)
+        )
+
+
 def validate_pack_dir(pack_dir: str | Path) -> ValidationResult:
     root = Path(pack_dir).expanduser().resolve()
     result = ValidationResult()
@@ -179,6 +201,7 @@ def validate_pack_dir(pack_dir: str | Path) -> ValidationResult:
         return result
 
     validate_manifest(root / "daos-pack.json", result)
+    validate_baseline_framework_files(root, result)
 
     file_contents: dict[str, list[str]] = {}
     for name in REQUIRED_FILES:

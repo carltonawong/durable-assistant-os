@@ -34,6 +34,7 @@ After the first setup, you should have:
 - explicit trust and approval boundaries
 - a durable place for key working context
 - a simple structure for keeping active work from drifting
+- a locked baseline memory/doctrine spine already written into the pack
 
 Want to see what a filled pack looks like? Start with `examples/creative-studio-operating-profile-example.md`.
 
@@ -62,12 +63,15 @@ DAOS tries to stop assistant memory and context from collapsing into one blurry 
 It separates:
 - **the local thread** — what is being asked right now
 - **a hot front door** — the shortest shared summary of what matters now
+- **a reset handoff** — the exact next move after reset or long idle
 - **durable wiki/docs memory** — what should survive and be shared
 - **live reality** — the files, systems, and runtime state that must be checked before acting
 
 ![DAOS memory model](docs/assets/daos-memory-model.svg)
 
 If you want the fuller explanation, read `docs/public-memory-page.md` first and `docs/memory.md` only after that.
+
+If you want the specific wake-up continuity surface, read `docs/reset-handoff.md`.
 
 ## Optional companions
 
@@ -124,15 +128,16 @@ Default path rule:
 ### Core doctrine
 - `docs/thesis.md` — why DAOS exists
 - `docs/memory.md` — deeper memory doctrine
+- `docs/reset-handoff.md` — named reset/wake-up continuity artifact and runtime contract
 - `docs/trust.md` — behavior and trust posture
 - `docs/setup.md` — setup philosophy
 - `docs/lane-model.md` — lane framing
 
 ### Working surfaces
-- `starter-pack/` — default copyable operating instance
+- `starter-pack/` — default copyable operating instance, now including locked baseline wiki/cache doctrine files and the public `wiki/cache/reset-handoff.md` artifact
 - `templates/` — reusable source blanks
 - `examples/` — worked examples, including non-Carlton-shaped profiles such as a creative studio
-- `harness/core-setup.md` and `harness/first-week.md` — install + stabilization guidance
+- `harness/core-setup.md`, `harness/mandatory-baseline.md`, and `harness/first-week.md` — install + stabilization guidance
 
 ### Tooling
 - `scripts/daos_bootstrap.py` — generate a blank or filled pack
@@ -155,7 +160,7 @@ Use this lighter path instead of reading the whole repo front to back:
 
 - `docs/` explain
 - `harness/` guide real use
-- `starter-pack/` is the default operating surface
+- `starter-pack/` is the default operating surface, including locked baseline doctrine files plus fillable operator-owned files
 - `templates/` are source blanks
 - `examples/` demonstrate filled outcomes
 - `scripts/` generate, validate, update, and port

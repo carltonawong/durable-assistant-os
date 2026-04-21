@@ -123,14 +123,17 @@ class DaosUpdateScriptTests(unittest.TestCase):
             self.assertEqual(bootstrap.returncode, 0, msg=bootstrap.stderr)
             (destination / "lane-snapshot.md").unlink()
             (destination / "cadence-review.md").unlink()
+            (destination / "wiki" / "cache" / "reset-handoff.md").unlink()
 
             result = self.run_update("apply", str(destination))
 
             self.assertEqual(result.returncode, 0, msg=result.stderr)
             self.assertTrue((destination / "lane-snapshot.md").exists())
             self.assertTrue((destination / "cadence-review.md").exists())
+            self.assertTrue((destination / "wiki" / "cache" / "reset-handoff.md").exists())
             self.assertIn("restored lane-snapshot.md", result.stdout)
             self.assertIn("restored cadence-review.md", result.stdout)
+            self.assertIn("restored wiki/cache/reset-handoff.md", result.stdout)
 
     def test_apply_writes_review_note_for_warning_only_pack(self) -> None:
         with tempfile.TemporaryDirectory() as tmpdir:
