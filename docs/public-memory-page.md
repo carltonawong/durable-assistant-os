@@ -134,11 +134,15 @@ DAOS strongly fits a markdown-wiki workflow.
 - durable wiki/docs memory → markdown pages in a repo, wiki, or vault
 - live reality → files, tools, systems, and logs checked at action time
 
-Recommended companions:
-- **Obsidian** — browse and edit the durable memory surface as a real vault  
-  https://obsidian.md/download
-- **Karpathy's LLM Wiki pattern** — the clearest public statement of the persistent wiki approach  
+Read this first:
+- **Karpathy's LLM Wiki pattern**  
   https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f
+
+It explains the core operating idea behind this memory model: the wiki is the durable knowledge base, not just a dumping ground for notes.
+
+Optional companion:
+- **Obsidian** — useful if you want a cleaner human-facing way to browse and edit the wiki as a vault  
+  https://obsidian.md/download
 
 A good shorthand is:
 - the wiki is the durable codebase

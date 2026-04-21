@@ -22,8 +22,12 @@ Goal:
 Use:
 - `docs/quickstart.md`
 - `docs/public-memory-page.md`
+- Karpathy's LLM Wiki pattern
 - `examples/`
 - `starter-pack/`
+
+Optional companion if you want a better wiki UI:
+- Obsidian
 
 Rule:
 - choose only one install path when you start: copy `starter-pack/`, run bootstrap, or run the wizard

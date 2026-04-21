@@ -77,18 +77,23 @@ If you want the fuller explanation, read `docs/public-memory-page.md` first and 
 
 If you want the specific wake-up continuity surface, read `docs/reset-handoff.md`.
 
-## Optional companions
+## Start here first
 
-Useful, but not required before first value:
+Before you dive into DAOS, read:
 
-- **Obsidian** for browsing and editing the durable markdown memory surface  
-  https://obsidian.md/download
-- **Karpathy's LLM Wiki pattern** for the persistent-wiki mental model behind DAOS memory  
+- **Karpathy's LLM Wiki pattern**  
   https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f
 
+It is the easiest way to understand the core idea behind DAOS memory:
+keep durable knowledge in a maintained markdown wiki instead of trying to recover everything from chat history every time.
+
+Optional companion:
+- **Obsidian** — useful if you want a clean, human-friendly way to browse and edit that wiki  
+  https://obsidian.md/download
+
 Short version:
-- Obsidian is the easiest way to inspect the wiki as a living graph of markdown pages.
-- Karpathy's LLM Wiki pattern explains why DAOS prefers a maintained wiki over re-deriving knowledge from raw files every time.
+- read Karpathy first to understand the model
+- use Obsidian later if you want a better UI for the wiki
 
 ## Try DAOS
 

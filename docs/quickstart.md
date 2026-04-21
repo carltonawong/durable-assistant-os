@@ -17,18 +17,20 @@ It is the shortest path to a first useful setup.
 - **lane snapshot** — the current state of one workstream
 - **cadence review** — a recurring cleanup and calibration pass
 
-## Recommended companions first
+## Read this first
 
-DAOS works best when your durable memory actually lives in readable markdown surfaces.
-Before you start, install or review:
+DAOS works best when your durable memory lives in readable markdown files.
+Before you start, read:
 
-- **Obsidian** — best operator-facing way to browse/edit the markdown memory surface  
-  https://obsidian.md/download
-- **Karpathy's LLM Wiki pattern** — the clearest public explanation of the persistent-wiki model DAOS is leaning toward  
+- **Karpathy's LLM Wiki pattern**  
   https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f
 
-You do not need to master both before trying DAOS.
-But DAOS will make more sense if you understand that the durable memory target is a maintained markdown wiki, not just chat residue.
+You do not need to master it before trying DAOS.
+You just need the core idea: the durable memory target is a maintained markdown wiki, not leftover chat residue.
+
+Optional companion:
+- **Obsidian** — helpful if you want a dedicated vault-style UI for browsing and editing that wiki  
+  https://obsidian.md/download
 
 ## The 15-minute path
 
