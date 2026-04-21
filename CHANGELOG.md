@@ -28,6 +28,10 @@ No unreleased framework-facing changes are staged after `v0.1.2` yet.
 - Public/docs-facing memory model now describes reset handoff as a first-class DAOS surface rather than an implicit implementation detail.
 - Front-door adoption docs now point baseline users to optional agent integrations only after the portable baseline is working.
 - README and starter-pack docs now say more clearly that the locked mandatory baseline files already ship inside `starter-pack/` and should not be hand-authored by operators.
+- Standalone example materials and the filled starter-pack example are now aligned with the hardened reset-handoff memory-front-door order.
+
+### Hardened
+- `starter-pack/wiki/WIKI.md` and its filled example counterpart now more explicitly distinguish durable wiki doctrine from front-door cache behavior and discourage casual baseline-doctrine rewrites during ordinary use.
 
 ### Notes
 - Scope this as a patch hardening release: stronger baseline packaging, clearer reset/wake-up continuity doctrine, and a separated optional runtime-install layer.

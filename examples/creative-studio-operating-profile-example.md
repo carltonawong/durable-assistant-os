@@ -63,7 +63,7 @@
 
 ## 5. Memory / trust defaults
 
-- Memory front door: local thread first, then compact active context, then durable studio memory
+- Memory front door: local thread first, then compact active context, then hot-cache log when the front door feels incongruent, then reset handoff on reset/long idle, then durable studio memory and broader continuity only if still needed
 - Durable memory home: wiki first for client details, project notes, recurring preferences, and delivery decisions
 - Verified reality rule: live project files, calendars, contracts, and publish state outrank remembered context for operational facts
 - Ask-vs-act rule: ask when ambiguity changes commitment or external output; act when intent is clear and stakes are low or reversible

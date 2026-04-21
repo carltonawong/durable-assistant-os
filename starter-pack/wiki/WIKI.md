@@ -2,6 +2,8 @@
 
 This wiki is the durable shared memory layer for the DAOS install.
 
+It is not the front-door cache and not a transcript dump.
+
 ## Purpose
 
 Use the wiki to hold:
@@ -11,6 +13,7 @@ Use the wiki to hold:
 - corrections that future agents should not have to rediscover
 
 Do not use it as a transcript dump.
+Do not treat it as higher authority than verified runtime/files for live facts.
 
 ## Read order reminder
 
@@ -48,3 +51,5 @@ Promote to durable memory when the finding changes any of:
 The canonical doctrine files in `wiki/cache/` are installed payloads, not free-regenerated suggestions.
 
 Treat them as the memory-system spine unless explicitly migrated by a later framework update.
+
+Do not casually rewrite those baseline doctrine files during ordinary use; update live cache surfaces or write durable notes instead.

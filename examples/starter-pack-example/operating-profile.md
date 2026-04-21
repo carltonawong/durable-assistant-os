@@ -62,7 +62,7 @@
 
 ## 5. Memory / trust defaults
 
-- Memory front door: local thread first, then hot cache, then agent continuity
+- Memory front door: local thread first, then hot cache, then hot-cache log when incongruent, then reset handoff on reset/long idle, then agent continuity if broader lane recovery is still needed
 - Durable memory home: wiki first, with repo/docs used for publishable framework outputs
 - Verified reality rule: live files, runtime, and current state outrank remembered context for operational facts
 - Ask-vs-act rule: ask when ambiguity changes action; act when intent is clear and stakes are low or reversible
