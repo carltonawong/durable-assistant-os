@@ -56,9 +56,16 @@ DAOS exists to reduce that degradation and make assistants more usable, trustwor
 ## Who this is for
 
 DAOS is most useful if you are:
-- setting up one assistant for yourself
-- configuring an assistant for another person or team
-- building a repeatable assistant operating pack
+- already using assistants enough to feel the pain of context drift, memory clutter, and upkeep overhead
+- configuring a serious assistant for yourself, another person, or a team
+- trying to build a repeatable assistant operating pack instead of relying on ad hoc prompting alone
+
+## Who this is not for
+
+DAOS is probably not for you if:
+- you are just setting up OpenClaw or another assistant runtime for the first time and mainly want a simple first-run experience
+- you want a plug-and-play consumer app with almost no setup or operating discipline
+- you do not want to keep any markdown/wiki-style operating surface at all
 
 ## The simple mental model
 
