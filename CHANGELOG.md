@@ -14,6 +14,10 @@ Do not add entries for every typo fix or private WIP note.
 
 ## Unreleased
 
+No unreleased framework-facing changes are staged after `v0.1.2` yet.
+
+## v0.1.2 - 2026-04-21
+
 ### Added
 - Public named reset/wake-up artifact: `wiki/cache/reset-handoff.md` in the locked starter-pack baseline.
 - Optional runtime-specific install layer: `docs/agent-integrations.md`, with the first Hermes integration section.
@@ -23,6 +27,11 @@ Do not add entries for every typo fix or private WIP note.
 - Validation and safe-update tooling now recognize and restore the public reset-handoff baseline artifact.
 - Public/docs-facing memory model now describes reset handoff as a first-class DAOS surface rather than an implicit implementation detail.
 - Front-door adoption docs now point baseline users to optional agent integrations only after the portable baseline is working.
+- README and starter-pack docs now say more clearly that the locked mandatory baseline files already ship inside `starter-pack/` and should not be hand-authored by operators.
+
+### Notes
+- Scope this as a patch hardening release: stronger baseline packaging, clearer reset/wake-up continuity doctrine, and a separated optional runtime-install layer.
+- Keep the mandatory baseline portable; runtime hooks stay optional and runtime-specific.
 
 ## v0.1.0 - 2026-04-20
 

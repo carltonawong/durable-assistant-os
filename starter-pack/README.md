@@ -11,6 +11,33 @@ If you want to try DAOS on a real assistant or real user context, copy this fold
 - **lane snapshot** — the current state of one workstream
 - **cadence review** — a recurring cleanup and calibration pass
 
+## What is already installed here
+
+This starter pack already includes both parts of the baseline:
+
+### 1. Fillable operator files
+- `assistant-charter.md`
+- `operating-profile.md`
+- `lane-snapshot.md` *(optional)*
+- `cadence-review.md` *(later upkeep)*
+
+### 2. Locked mandatory baseline files
+- `AGENTS.md`
+- `wiki/WIKI.md`
+- `wiki/cache/MEMORY-OPERATING-MODEL.md`
+- `wiki/cache/HOT-CACHE-SPEC.md`
+- `wiki/cache/hot-cache.md`
+- `wiki/cache/hot-cache-log.md`
+- `wiki/cache/reset-handoff.md`
+- `wiki/cache/agent-continuity.md`
+- `wiki/index.md`
+- `wiki/log.md`
+- `wiki/raw/README.md`
+- `wiki/sources/README.md`
+
+The operator mainly fills the first group.
+The second group is the installed DAOS spine and should stay structurally intact unless a later framework update explicitly migrates it.
+
 ## Suggested order
 
 1. `assistant-charter.md`
@@ -31,21 +58,9 @@ This is a ready-to-copy instance scaffold.
 It is the default first-user starting point in the repo.
 It is not the canonical doctrine source.
 
-It now includes a locked DAOS baseline spine:
-- `AGENTS.md`
-- `wiki/WIKI.md`
-- `wiki/cache/`
-- `wiki/index.md`
-- `wiki/log.md`
-- `wiki/raw/README.md`
-- `wiki/sources/README.md`
+Those locked files are intentionally written as exact starter payloads so installs get the same baseline memory/doctrine behavior instead of relying on free regeneration.
 
-Those files are intentionally written as exact starter payloads so installs get the same baseline memory/doctrine behavior instead of relying on free regeneration.
-
-That baseline now includes a named public reset/wake-up artifact:
-- `wiki/cache/reset-handoff.md`
-
-Use it as the exact next-session handoff after reset or long idle. Keep it overwritten rather than appended.
+`wiki/cache/reset-handoff.md` is the named public reset/wake-up artifact inside that baseline. Use it as the exact next-session handoff after reset or long idle. Keep it overwritten rather than appended.
 
 ## How the starter pack maps to the model
 

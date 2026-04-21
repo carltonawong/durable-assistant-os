@@ -1,7 +1,7 @@
 # Durable Assistant OS
 
 **Release discipline:** pre-1.0 semver with `CHANGELOG.md` as the source of truth for framework-facing changes.
-**Current documented baseline:** `v0.1.1`; use `CHANGELOG.md` and `docs/releases/` for release notes.
+**Current documented baseline:** `v0.1.2`; use `CHANGELOG.md` and `docs/releases/` for release notes.
 
 Durable Assistant OS (DAOS) is a starter pack + toolkit for building assistants that stay useful over time instead of degrading into drift, clutter, and maintenance burden.
 
@@ -13,8 +13,6 @@ It is strongest today as:
 
 It is **not** yet a full runtime integration layer by itself.
 
-If you only try one thing in this repo, copy `starter-pack/`.
-
 ## If you're new, do this first
 
 If you only try one thing here, copy `starter-pack/`.
@@ -25,6 +23,12 @@ If you only try one thing here, copy `starter-pack/`.
 4. Use `harness/first-week.md` once the baseline is live.
 
 If you want the fuller walkthrough after that, read `docs/quickstart.md`.
+
+What is already included in `starter-pack/`:
+- the fillable operator files (`assistant-charter.md`, `operating-profile.md`, optional `lane-snapshot.md`, later `cadence-review.md`)
+- the locked mandatory baseline spine (`AGENTS.md`, `wiki/WIKI.md`, `wiki/cache/`, `wiki/index.md`, `wiki/log.md`, `wiki/raw/README.md`, `wiki/sources/README.md`)
+
+You do not need to author those locked baseline files from scratch. They already ship in the starter pack.
 
 ## What you should have after one sitting
 
@@ -72,8 +76,6 @@ It separates:
 If you want the fuller explanation, read `docs/public-memory-page.md` first and `docs/memory.md` only after that.
 
 If you want the specific wake-up continuity surface, read `docs/reset-handoff.md`.
-
-If you want runtime-specific install guidance, read `docs/agent-integrations.md`.
 
 ## Optional companions
 
@@ -131,10 +133,12 @@ Default path rule:
 - `docs/thesis.md` — why DAOS exists
 - `docs/memory.md` — deeper memory doctrine
 - `docs/reset-handoff.md` — named reset/wake-up continuity artifact and runtime contract
-- `docs/agent-integrations.md` — optional runtime-specific install layer (Hermes first)
 - `docs/trust.md` — behavior and trust posture
 - `docs/setup.md` — setup philosophy
 - `docs/lane-model.md` — lane framing
+
+### Optional runtime-specific installs
+- `docs/agent-integrations.md` — optional runtime-specific install layer (Hermes first)
 
 ### Working surfaces
 - `starter-pack/` — default copyable operating instance, now including locked baseline wiki/cache doctrine files and the public `wiki/cache/reset-handoff.md` artifact
