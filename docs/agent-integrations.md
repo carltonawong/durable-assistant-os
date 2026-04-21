@@ -76,6 +76,8 @@ Current shared DAOS cache path used by the integration:
 - WSL: `/mnt/c/Users/openq/.openclaw/wiki/cache/`
 - Windows: `C:\Users\openq\.openclaw\wiki\cache\`
 
+Treat those as the current local reference paths, not universal literals. Replace them with the actual DAOS wiki/cache path in your own environment.
+
 ### Expected Hermes behavior
 
 A good Hermes integration should:

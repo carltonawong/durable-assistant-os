@@ -96,7 +96,7 @@ If you want the fuller operator script behind this flow, then read `harness/core
 
 Use these default starter answers and refine later:
 
-- **Memory front door** — current chat/session first, then a short active summary, then any agent-specific continuity note
+- **Memory front door** — current chat/session first, then a short active summary, then reset handoff on reset/long idle, then any broader continuity note
 - **Durable memory home** — markdown wiki or docs space first
 - **Verified reality rule** — live files, systems, and runtime state outrank remembered notes
 - **Ask-vs-act rule** — ask when ambiguity would change the action; otherwise act on clear low-stakes intent

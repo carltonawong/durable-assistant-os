@@ -13,6 +13,8 @@ This example now includes the same locked baseline doctrine files as the starter
 That includes the public reset/wake-up artifact:
 - `wiki/cache/reset-handoff.md`
 
+The same memory-front-door rule applies here too: current thread/session first, then short active summary, then reset handoff on reset/long idle, then broader continuity only if still needed.
+
 This is useful when:
 - you want to understand the target shape before filling your own pack
 - you want a folder-level example instead of jumping between separate example files

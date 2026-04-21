@@ -50,15 +50,15 @@ Highest authority for current operational truth.
 
 Shared short-horizon operational context.
 
-### 4. Agent continuity
-- `wiki/cache/agent-continuity.md`
-
-Fallback per-agent resume context.
-
-### 5. Reset handoff
+### 4. Reset handoff
 - `wiki/cache/reset-handoff.md`
 
 Named exact reset/wake-up handoff for the next session.
+
+### 5. Agent continuity
+- `wiki/cache/agent-continuity.md`
+
+Fallback per-agent resume context.
 
 ### 6. Agent-private/session memory
 Optional support context only.

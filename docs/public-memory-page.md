@@ -22,10 +22,11 @@ If you want the exact reset/wake-up artifact, read `reset-handoff.md`.
 When recovering context, DAOS prefers:
 1. **local thread first**
 2. **hot cache second**
-3. **reset handoff third when resuming after reset or long idle**
-4. **agent continuity after that if still needed**
-5. **deeper durable memory after that**
-6. **live verification whenever current reality matters**
+3. **hot-cache log next when the front door feels incongruent**
+4. **reset handoff after that when resuming after reset or long idle**
+5. **agent continuity after that if still needed**
+6. **deeper durable memory after that**
+7. **live verification whenever current reality matters**
 
 This keeps the assistant responsive to the exact conversation without pretending old notes are always current.
 

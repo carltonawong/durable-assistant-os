@@ -79,7 +79,7 @@ Do not try to perfect everything before first use.
 The point of this pack is to get to a usable baseline quickly.
 
 If you are unsure what to write, use these starter defaults:
-- memory front door = current thread/session first, then short active summary, then any continuity note
+- memory front door = current thread/session first, then short active summary, then reset handoff on reset/long idle, then any broader continuity note
 - durable memory home = markdown wiki or docs space first
 - verified reality rule = live files and systems outrank remembered notes
 - approval rule = ask before risky, costly, sticky, or social actions
