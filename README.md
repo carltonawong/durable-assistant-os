@@ -1,7 +1,7 @@
 # Durable Assistant OS
 
 **Release discipline:** pre-1.0 semver with `CHANGELOG.md` as the source of truth for framework-facing changes.
-**Current documented baseline:** `v0.1.2`; use `CHANGELOG.md` and `docs/releases/` for release notes.
+**Current documented baseline:** `v0.1.3`; use `CHANGELOG.md` and `docs/releases/` for release notes.
 
 Durable Assistant OS (DAOS) is a starter pack + toolkit for building assistants that stay useful over time instead of degrading into drift, clutter, and maintenance burden.
 
@@ -81,6 +81,7 @@ It separates:
 ![DAOS memory model](docs/assets/daos-memory-model.svg)
 
 If you want the fuller explanation, read `docs/public-memory-page.md` first and `docs/memory.md` only after that.
+If you care specifically about keeping durable wiki pages structured and trustworthy over time, read `docs/wiki-governance.md`.
 
 If you want the specific wake-up continuity surface, read `docs/reset-handoff.md`.
 

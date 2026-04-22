@@ -67,6 +67,28 @@ Examples:
 
 This layer should change slowly.
 
+### Durable wiki page governance
+When durable memory lives in markdown wiki/docs pages, the pages themselves need lightweight governance.
+
+At minimum, durable pages should carry a small canonical header:
+- `Type`
+- `Status`
+- `Summary`
+- `Last Updated`
+
+For drift-prone operational pages, add:
+- `Location`
+- `Source of Truth`
+- `Last Verified`
+
+Keep one distinction explicit:
+- `Status` = lifecycle of the page itself
+- `State` = condition of the thing the page describes
+
+That is different from DAOS pack-schema objects like `LaneSnapshot.status`, which still refers to lane operating state rather than page lifecycle.
+
+For the fuller doctrine, see `docs/wiki-governance.md`.
+
 ### Private agent memory
 Some assistants also carry a small private memory layer of their own.
 

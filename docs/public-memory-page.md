@@ -80,6 +80,22 @@ Use this for knowledge that should survive:
 - reusable methods
 - public/project-facing documentation
 
+This layer works better when the durable pages themselves carry small canonical metadata such as:
+- `Type`
+- `Status`
+- `Summary`
+- `Last Updated`
+
+And for drift-prone operational pages:
+- `Source of Truth`
+- `Last Verified`
+
+The important distinction is:
+- `Status` = lifecycle of the page
+- `State` = condition of the thing the page describes
+
+If you want the fuller doctrine for durable wiki page structure, read `docs/wiki-governance.md`.
+
 This is where the cumulative value should live.
 
 ### 6) Live reality

@@ -46,6 +46,32 @@ Promote to durable memory when the finding changes any of:
 - `wiki/index.md` = durable page/source map
 - `wiki/log.md` = durable change log
 
+## Durable page discipline
+
+For durable wiki pages, prefer a small canonical header.
+
+At minimum:
+- `Type`
+- `Status`
+- `Summary`
+- `Last Updated`
+
+If the page describes something with a meaningful operating condition, track that separately as `State`.
+
+For drift-prone operational pages, also add:
+- `Location`
+- `Source of Truth`
+- `Last Verified`
+
+Keep these distinctions clear:
+- `Status` = lifecycle of the page itself
+- `State` = condition of the thing the page describes
+
+If you migrate an older page onto a newer metadata standard without materially changing its substance, preserve the older `Last Updated` timestamp instead of flattening freshness history to the migration time.
+
+Keep metadata vocabularies controlled inside the install.
+Do not casually invent new synonyms for lifecycle/status fields when an existing value already fits.
+
 ## Baseline doctrine
 
 The canonical doctrine files in `wiki/cache/` are installed payloads, not free-regenerated suggestions.

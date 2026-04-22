@@ -14,7 +14,26 @@ Do not add entries for every typo fix or private WIP note.
 
 ## Unreleased
 
-No unreleased framework-facing changes are staged after `v0.1.2` yet.
+No unreleased framework-facing changes are staged after `v0.1.3` yet.
+
+## v0.1.3 - 2026-04-22
+
+### Added
+- `docs/wiki-governance.md` as the canonical DAOS doctrine page for durable wiki page metadata, page lifecycle vs subject state, and verification/source-of-truth semantics.
+
+### Changed
+- README now points to the new wiki-governance doctrine and advances the documented DAOS baseline to `v0.1.3`.
+- `docs/memory.md` and `docs/public-memory-page.md` now make explicit that durable wiki/docs memory works best when the pages themselves follow a small canonical metadata standard.
+- `docs/pack-schema.md` now clarifies that `LaneSnapshot.status` is lane operating state, not wiki-page lifecycle status.
+- `starter-pack/wiki/WIKI.md` and the filled starter-pack example now include the compact durable-page governance rule: small canonical headers, `Status` vs `State`, preserved historical `Last Updated`, and `Source of Truth` / `Last Verified` on drift-prone pages.
+
+### Hardened
+- DAOS now says more clearly that durable wiki cleanup should preserve historical freshness instead of rewriting it away during schema-only migrations.
+- DAOS now says more clearly that page lifecycle and subject operating condition should not be collapsed into one overloaded metadata field.
+
+### Notes
+- Scope this as a patch release: wiki/doctrine hardening, starter-pack baseline clarification, and safe metadata-governance refinement without a schema migration.
+- Do not treat this as a lane-schema rename release; `LaneSnapshot.status` remains unchanged.
 
 ## v0.1.2 - 2026-04-21
 

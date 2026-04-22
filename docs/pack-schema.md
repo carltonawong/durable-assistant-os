@@ -62,6 +62,10 @@ Fields:
 - `pressure`
 - `short_note`
 
+Important note:
+- `LaneSnapshot.status` is the operating condition of the lane inside the structured pack model.
+- It is not the same thing as wiki-page `Status`, which DAOS uses for the lifecycle of a durable page/document.
+
 ## Current file model
 
 A generated pack currently centers on:
