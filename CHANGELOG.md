@@ -30,6 +30,7 @@ No unreleased framework-facing changes are staged after `v0.1.3b` yet.
 ### Notes
 - Scope this as a small doctrine patch on top of `v0.1.3`, not a new schema or runtime-layer release.
 - This patch is about shared-memory behavior across agents generally, not just one local OpenClaw implementation.
+- README now adds two front-door explainer visuals so the baseline mental model and first-setup outcome are easier to grasp quickly.
 
 ## v0.1.3 - 2026-04-22
 

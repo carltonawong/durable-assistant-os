@@ -1,7 +1,7 @@
 # Durable Assistant OS
 
 **Release discipline:** pre-1.0 semver with `CHANGELOG.md` as the source of truth for framework-facing changes.
-**Current documented baseline:** `v0.1.3`; use `CHANGELOG.md` and `docs/releases/` for release notes.
+**Current documented baseline:** `v0.1.3b`; use `CHANGELOG.md` and `docs/releases/` for release notes.
 
 Durable Assistant OS (DAOS) is a starter pack + toolkit for building assistants that stay useful over time instead of degrading into drift, clutter, and maintenance burden.
 
@@ -12,6 +12,8 @@ It is strongest today as:
 - a tooling kit for generating, validating, updating, and porting that structure
 
 It is **not** yet a full runtime integration layer by itself.
+
+![Fragile assistant versus DAOS memory surfaces](docs/assets/daos-fragile-vs-memory-surfaces.png)
 
 ## Who this is for
 
@@ -54,6 +56,8 @@ After the first setup, you should have:
 - a simple structure for keeping active work from drifting
 - a locked baseline memory/doctrine spine already written into the pack
 
+![What you get after setup](docs/assets/daos-what-you-get-after-setup.png)
+
 Want to see what a filled pack looks like? Start with `examples/creative-studio-operating-profile-example.md`.
 
 If this problem sounds familiar, start with `starter-pack/` and ignore the rest until you need it.
@@ -77,8 +81,6 @@ It separates:
 - **a reset handoff** — the exact next move after reset or long idle
 - **durable wiki/docs memory** — what should survive and be shared
 - **live reality** — the files, systems, and runtime state that must be checked before acting
-
-![DAOS memory model](docs/assets/daos-memory-model.svg)
 
 If you want the fuller explanation, read `docs/public-memory-page.md` first and `docs/memory.md` only after that.
 If you care specifically about keeping durable wiki pages structured and trustworthy over time, read `docs/wiki-governance.md`.
