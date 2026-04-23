@@ -51,6 +51,8 @@ Use this as the shared quick-orientation layer:
 
 This should stay short.
 It is not meant to become a second wiki.
+It is also not private memory for one agent.
+It is a shared volatile front door and may be overwritten as the active lane shifts.
 
 ### 3) Reset handoff
 Use this for the exact post-reset resume point:
@@ -128,6 +130,8 @@ The main reason is not only multiple agents.
 It is that multiple lanes can compete for the foreground.
 As the active lane changes, the shared front door may be rewritten or re-scoped even if only one agent is operating.
 Multiple agents can intensify that churn, but lane pressure is the deeper cause.
+
+That means "someone overwrote the front door" is often normal operating behavior, not necessarily memory corruption or bad intent.
 
 That means active/front-door memory should not be treated as the sole durable home for:
 - important findings

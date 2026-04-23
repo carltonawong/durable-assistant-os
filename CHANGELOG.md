@@ -14,7 +14,22 @@ Do not add entries for every typo fix or private WIP note.
 
 ## Unreleased
 
-No unreleased framework-facing changes are staged after `v0.1.3` yet.
+No unreleased framework-facing changes are staged after `v0.1.3b` yet.
+
+## v0.1.3b - 2026-04-22
+
+### Changed
+- `docs/memory.md` and `docs/public-memory-page.md` now say more explicitly that the shared front door is volatile orientation context rather than private memory owned by one agent.
+- `starter-pack/wiki/cache/HOT-CACHE-SPEC.md` and `starter-pack/wiki/cache/MEMORY-OPERATING-MODEL.md` now teach that overwrite/re-scope is normal on the shared front door and that recent front-door history should be checked before deeper per-agent continuity when the live front door feels mismatched.
+- The filled starter-pack example now mirrors the same front-door volatility rule so adopters see the doctrine both in the locked baseline and in a concrete example.
+
+### Hardened
+- DAOS now says more clearly that a hot-cache/front-door surface is shared volatile context, not a durable personal scratchpad for any one agent.
+- DAOS now says more clearly that mismatch recovery should prefer local thread plus recent front-door history before deeper continuity reconstruction.
+
+### Notes
+- Scope this as a small doctrine patch on top of `v0.1.3`, not a new schema or runtime-layer release.
+- This patch is about shared-memory behavior across agents generally, not just one local OpenClaw implementation.
 
 ## v0.1.3 - 2026-04-22
 

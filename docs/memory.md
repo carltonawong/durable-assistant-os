@@ -199,6 +199,14 @@ As the foreground shifts between them, the active-memory surface may be rewritte
 That can happen with one agent or many.
 Multiple agents may intensify the churn, but lane competition is the deeper source of the problem.
 
+No single agent should treat that front-door surface as "theirs."
+It is shared orientation context, not private scratch memory, and overwrite/re-scope is normal rather than suspicious by default.
+
+When the front door feels mismatched, the recovery order matters:
+- inspect the local thread first
+- then read the current front door
+- then check recent front-door history before falling back to deeper per-agent continuity
+
 This is why DAOS separates:
 - durable facts
 - current active context

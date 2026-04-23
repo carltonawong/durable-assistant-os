@@ -6,6 +6,9 @@ The hot cache is the shared front door for what matters now.
 
 It should feel tip-of-tongue, but it is not durable truth and not an exact handoff transcript.
 
+No single agent owns it.
+It is shared volatile front-door context and may be overwritten as the active lane shifts.
+
 ## Core rule
 
 Use local thread context first.
@@ -66,3 +69,4 @@ Keep it overwritten, compact, and single-handoff rather than append-only.
 - prefer front-door context over status-report detail
 - keep the log meaningful rather than exhaustive
 - prune obvious log bloat during recurring hygiene
+- do not treat the hot cache as private scratch memory for one agent

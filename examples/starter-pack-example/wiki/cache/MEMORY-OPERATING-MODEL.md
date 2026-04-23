@@ -49,6 +49,7 @@ Highest authority for current operational truth.
 - `wiki/cache/hot-cache-log.md`
 
 Shared short-horizon operational context.
+This is shared volatile front-door context, not private agent memory.
 
 ### 4. Reset handoff
 - `wiki/cache/reset-handoff.md`
@@ -80,6 +81,12 @@ When sources disagree, prefer:
 - update agent continuity when resumable state meaningfully changes
 - create a raw note when non-capture would likely create ambiguity later
 - ingest regularly into durable wiki surfaces
+
+If hot cache feels mismatched, prefer recent front-door history before deeper private continuity:
+- local thread
+- hot cache
+- hot-cache log
+- reset handoff / agent continuity as needed
 
 ## Reset continuity rule
 
