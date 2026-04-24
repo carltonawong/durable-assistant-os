@@ -14,8 +14,21 @@ Do not add entries for every typo fix or private WIP note.
 
 ## Unreleased
 
+No unreleased framework-facing changes are staged after `v0.1.4` yet.
+
+## v0.1.4 - 2026-04-24
+
 ### Added
 - `docs/agent-integrations.md` now includes brief adapter guidance for Codex, Claude Code, and OpenClaw / Quinn so future installs have a concrete shape for startup orientation, durable capture, reset handoff, and live-fact verification.
+
+### Fixed
+- Portability review artifacts now use stable POSIX-style durable-wiki decision keys so review-driven apply works consistently on Windows and Unix-like systems.
+- Portability export now preflights requested active-memory sidecar files before creating the output bundle, avoiding traceback-driven partial bundles.
+- Generated and updater-created DAOS manifests now advertise the current framework baseline, `v0.1.4`, instead of the stale `0.1.0-alpha3` value.
+
+### Hardened
+- `daos_update.py` now reports additive migrations to user-owned files honestly instead of saying every protected file was left untouched.
+- Update migration records now explicitly list user-owned files that received safe additive migrations.
 
 ## v0.1.3b - 2026-04-22
 

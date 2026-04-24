@@ -72,6 +72,21 @@ def require_dir(path: Path, label: str) -> None:
         raise ValueError(f"{label} is not a directory: {path}")
 
 
+def require_file(path: Path, label: str) -> None:
+    if not path.exists():
+        raise ValueError(f"{label} does not exist: {path}")
+    if not path.is_file():
+        raise ValueError(f"{label} is not a file: {path}")
+
+
+def durable_rel_key(rel: Path) -> str:
+    return rel.as_posix()
+
+
+def normalize_review_rel(value: str) -> str:
+    return value.strip().replace("\\", "/")
+
+
 def copy_tree_contents(source: Path, destination: Path) -> int:
     count = 0
     destination.mkdir(parents=True, exist_ok=True)
@@ -135,6 +150,9 @@ def export_bundle(args: argparse.Namespace) -> str:
     agent_continuity = Path(args.agent_continuity).expanduser().resolve() if args.agent_continuity else None
     if args.include_active_memory and (hot_cache is None or agent_continuity is None):
         raise ValueError("--include-active-memory requires both --hot-cache and --agent-continuity")
+    if args.include_active_memory:
+        require_file(hot_cache, "hot_cache")
+        require_file(agent_continuity, "agent_continuity")
 
     out_dir.mkdir(parents=True)
     (out_dir / "pack").mkdir()
@@ -213,7 +231,7 @@ def collect_new_durable_files(durable_root: Path, target_wiki_root: Path) -> lis
         rel = item.relative_to(durable_root)
         target = target_wiki_root / rel
         if not target.exists():
-            new_files.append(str(rel))
+            new_files.append(durable_rel_key(rel))
     return new_files
 
 
@@ -225,7 +243,7 @@ def collect_durable_conflicts(durable_root: Path, target_wiki_root: Path) -> lis
         rel = item.relative_to(durable_root)
         target = target_wiki_root / rel
         if target.exists() and target.read_text(encoding="utf-8") != item.read_text(encoding="utf-8"):
-            conflicts.append(str(rel))
+            conflicts.append(durable_rel_key(rel))
     return conflicts
 
 
@@ -284,13 +302,13 @@ def parse_review_input(review_input: Path) -> dict[str, object]:
             continue
         left, right = line[2:].split(" = ", 1)
         if left.startswith("durable-conflict:"):
-            rel = left.split(":", 1)[1]
+            rel = normalize_review_rel(left.split(":", 1)[1])
             action = right.strip()
             if action not in {"keep", "stage", "overwrite"}:
                 raise ValueError(f"unsupported durable conflict action in review input: {action}")
             decisions["durable_conflicts"][rel] = action
         elif left.startswith("new-file:"):
-            rel = left.split(":", 1)[1]
+            rel = normalize_review_rel(left.split(":", 1)[1])
             action = right.strip()
             if action not in {"import", "skip"}:
                 raise ValueError(f"unsupported new-file action in review input: {action}")
@@ -400,7 +418,7 @@ def apply_import(
         if item.is_dir():
             continue
         rel = item.relative_to(durable_root)
-        rel_str = str(rel)
+        rel_str = durable_rel_key(rel)
         target = target_wiki_root / rel
         if not target.exists():
             if review_decisions["new_files"].get(rel_str, "import") == "skip":

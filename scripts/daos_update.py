@@ -11,7 +11,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from uuid import uuid4
 
-from daos_core import validate_pack_dir
+from daos_core import FRAMEWORK_VERSION, SCHEMA_VERSION, validate_pack_dir
 
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
@@ -42,8 +42,8 @@ OPTIONAL_METADATA_FIELDS = (
     "framework_version",
     "pack_id",
 )
-DEFAULT_SCHEMA_VERSION = "1"
-DEFAULT_FRAMEWORK_VERSION = "0.1.0-alpha3"
+DEFAULT_SCHEMA_VERSION = SCHEMA_VERSION
+DEFAULT_FRAMEWORK_VERSION = FRAMEWORK_VERSION
 DEFAULT_DURABLE_CAPTURE_RULE = (
     "if a second review shows something should not live mainly in hot cache or chat, "
     "create/update a durable note in the same pass"
@@ -233,6 +233,7 @@ def apply_updates(pack_dir: Path) -> str:
     root, backups_dir, migrations_dir, review_notes_dir = ensure_managed_dirs(pack_dir)
     stamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
     action_log: list[str] = []
+    touched_user_owned_files: set[str] = set()
     action_log.extend(backup_file_if_present(pack_dir / MANAGED_METADATA_FILE, backups_dir, stamp))
 
     manifest_path = pack_dir / MANAGED_METADATA_FILE
@@ -247,6 +248,8 @@ def apply_updates(pack_dir: Path) -> str:
     mixed_actions, review_items = add_durable_capture_rule_if_safe(pack_dir, backups_dir, stamp)
     action_log.extend(item for item in mixed_actions if item.startswith("backed up "))
     actions.extend(item for item in mixed_actions if not item.startswith("backed up "))
+    if any("operating-profile.md" in item for item in mixed_actions):
+        touched_user_owned_files.add("operating-profile.md")
 
     review_items.extend(validation.warnings)
     review_note_path = write_review_note(review_notes_dir, review_items, stamp)
@@ -259,6 +262,7 @@ def apply_updates(pack_dir: Path) -> str:
         "mode": mode,
         "protected_files": list(USER_OWNED_FILES),
         "framework_owned_files": list(FRAMEWORK_OWNED_FILES),
+        "user_owned_additive_migrations": sorted(touched_user_owned_files),
         "actions": actions,
         "backups": action_log,
         "warnings_seen": validation.warnings,
@@ -280,7 +284,11 @@ def apply_updates(pack_dir: Path) -> str:
     if review_note_path is not None:
         lines.append(f"review note: {review_note_path}")
     lines.append("protected files:")
-    lines.extend(f"- left untouched: {name}" for name in USER_OWNED_FILES)
+    for name in USER_OWNED_FILES:
+        if name in touched_user_owned_files:
+            lines.append(f"- protected from overwrite; additive migration applied with backup: {name}")
+        else:
+            lines.append(f"- left untouched: {name}")
     return "\n".join(lines)
 
 

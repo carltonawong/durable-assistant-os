@@ -60,6 +60,9 @@ python scripts/daos_portability.py export \
   --agent-continuity /tmp/agent-continuity.md
 ```
 
+When active-memory handoff is requested, both sidecar files must already exist.
+The exporter checks this before creating the output bundle.
+
 ### Inspect
 
 ```bash
@@ -157,6 +160,7 @@ python scripts/daos_portability.py apply \
 - default durable-conflict posture (`keep`)
 - active-memory staging target when a target pack dir is provided
 - optional markdown review artifact with conflict list, proposed decisions, and intake summary when `--review-output` is provided
+- review decision keys use POSIX-style durable-wiki paths such as `pages/ops.md`
 
 ### Apply currently does
 - restore `daos-pack.json` into a target pack root

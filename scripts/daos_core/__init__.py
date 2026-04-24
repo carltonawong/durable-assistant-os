@@ -3,8 +3,10 @@
 from .schema import (
     AssistantCharter,
     DaosPack,
+    FRAMEWORK_VERSION,
     LaneSnapshot,
     OperatingProfile,
+    SCHEMA_VERSION,
     blank_starter_pack,
     filled_example_pack,
     wizard_pack,
@@ -15,8 +17,10 @@ from .validate import ValidationResult, validate_pack_dir
 __all__ = [
     "AssistantCharter",
     "DaosPack",
+    "FRAMEWORK_VERSION",
     "LaneSnapshot",
     "OperatingProfile",
+    "SCHEMA_VERSION",
     "ValidationResult",
     "blank_starter_pack",
     "filled_example_pack",

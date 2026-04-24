@@ -130,6 +130,35 @@ class DaosPortabilityScriptTests(unittest.TestCase):
             self.assertTrue((bundle_with_active / "active" / "hot-cache.md").exists())
             self.assertTrue((bundle_with_active / "active" / "agent-continuity.md").exists())
 
+    def test_export_preflights_active_memory_files_before_writing_bundle(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            tmp = Path(tmpdir)
+            pack_dir = tmp / "pack"
+            wiki_root = tmp / "wiki"
+            bundle_dir = tmp / "bundle"
+            self.seed_wiki(wiki_root)
+            bootstrap = self.run_bootstrap("--filled-example", str(pack_dir))
+            self.assertEqual(bootstrap.returncode, 0, msg=bootstrap.stderr)
+
+            result = self.run_portability(
+                "export",
+                "--pack-dir",
+                str(pack_dir),
+                "--wiki-root",
+                str(wiki_root),
+                "--out",
+                str(bundle_dir),
+                "--include-active-memory",
+                "--hot-cache",
+                str(tmp / "missing-hot-cache.md"),
+                "--agent-continuity",
+                str(tmp / "missing-agent-continuity.md"),
+            )
+
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn("hot_cache does not exist", result.stderr)
+            self.assertFalse(bundle_dir.exists())
+
     def test_inspect_reports_bundle_payload_summary(self) -> None:
         with tempfile.TemporaryDirectory() as tmpdir:
             tmp = Path(tmpdir)

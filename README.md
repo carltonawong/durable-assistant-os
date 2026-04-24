@@ -1,7 +1,7 @@
 # Durable Assistant OS
 
 **Release discipline:** pre-1.0 semver with `CHANGELOG.md` as the source of truth for framework-facing changes.
-**Current documented baseline:** `v0.1.3b`; use `CHANGELOG.md` and `docs/releases/` for release notes.
+**Current documented baseline:** `v0.1.4`; use `CHANGELOG.md` and `docs/releases/` for release notes.
 
 Durable Assistant OS (DAOS) is a starter pack + toolkit for building assistants that stay useful over time instead of degrading into drift, clutter, and maintenance burden.
 

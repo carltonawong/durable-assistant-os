@@ -56,7 +56,7 @@ class DaosUpdateScriptTests(unittest.TestCase):
             self.assertEqual(result.returncode, 0, msg=result.stderr)
             self.assertIn("manifest: present", result.stdout)
             self.assertIn("schema_version: 1", result.stdout)
-            self.assertIn("framework_version: 0.1.0-alpha3", result.stdout)
+            self.assertIn("framework_version: v0.1.4", result.stdout)
             self.assertRegex(result.stdout, r"pack_id: [0-9a-f-]+")
             self.assertIn("upgrade_ready: stable", result.stdout)
 
@@ -86,7 +86,7 @@ class DaosUpdateScriptTests(unittest.TestCase):
             self.assertEqual(result.returncode, 0, msg=result.stderr)
             manifest = json.loads((destination / "daos-pack.json").read_text(encoding="utf-8"))
             self.assertEqual(manifest["schema_version"], "1")
-            self.assertEqual(manifest["framework_version"], "0.1.0-alpha3")
+            self.assertEqual(manifest["framework_version"], "v0.1.4")
             self.assertTrue(manifest["pack_id"])
             self.assertEqual((destination / "assistant-charter.md").read_text(encoding="utf-8"), original_charter)
             self.assertTrue((destination / ".daos" / "migrations").is_dir())
@@ -111,7 +111,7 @@ class DaosUpdateScriptTests(unittest.TestCase):
 
             self.assertEqual(result.returncode, 0, msg=result.stderr)
             updated_manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
-            self.assertEqual(updated_manifest["framework_version"], "0.1.0-alpha3")
+            self.assertEqual(updated_manifest["framework_version"], "v0.1.4")
             self.assertTrue(updated_manifest["pack_id"])
             backup_files = list((destination / ".daos" / "backups").glob("**/daos-pack.json"))
             self.assertGreaterEqual(len(backup_files), 1)
@@ -170,8 +170,16 @@ class DaosUpdateScriptTests(unittest.TestCase):
             updated = profile_path.read_text(encoding="utf-8")
             self.assertIn("- Durable capture rule:", updated)
             self.assertIn("added missing durable capture rule to operating-profile.md", result.stdout)
+            self.assertIn(
+                "protected from overwrite; additive migration applied with backup: operating-profile.md",
+                result.stdout,
+            )
             profile_backups = list((destination / ".daos" / "backups").glob("**/operating-profile.md"))
             self.assertGreaterEqual(len(profile_backups), 1)
+            migration_files = list((destination / ".daos" / "migrations").glob("*.json"))
+            self.assertEqual(len(migration_files), 1)
+            record = json.loads(migration_files[0].read_text(encoding="utf-8"))
+            self.assertEqual(record["user_owned_additive_migrations"], ["operating-profile.md"])
 
     def test_apply_writes_review_note_when_mixed_file_cannot_be_safely_migrated(self) -> None:
         with tempfile.TemporaryDirectory() as tmpdir:
