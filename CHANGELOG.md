@@ -14,7 +14,8 @@ Do not add entries for every typo fix or private WIP note.
 
 ## Unreleased
 
-No unreleased framework-facing changes are staged after `v0.1.3b` yet.
+### Added
+- `docs/agent-integrations.md` now includes brief adapter guidance for Codex, Claude Code, and OpenClaw / Quinn so future installs have a concrete shape for startup orientation, durable capture, reset handoff, and live-fact verification.
 
 ## v0.1.3b - 2026-04-22
 

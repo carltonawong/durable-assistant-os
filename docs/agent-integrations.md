@@ -43,7 +43,10 @@ Do not move the baseline doctrine itself here.
 
 ## Current integrations
 
-- Hermes — available below
+- Hermes - available below
+- Codex - brief adapter guidance available below
+- Claude Code - brief adapter guidance available below
+- OpenClaw / Quinn - brief adapter guidance available below
 - Other runtimes can be added later as separate sections when proven
 
 ---
@@ -143,6 +146,146 @@ That order keeps the memory system understandable even if the runtime hook layer
 
 ---
 
+## Codex integration
+
+### What this adds
+
+The Codex integration makes DAOS visible to new Codex chats and coding sessions without requiring the user to paste the memory contract every time.
+
+This is usually an instruction-injection and workspace-doc integration rather than a plugin integration.
+
+### Expected Codex behavior
+
+A good Codex integration should:
+1. read the current user message and local thread first
+2. load the DAOS memory front door only when shared context is needed
+3. read `wiki/cache/reset-handoff.md` after reset, long idle, or model-switch recovery when local thread context is insufficient
+4. write durable observations to `wiki/raw/` when non-capture would create future ambiguity
+5. verify live operational facts against repo files, runtime state, logs, and configs
+
+### Install shape
+
+Typical Codex install surfaces:
+- user-level `~/.codex/config.toml` with a short `developer_instructions` reminder
+- workspace-level `AGENTS.md` near the working root
+- project-level `AGENTS.md` when a specific repo needs tighter local rules
+
+Keep the global instruction short.
+It should point Codex to the DAOS wiki and operating model, not inline the whole doctrine.
+
+### Verification checklist
+
+After install, verify:
+- new chats launched from the intended working directory see the correct `AGENTS.md`
+- Codex knows the DAOS wiki path
+- Codex distinguishes `wiki/raw/` from `wiki/sources/`
+- Codex uses the raw-to-ingest pipeline for durable capture
+- Codex still treats verified files/runtime/logs/configs as higher authority for live facts
+
+### Caveats
+
+- Codex startup behavior depends on working directory and project-doc discovery.
+- User-level config can orient Codex globally, but repo-local `AGENTS.md` remains important for project-specific behavior.
+- Avoid making Codex load the whole wiki at session start; DAOS should be a lookup contract, not a context dump.
+
+---
+
+## Claude Code integration
+
+### What this adds
+
+The Claude Code integration makes the DAOS memory contract available to code-editing agents that already rely heavily on project-local instructions.
+
+This is normally an `AGENTS.md` / project-instructions integration, optionally backed by local hooks or commands if that runtime supports them.
+
+### Expected Claude Code behavior
+
+A good Claude Code integration should:
+1. read project-local instructions before editing
+2. use DAOS lookup order for memory and handoff recovery
+3. preserve durable discoveries through `wiki/raw/` or relevant wiki pages
+4. update `wiki/index.md` and append `wiki/log.md` when ingesting durable pages
+5. keep code truth separate from memory truth by verifying against current files before acting
+
+### Install shape
+
+Typical Claude Code install surfaces:
+- workspace or repo `AGENTS.md`
+- optional runtime-specific settings file, if supported by the local Claude Code installation
+- DAOS starter-pack files under the assistant/workspace root
+
+The project-local instruction should include the smallest stable reminder:
+- current thread first
+- hot cache / reset handoff / agent continuity in DAOS order
+- raw notes for durable capture
+- live files outrank memory for current behavior
+
+### Verification checklist
+
+After install, verify:
+- Claude Code reads the intended `AGENTS.md`
+- Claude Code can locate the DAOS wiki root
+- durable decisions create raw notes or page updates instead of chat-only residue
+- ingest updates `index.md` and `log.md`
+- stale wiki claims are checked against live files before code changes
+
+### Caveats
+
+- Claude Code environments vary, so this section should stay adapter-shaped rather than assuming one universal config path.
+- If the runtime has no startup hook, the `AGENTS.md` contract is the practical minimum.
+
+---
+
+## OpenClaw / Quinn integration
+
+### What this adds
+
+The OpenClaw / Quinn integration connects DAOS to an always-on assistant runtime that may span Discord, local workspace tasks, scheduled jobs, and project memory.
+
+This layer is where DAOS should become operationally enforced rather than only documented.
+
+### Expected OpenClaw / Quinn behavior
+
+A good OpenClaw / Quinn integration should:
+1. load DAOS orientation at session or lane startup
+2. keep `wiki/cache/hot-cache.md` as the shared volatile front door
+3. write or refresh `wiki/cache/reset-handoff.md` before reset, sleep, or long idle when possible
+4. create dated raw notes for meaningful decisions, corrections, handoffs, and operational changes
+5. run maintenance loops for raw ingest, hot-cache spec checks, continuity freshness, source hygiene, and reset verification
+6. verify live operational claims against current runtime state, repo files, logs, and config
+
+### Install shape
+
+Typical OpenClaw / Quinn install surfaces:
+- workspace `AGENTS.md` or equivalent startup instruction file
+- runtime/plugin hook for session start or first-turn orientation
+- scheduled maintenance jobs for DAOS upkeep
+- write access to the shared DAOS wiki root
+- optional dashboard or status surface for memory-health visibility
+
+The install should distinguish:
+- file presence
+- runtime enablement
+- behavior proven after real reset or long idle
+
+### Verification checklist
+
+After install, verify:
+- startup or first-turn behavior reads the DAOS front door before acting when local context is insufficient
+- `reset-handoff.md` is written and overwritten as a current artifact, not appended as a log
+- raw notes are created for durable changes
+- ingest/maintenance jobs actually run on schedule
+- hot-cache log remains compact fallback history rather than a full snapshot archive
+- live runtime checks outrank remembered state for operational facts
+
+### Caveats
+
+- OpenClaw / Quinn deployments may have multiple lanes and channels; local thread context still outranks shared memory for exact handoff.
+- Multi-lane churn is normal. Use hot-cache log for recent front-door rescope history before falling back to deeper agent continuity.
+- Treat "installed", "enabled", and "proven after reset" as separate verification states.
+
+---
+
 ## Future integrations
 
 Good future sections would follow the same pattern:
@@ -154,9 +297,6 @@ Good future sections would follow the same pattern:
 - caveats
 
 Possible future sections:
-- Claude Code
-- Codex
-- OpenClaw / Quinn
 - other agent runtimes with stable hook surfaces
 
 ## Bottom line
