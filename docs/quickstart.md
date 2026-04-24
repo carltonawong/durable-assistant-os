@@ -105,10 +105,14 @@ Use these default starter answers and refine later:
 - **Escalation / approval rule** — pause for approval on costly, risky, sticky, or socially consequential actions
 - **Durable capture rule** — if something would be annoying to rediscover, move it into durable notes instead of leaving it only in chat or hot context
 
-## Step 4 — Validate and use it
+## Step 4 — Optional read-only checks and first use
 
-- run `python scripts/daos_validate.py /path/to/my-daos-pack`
-- then use `harness/first-week.md` to keep the system light and calibrated
+If you are comfortable running local scripts, start with read-only checks:
+- `python scripts/daos_validate.py /path/to/my-daos-pack`
+- `python scripts/daos_memory_parity.py /path/to/my-daos-pack`
+
+If you do not want to run scripts yet, use `starter-pack/README.md` and `docs/memory-parity-auditor.md` as manual checklists instead.
+Then use `harness/first-week.md` to keep the system light and calibrated.
 
 That is enough to install a first-pass DAOS baseline.
 
@@ -118,12 +122,14 @@ If you want runtime-specific enforcement after the baseline is working, read `do
 
 ## If you need the tooling list
 
-You do not need all of these before first value, but these are the next tools:
-- `scripts/daos_bootstrap.py` — generate a blank or filled pack
-- `scripts/daos_wizard.py` — interactive setup
-- `scripts/daos_validate.py` — readiness + lint/calibration checks
-- `scripts/daos_update.py` — safe in-place pack inspection/apply
-- `scripts/daos_portability.py` — durable wiki export/inspect/plan/apply when moving installs
+You do not need scripts before first value. Copying and filling `starter-pack/` is enough.
+If you do use scripts, start with the read-only checks and see `docs/script-safety.md` for the risk tiers:
+- `scripts/daos_validate.py` — read-only readiness + lint/calibration checks
+- `scripts/daos_memory_parity.py` — read-only memory semantics check
+- `scripts/daos_bootstrap.py` — optional generated setup into a target folder
+- `scripts/daos_wizard.py` — optional interactive setup
+
+Advanced write-capable maintenance and portability tools are intentionally left out of the first-run checklist. Use `docs/script-safety.md` and `docs/portability.md` only when you actually need those mechanics.
 
 ## If you want examples before filling anything
 

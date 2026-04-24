@@ -14,7 +14,28 @@ Do not add entries for every typo fix or private WIP note.
 
 ## Unreleased
 
-No unreleased framework-facing changes are staged after `v0.1.4` yet.
+No unreleased framework-facing changes are staged after `v0.1.5` yet.
+
+## v0.1.5 - 2026-04-24
+
+### Added
+- `scripts/daos_memory_parity.py`, a stdlib-only read-only audit for checking whether a DAOS pack's memory surfaces match DAOS parity rules.
+- `scripts/daos_core/parity.py` plus tests for semantic memory-surface checks, including log-order differences between `wiki/log.md` and `wiki/cache/hot-cache-log.md`.
+- `docs/memory-parity-auditor.md` documenting the new parity auditor, output shape, safety posture, and relationship to normal validation.
+- `docs/script-safety.md` documenting DAOS as starter-pack-first, scripts as optional helpers, and the current no-network/no-intentional-credential-location-read/no-shell/no-telemetry posture.
+
+### Changed
+- README and quickstart now foreground read-only checks and manual checklist alternatives before any optional helper scripts.
+- `daos_validate.py` and `daos_memory_parity.py` help text now explicitly states that the checks are read-only and modify no files.
+- Generated and updater-created manifests now advertise the current framework baseline, `v0.1.5`.
+
+### Hardened
+- `daos_update.py` and `daos_portability.py` remain available, but are demoted out of README/quickstart first-run command lists and documented as advanced write-capable tools.
+- Regression coverage now prevents network/subprocess imports in DAOS scripts and prevents advanced write-capable scripts from creeping back into front-door docs.
+
+### Notes
+- Scope this as a patch release: starter-pack trust, script-safety clarity, and read-only memory parity verification.
+- No new memory layer, runtime integration, cron behavior, auto-repair mode, or broad architecture expansion is introduced.
 
 ## v0.1.4 - 2026-04-24
 

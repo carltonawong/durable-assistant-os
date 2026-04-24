@@ -12,7 +12,7 @@ from daos_core import validate_pack_dir
 
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        description="Check whether a DAOS pack is minimally filled enough to operate."
+        description="Read-only check of whether a DAOS pack is minimally filled enough to operate. No files are modified."
     )
     parser.add_argument("pack_dir", help="Path to a DAOS pack directory to validate")
     return parser.parse_args(argv)

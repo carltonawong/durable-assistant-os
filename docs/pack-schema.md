@@ -89,7 +89,7 @@ A hardened starter pack also includes a locked baseline doctrine spine:
 
 The manifest currently includes:
 - `schema_version`
-- `framework_version` (the current framework release baseline, for example `v0.1.4`)
+- `framework_version` (the current framework release baseline, for example `v0.1.5`)
 - `pack_id`
 - `pack_kind`
 - `generator`

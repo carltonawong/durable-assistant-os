@@ -1,7 +1,7 @@
 # Durable Assistant OS
 
 **Release discipline:** pre-1.0 semver with `CHANGELOG.md` as the source of truth for framework-facing changes.
-**Current documented baseline:** `v0.1.4`; use `CHANGELOG.md` and `docs/releases/` for release notes.
+**Current documented baseline:** `v0.1.5`; use `CHANGELOG.md` and `docs/releases/` for release notes.
 
 Durable Assistant OS (DAOS) is a starter pack + toolkit for building assistants that stay useful over time instead of degrading into drift, clutter, and maintenance burden.
 
@@ -148,6 +148,8 @@ Default path rule:
 - `docs/thesis.md` — why DAOS exists
 - `docs/memory.md` — deeper memory doctrine
 - `docs/reset-handoff.md` — named reset/wake-up continuity artifact and runtime contract
+- `docs/memory-parity-auditor.md` — check whether a DAOS install matches memory semantics, not just file presence
+- `docs/script-safety.md` — script trust posture, read-only first commands, and advanced-tooling risk tiers
 - `docs/trust.md` — behavior and trust posture
 - `docs/setup.md` — setup philosophy
 - `docs/lane-model.md` — lane framing
@@ -162,11 +164,14 @@ Default path rule:
 - `harness/core-setup.md`, `harness/mandatory-baseline.md`, and `harness/first-week.md` — install + stabilization guidance
 
 ### Tooling
-- `scripts/daos_bootstrap.py` — generate a blank or filled pack
-- `scripts/daos_wizard.py` — interactive generated setup
-- `scripts/daos_validate.py` — operability + lint/calibration checks
-- `scripts/daos_update.py` — safe in-place pack inspection/apply
-- `scripts/daos_portability.py` — wiki-first export/inspect/plan/apply for durable memory portability
+Scripts are optional helpers around the copyable starter pack. Start with read-only checks first; see `docs/script-safety.md` for the safety posture and risk tiers.
+
+- `scripts/daos_validate.py` — read-only operability + lint/calibration checks
+- `scripts/daos_memory_parity.py` — read-only memory parity audit for installed wiki/cache semantics
+- `scripts/daos_bootstrap.py` — optional generated setup into a target folder
+- `scripts/daos_wizard.py` — optional interactive generated setup
+
+Advanced write-capable maintenance and portability tools stay documented in `docs/script-safety.md` and `docs/portability.md`, not in the first-run path.
 
 ## Suggested reading order
 
