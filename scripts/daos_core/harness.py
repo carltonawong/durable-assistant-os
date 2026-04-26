@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from datetime import datetime
+import hashlib
 from pathlib import Path
 
 from .validate import validate_pack_dir
@@ -128,20 +129,34 @@ def instruction_carrier_needs_daos_rule(path: Path) -> bool:
     return "DAOS coexistence rule" not in _read_text(path)
 
 
-def prepend_daos_coexistence_rule(path: Path) -> bool:
+def _backup_instruction_carrier(path: Path, backup_root: Path) -> Path:
+    backup_root.mkdir(parents=True, exist_ok=True)
+    digest = hashlib.sha1(str(path).encode("utf-8")).hexdigest()[:10]
+    backup_path = backup_root / f"{path.name}.{digest}.bak"
+    backup_path.write_text(_read_text(path), encoding="utf-8")
+    return backup_path
+
+
+def prepend_daos_coexistence_rule(path: Path, backup_root: Path | None = None) -> Path | None:
     """Prepend the DAOS coexistence rule after explicit approval.
 
-    Returns True when the file changed. This function does not ask for approval;
-    callers are responsible for collecting approval before calling it.
+    Returns the backup path when the file changed. This function does not ask for
+    approval; callers are responsible for collecting approval before calling it.
     """
     current = _read_text(path)
     if "DAOS coexistence rule" in current:
-        return False
+        return None
+    backup_path = _backup_instruction_carrier(path, backup_root) if backup_root else None
     path.write_text(DAOS_COEXISTENCE_BLOCK.rstrip() + "\n\n" + current, encoding="utf-8")
-    return True
+    return backup_path
 
 
-def write_instruction_scan_report(pack_dir: str | Path, scan_paths: list[Path], applied_paths: list[Path] | None = None) -> Path:
+def write_instruction_scan_report(
+    pack_dir: str | Path,
+    scan_paths: list[Path],
+    applied_paths: list[Path] | None = None,
+    backup_paths: dict[Path, Path] | None = None,
+) -> Path:
     root = Path(pack_dir).expanduser().resolve()
     report_dir = root / ".daos" / "import-stage"
     report_dir.mkdir(parents=True, exist_ok=True)
@@ -149,6 +164,7 @@ def write_instruction_scan_report(pack_dir: str | Path, scan_paths: list[Path], 
 
     carriers = find_instruction_carriers(scan_paths)
     applied = sorted(set(applied_paths or []))
+    backups = backup_paths or {}
     unapplied = [path for path in carriers if path not in applied and instruction_carrier_needs_daos_rule(path)]
     already_aligned = [path for path in carriers if path not in applied and not instruction_carrier_needs_daos_rule(path)]
 
@@ -169,7 +185,12 @@ def write_instruction_scan_report(pack_dir: str | Path, scan_paths: list[Path], 
         lines.append("- none")
     lines.extend(["", "## Edits applied"])
     if applied:
-        lines.extend(f"- prepended DAOS coexistence rule to `{path}`" for path in applied)
+        for path in applied:
+            backup = backups.get(path)
+            if backup:
+                lines.append(f"- prepended DAOS coexistence rule to `{path}`; backup: `{backup}`")
+            else:
+                lines.append(f"- prepended DAOS coexistence rule to `{path}`")
     else:
         lines.append("- none")
     lines.extend(["", "## Edits needing approval"])
@@ -189,6 +210,7 @@ def write_instruction_scan_report(pack_dir: str | Path, scan_paths: list[Path], 
             "## Safety posture",
             "- no arbitrary old memory content was imported",
             "- instruction files are edited only after explicit approval",
+            "- approved instruction edits are backed up under `.daos/backups/instructions/`",
             "- preserve existing private-memory rules below the DAOS coexistence rule",
         ]
     )
