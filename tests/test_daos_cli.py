@@ -104,8 +104,14 @@ class DaosCliTests(unittest.TestCase):
             self.assertEqual(result.returncode, 0, msg=result.stderr + result.stdout)
             updated = agents.read_text(encoding="utf-8")
             self.assertTrue(updated.startswith("## DAOS coexistence rule"))
+            backups = list((destination / ".daos" / "backups" / "instructions").rglob("*.bak"))
+            self.assertEqual(len(backups), 1)
+            self.assertEqual(backups[0].read_text(encoding="utf-8"), "# Existing agent rules\nUse local memory.\n")
             report = destination / ".daos" / "import-stage" / "instruction-scan.md"
-            self.assertIn("Edits applied", report.read_text(encoding="utf-8"))
+            report_text = report.read_text(encoding="utf-8")
+            self.assertIn("Edits applied", report_text)
+            self.assertIn("backup:", report_text)
+            self.assertIn("instruction backups", result.stdout)
 
     def test_state_report_hides_fresh_starter_pack_placeholders(self) -> None:
         with tempfile.TemporaryDirectory() as tmpdir:

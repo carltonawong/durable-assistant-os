@@ -6,6 +6,7 @@ from __future__ import annotations
 import argparse
 import os
 import sys
+from datetime import datetime
 from pathlib import Path
 
 from daos_bootstrap import bootstrap
@@ -115,9 +116,9 @@ def _resolve_init_scan_paths(args: argparse.Namespace) -> list[Path]:
     return [Path.cwd().resolve()]
 
 
-def _approve_instruction_edits(carriers: list[Path]) -> list[Path]:
+def _approve_instruction_edits(carriers: list[Path], backup_root: Path) -> dict[Path, Path]:
     if not carriers or not sys.stdin.isatty():
-        return []
+        return {}
     pending = []
     for carrier in carriers:
         try:
@@ -127,19 +128,20 @@ def _approve_instruction_edits(carriers: list[Path]) -> list[Path]:
         if "DAOS coexistence rule" not in text:
             pending.append(carrier)
     if not pending:
-        return []
+        return {}
 
     print("DAOS found existing agent instruction files.")
     for carrier in pending:
         print(f"DAOS wants approval to prepend the coexistence rule to: {carrier}")
     response = input("Apply these approved instruction edits now? [y/N]: ").strip().lower()
     if response not in {"y", "yes"}:
-        return []
+        return {}
 
-    applied = []
+    applied: dict[Path, Path] = {}
     for carrier in pending:
-        if prepend_daos_coexistence_rule(carrier):
-            applied.append(carrier)
+        backup_path = prepend_daos_coexistence_rule(carrier, backup_root=backup_root)
+        if backup_path:
+            applied[carrier] = backup_path
     return applied
 
 
@@ -149,12 +151,19 @@ def run_init(args: argparse.Namespace) -> int:
         scan_paths = _resolve_init_scan_paths(args)
         destination = bootstrap(pack_dir, force=args.force)
         report_path = None
-        applied_paths = []
+        applied_backups: dict[Path, Path] = {}
         carriers = find_instruction_carriers(scan_paths) if scan_paths else []
         if carriers:
-            applied_paths = _approve_instruction_edits(carriers)
+            timestamp = datetime.now().astimezone().strftime("%Y%m%d-%H%M%S")
+            backup_root = destination / ".daos" / "backups" / "instructions" / timestamp
+            applied_backups = _approve_instruction_edits(carriers, backup_root)
         if scan_paths:
-            report_path = write_instruction_scan_report(destination, scan_paths, applied_paths=applied_paths)
+            report_path = write_instruction_scan_report(
+                destination,
+                scan_paths,
+                applied_paths=list(applied_backups.keys()),
+                backup_paths=applied_backups,
+            )
     except (FileNotFoundError, ValueError, OSError) as exc:
         print(f"DAOS init failed: {exc}", file=sys.stderr)
         return 1
@@ -165,8 +174,9 @@ def run_init(args: argparse.Namespace) -> int:
         print("instruction scan: skipped (--blank)")
     elif report_path:
         print(f"instruction scan: wrote review report: {report_path}")
-        if applied_paths:
-            print(f"instruction edits: applied with approval ({len(applied_paths)})")
+        if applied_backups:
+            print(f"instruction edits: applied with approval ({len(applied_backups)})")
+            print("instruction backups: .daos/backups/instructions/")
         else:
             print("instruction edits: none applied; review report lists any proposed edits")
     print("next: run `daos` to view state")
