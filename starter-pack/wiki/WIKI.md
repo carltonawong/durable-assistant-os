@@ -1,5 +1,7 @@
 # WIKI.md
 
+<!-- DAOS baseline note: Current public framework baseline is v0.1.6; this file remains part of the current release surface even if its original feature landed in an earlier patch. -->
+
 This wiki is the durable shared memory layer for the DAOS install.
 
 It is not the front-door cache and not a transcript dump.

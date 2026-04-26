@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 """Audit DAOS memory parity beyond file existence."""
 
+# DAOS baseline note: current public framework baseline is v0.1.6; this module remains part of the current release surface.
+
 from __future__ import annotations
 
 import argparse

@@ -1,5 +1,7 @@
 # DAOS Wiki Governance
 
+<!-- DAOS baseline note: Current public framework baseline is v0.1.6; this file remains part of the current release surface even if its original feature landed in an earlier patch. -->
+
 ## Why this page exists
 
 DAOS often uses a markdown wiki/docs surface as the durable shared memory layer.

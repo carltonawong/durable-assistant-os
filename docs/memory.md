@@ -1,5 +1,7 @@
 # DAOS Memory Model
 
+<!-- DAOS baseline note: Current public framework baseline is v0.1.6; this file remains part of the current release surface even if its original feature landed in an earlier patch. -->
+
 ## Goal
 
 Use memory to make the assistant more useful over time without turning the system into a cluttered archive of everything it has ever seen.

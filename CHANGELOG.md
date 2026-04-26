@@ -15,7 +15,7 @@ Do not add entries for every typo fix or private WIP note.
 ## Unreleased
 
 ### Changed
-- Refreshed the starter-pack cache templates with baseline-provenance notes so GitHub's per-file last-touched labels are not mistaken for the current framework version.
+- Refreshed starter-pack cache templates and older-touched public surface files with baseline-provenance notes so GitHub per-file last-touched labels are not mistaken for the current framework version.
 
 ## v0.1.6 - 2026-04-25
 

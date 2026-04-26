@@ -1,5 +1,7 @@
 # Script Safety
 
+<!-- DAOS baseline note: Current public framework baseline is v0.1.6; this file remains part of the current release surface even if its original feature landed in an earlier patch. -->
+
 DAOS is designed around the copyable `starter-pack/` first.
 
 You can use DAOS without running any script:

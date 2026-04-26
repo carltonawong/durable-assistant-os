@@ -1,5 +1,7 @@
 """Shared DAOS schema, rendering, and validation helpers."""
 
+# DAOS baseline note: current public framework baseline is v0.1.6; this module remains part of the current release surface.
+
 from .schema import (
     AssistantCharter,
     DaosPack,

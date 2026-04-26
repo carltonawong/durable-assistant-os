@@ -1,5 +1,7 @@
 # DAOS Public Memory Model
 
+<!-- DAOS baseline note: Current public framework baseline is v0.1.6; this file remains part of the current release surface even if its original feature landed in an earlier patch. -->
+
 ## The shortest explanation
 
 DAOS tries to stop assistant memory from collapsing into one blurry pile.

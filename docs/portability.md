@@ -1,5 +1,7 @@
 # DAOS Portability
 
+<!-- DAOS baseline note: Current public framework baseline is v0.1.6; this file remains part of the current release surface even if its original feature landed in an earlier patch. -->
+
 ## Why this page exists
 
 DAOS portability should move the durable memory layer cleanly without collapsing DAOS back into pack-folder sync.
