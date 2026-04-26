@@ -14,7 +14,7 @@ from .schema import (
 from .render import render_pack_manifest, write_pack_core_files
 from .parity import ParityFinding, ParityResult, audit_memory_parity
 from .validate import ValidationResult, validate_pack_dir
-from .harness import build_orientation_bundle
+from .harness import build_orientation_bundle, run_reset_recovery_test
 
 __all__ = [
     "AssistantCharter",
@@ -31,6 +31,7 @@ __all__ = [
     "blank_starter_pack",
     "filled_example_pack",
     "render_pack_manifest",
+    "run_reset_recovery_test",
     "validate_pack_dir",
     "wizard_pack",
     "write_pack_core_files",

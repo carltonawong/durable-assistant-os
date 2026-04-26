@@ -35,7 +35,7 @@ class DaosCliTests(unittest.TestCase):
         self.assertEqual(result.returncode, 0, msg=result.stderr)
         self.assertIn("check", result.stdout)
         self.assertIn("orient", result.stdout)
-        self.assertNotIn("reset-test", result.stdout)
+        self.assertIn("reset-test", result.stdout)
         self.assertNotIn("handoff", result.stdout)
         self.assertNotIn("memory-audit", result.stdout)
 

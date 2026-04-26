@@ -5,6 +5,17 @@ from pathlib import Path
 from .validate import validate_pack_dir
 
 
+def _read_text(path: Path) -> str:
+    return path.read_text(encoding="utf-8")
+
+
+def _label_value(text: str, label: str) -> str:
+    for line in text.splitlines():
+        if line.startswith(label):
+            return line[len(label) :].strip()
+    return ""
+
+
 def _presence_line(root: Path, relative_path: str) -> str:
     path = root / relative_path
     status = "present" if path.is_file() else "missing"
@@ -60,3 +71,75 @@ def build_orientation_bundle(pack_dir: str | Path, task: str | None = None) -> t
         lines.extend(f"- {warning}" for warning in validation.warnings)
 
     return 0, "\n".join(lines) + "\n", ""
+
+
+def run_reset_recovery_test(pack_dir: str | Path) -> tuple[int, str, str]:
+    """Run a deterministic reset-recovery proof check.
+
+    Returns (exit_code, stdout, stderr). This is read-only and does not call an LLM.
+    """
+    root = Path(pack_dir).expanduser().resolve()
+    validation = validate_pack_dir(root)
+    failures: list[str] = []
+
+    if validation.errors:
+        failures.extend(validation.errors)
+
+    hot_cache = root / "wiki" / "cache" / "hot-cache.md"
+    reset_handoff = root / "wiki" / "cache" / "reset-handoff.md"
+    wiki = root / "wiki" / "WIKI.md"
+    agents = root / "AGENTS.md"
+
+    hot_cache_text = ""
+    if not hot_cache.is_file():
+        failures.append("wiki/cache/hot-cache.md is missing")
+    else:
+        hot_cache_text = _read_text(hot_cache)
+        if "**Updated:**" not in hot_cache_text:
+            failures.append("hot-cache.md has no Updated field")
+        if "## Current Focus" not in hot_cache_text:
+            failures.append("hot-cache.md has no Current Focus section")
+
+    reset_text = ""
+    exact_next_move = ""
+    first_verification = ""
+    if not reset_handoff.is_file():
+        failures.append("wiki/cache/reset-handoff.md is missing")
+    else:
+        reset_text = _read_text(reset_handoff)
+        exact_next_move = _label_value(reset_text, "- Exact next move:")
+        first_verification = _label_value(reset_text, "- First verification:")
+        if not exact_next_move:
+            failures.append("reset-handoff.md has no filled Exact next move")
+        if not first_verification:
+            failures.append("reset-handoff.md has no filled First verification")
+
+    doctrine_text = ""
+    for path in (agents, wiki):
+        if path.is_file():
+            doctrine_text += "\n" + _read_text(path)
+    doctrine_lower = doctrine_text.lower()
+    if "local thread" not in doctrine_lower or "hot-cache.md" not in doctrine_lower:
+        failures.append("baseline doctrine does not state the reset read order")
+    if "verified" not in doctrine_lower or "reality" not in doctrine_lower or "memory" not in doctrine_lower:
+        failures.append("baseline doctrine does not state live reality over memory")
+
+    if failures:
+        lines = [f"DAOS reset test failed: {root}", f"failed checks: {len(failures)}"]
+        lines.extend(f"- {failure}" for failure in failures)
+        return 1, "", "\n".join(lines) + "\n"
+
+    output = [
+        f"DAOS reset test passed: {root}",
+        "checks: passed",
+        "fresh-session resume summary:",
+        "- orientation source: wiki/cache/hot-cache.md",
+        "- reset source: wiki/cache/reset-handoff.md",
+        f"- exact next move: {exact_next_move}",
+        f"- first verification: {first_verification}",
+        "- rule: Verify live reality before acting on stale memory.",
+    ]
+    if validation.warnings:
+        output.extend([f"validation warnings: {len(validation.warnings)}"])
+        output.extend(f"- {warning}" for warning in validation.warnings)
+    return 0, "\n".join(output) + "\n", ""
