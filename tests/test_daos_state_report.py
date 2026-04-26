@@ -92,14 +92,14 @@ class DaosStateReportTests(unittest.TestCase):
         (cache_dir / "reset-handoff.md").write_text(RESET_HANDOFF, encoding="utf-8")
         return pack
 
-    def test_state_command_outputs_compact_state_report(self) -> None:
+    def test_status_command_outputs_compact_status_report(self) -> None:
         with tempfile.TemporaryDirectory() as tmpdir:
             pack = self.make_state_pack(tmpdir)
 
-            result = self.run_cli("state", str(pack))
+            result = self.run_cli("status", str(pack))
 
         self.assertEqual(result.returncode, 0, msg=result.stderr)
-        self.assertIn("DAOS State", result.stdout)
+        self.assertIn("DAOS Status", result.stdout)
         self.assertIn("Current", result.stdout)
         self.assertIn("- Building no-args DAOS state report.", result.stdout)
         self.assertIn("Recent Activity", result.stdout)
@@ -123,7 +123,7 @@ class DaosStateReportTests(unittest.TestCase):
                 encoding="utf-8",
             )
 
-            result = self.run_cli("state", str(pack))
+            result = self.run_cli("status", str(pack))
 
         self.assertEqual(result.returncode, 0, msg=result.stderr)
         self.assertIn("Bridge", result.stdout)
@@ -137,7 +137,7 @@ class DaosStateReportTests(unittest.TestCase):
             result = self.run_cli(env={"DAOS_HOME": str(pack)})
 
         self.assertEqual(result.returncode, 0, msg=result.stderr)
-        self.assertIn("DAOS State", result.stdout)
+        self.assertIn("DAOS Status", result.stdout)
         self.assertIn(str(pack), result.stdout)
         self.assertIn("Building no-args DAOS state report", result.stdout)
 
@@ -146,7 +146,7 @@ class DaosStateReportTests(unittest.TestCase):
             result = self.run_cli(env={"DAOS_HOME": str(Path(tmpdir) / "missing")})
 
         self.assertNotEqual(result.returncode, 0)
-        self.assertIn("DAOS State unavailable", result.stderr)
+        self.assertIn("DAOS Status unavailable", result.stderr)
         self.assertIn("run `daos init`", result.stderr)
 
 

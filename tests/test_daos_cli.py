@@ -34,6 +34,8 @@ class DaosCliTests(unittest.TestCase):
         result = self.run_cli("--help")
 
         self.assertEqual(result.returncode, 0, msg=result.stderr)
+        self.assertIn("status", result.stdout)
+        self.assertNotIn("state", result.stdout)
         self.assertIn("check", result.stdout)
         self.assertIn("orient", result.stdout)
         self.assertIn("reset-test", result.stdout)
@@ -119,7 +121,7 @@ class DaosCliTests(unittest.TestCase):
             init = self.run_cli("init", str(destination), "--blank")
             self.assertEqual(init.returncode, 0, msg=init.stderr)
 
-            result = self.run_cli("state", str(destination))
+            result = self.run_cli("status", str(destination))
 
             self.assertEqual(result.returncode, 0, msg=result.stderr)
             self.assertIn("- No current focus set yet.", result.stdout)

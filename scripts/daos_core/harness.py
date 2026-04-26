@@ -238,7 +238,7 @@ def build_state_report(pack_dir: str | Path) -> tuple[int, str, str]:
         return (
             1,
             "",
-            f"DAOS State unavailable: {root}\n- run `daos init` to create a DAOS home, or set DAOS_HOME to an existing pack\n",
+            f"DAOS Status unavailable: {root}\n- run `daos init` to create a DAOS home, or set DAOS_HOME to an existing pack\n",
         )
 
     hot_cache = root / "wiki" / "cache" / "hot-cache.md"
@@ -288,7 +288,7 @@ def build_state_report(pack_dir: str | Path) -> tuple[int, str, str]:
     instruction_count = _count_instruction_carriers(instruction_scan)
 
     lines = [
-        "DAOS State",
+        "DAOS Status",
         f"Pack: {root}",
         "",
         "Current",

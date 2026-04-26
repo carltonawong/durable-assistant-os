@@ -17,19 +17,20 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     if argv is None:
         argv = sys.argv[1:]
     if not argv:
-        return argparse.Namespace(command="state", pack_dir=None)
+        return argparse.Namespace(command="status", pack_dir=None)
 
     parser = argparse.ArgumentParser(
         description="DAOS local harness commands. Only shipped commands are listed here."
     )
     subparsers = parser.add_subparsers(dest="command", required=True)
 
-    state = subparsers.add_parser(
-        "state",
-        help="show a compact DAOS state report",
-        description="Show the current DAOS state report. No files are modified.",
+    status = subparsers.add_parser(
+        "status",
+        help="show compact DAOS setup and continuity status",
+        description="Show the current DAOS setup and continuity status. No files are modified.",
     )
-    state.add_argument("pack_dir", nargs="?", help="Path to a DAOS pack directory. Defaults to DAOS_HOME or ~/.daos.")
+    status.add_argument("pack_dir", nargs="?", help="Path to a DAOS pack directory. Defaults to DAOS_HOME or ~/.daos.")
+
 
     init = subparsers.add_parser(
         "init",
@@ -94,7 +95,7 @@ def resolve_default_pack_dir(pack_dir_arg: str | None) -> Path:
     return (Path.home() / ".daos").resolve()
 
 
-def run_state(pack_dir_arg: str | None) -> int:
+def run_status(pack_dir_arg: str | None) -> int:
     pack_dir = resolve_default_pack_dir(pack_dir_arg)
     exit_code, stdout, stderr = build_state_report(pack_dir)
     if stdout:
@@ -255,8 +256,8 @@ def run_memory_audit(pack_dir_arg: str) -> int:
 
 def main(argv: list[str] | None = None) -> int:
     args = parse_args(argv)
-    if args.command == "state":
-        return run_state(args.pack_dir)
+    if args.command == "status":
+        return run_status(args.pack_dir)
     if args.command == "init":
         return run_init(args)
     if args.command == "check":
