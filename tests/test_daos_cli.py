@@ -128,6 +128,48 @@ class DaosCliTests(unittest.TestCase):
             self.assertNotIn("Fill with the current shared foreground lane", result.stdout)
             self.assertIn("hot-cache.md has no real current focus yet", result.stdout)
 
+    def test_first_install_status_flow_installs_baseline_bridges_instructions_and_reports_status(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            workspace = root / "project"
+            workspace.mkdir()
+            agents = workspace / "AGENTS.md"
+            agents.write_text("# Existing agent rules\nUse local memory.\n", encoding="utf-8")
+            destination = root / "daos-home"
+
+            command = (
+                f"printf 'y\n' | script -q -c \"python {CLI_SCRIPT} init {destination} --scan {workspace}\" /dev/null"
+            )
+            init = subprocess.run(command, cwd=REPO_ROOT, shell=True, text=True, capture_output=True, check=False)
+            self.assertEqual(init.returncode, 0, msg=init.stderr + init.stdout)
+
+            self.assertTrue((destination / "assistant-charter.md").is_file())
+            self.assertTrue((destination / "operating-profile.md").is_file())
+            self.assertTrue((destination / "wiki" / "cache" / "hot-cache.md").is_file())
+            self.assertTrue((destination / "wiki" / "cache" / "reset-handoff.md").is_file())
+
+            updated_agents = agents.read_text(encoding="utf-8")
+            self.assertTrue(updated_agents.startswith("## DAOS coexistence rule"))
+            self.assertIn("# Existing agent rules", updated_agents)
+
+            backups = list((destination / ".daos" / "backups" / "instructions").rglob("*.bak"))
+            self.assertEqual(len(backups), 1)
+            self.assertEqual(backups[0].read_text(encoding="utf-8"), "# Existing agent rules\nUse local memory.\n")
+
+            scan_report = destination / ".daos" / "import-stage" / "instruction-scan.md"
+            scan_text = scan_report.read_text(encoding="utf-8")
+            self.assertIn("Edits applied", scan_text)
+            self.assertIn("backup:", scan_text)
+
+            status = self.run_cli("status", str(destination))
+            self.assertEqual(status.returncode, 0, msg=status.stderr)
+            self.assertIn("DAOS Status", status.stdout)
+            self.assertIn("Bridge", status.stdout)
+            self.assertIn("instruction carriers staged for review: 1", status.stdout)
+            self.assertIn("- No current focus set yet.", status.stdout)
+            self.assertNotIn("Fill with the current shared foreground lane", status.stdout)
+            self.assertIn("reset-handoff.md has no filled Exact next move", status.stdout)
+
 
 if __name__ == "__main__":
     unittest.main()
