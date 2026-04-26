@@ -1,5 +1,7 @@
 # HOT-CACHE-SPEC.md
 
+<!-- DAOS baseline note: This file is part of the DAOS starter-pack cache baseline. Use the repository README, changelog, release notes, or generated `daos-pack.json` for the current framework version; do not infer version freshness from GitHub per-file last-touched labels. -->
+
 ## Purpose
 
 The hot cache is the shared front door for what matters now.

@@ -1,5 +1,7 @@
 # Hot Cache
 
+<!-- DAOS baseline note: Starter-pack cache template. Use generated pack metadata for the current framework version; this template intentionally starts mostly empty. -->
+
 **Updated:** YYYY-MM-DD HH:MM TZ  
 **Updated by:** Installer / Agent  
 **Scope:** active foreground lane
