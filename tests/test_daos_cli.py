@@ -128,6 +128,50 @@ class DaosCliTests(unittest.TestCase):
             self.assertNotIn("Fill with the current shared foreground lane", result.stdout)
             self.assertIn("hot-cache.md has no real current focus yet", result.stdout)
 
+    def test_init_handles_isolated_existing_agent_systems_without_memory_import(self) -> None:
+        cases = [
+            ("new", []),
+            ("claude", ["CLAUDE.md"]),
+            ("copilot", [".github/copilot-instructions.md"]),
+            ("gemini", ["GEMINI.md"]),
+            ("cursor", [".cursorrules", ".cursor/rules/project.mdc"]),
+            ("hermes", ["HERMES.md", ".hermes/AGENTS.md", ".hermes/instructions.md"]),
+            ("openclaw", ["OPENCLAW.md", "QUINN.md", ".openclaw/AGENTS.md", ".openclaw/instructions.md"]),
+            ("memory-only", []),
+        ]
+        for name, carriers in cases:
+            with self.subTest(name=name):
+                with tempfile.TemporaryDirectory() as tmpdir:
+                    root = Path(tmpdir)
+                    workspace = root / "workspace"
+                    workspace.mkdir()
+                    for relative in carriers:
+                        path = workspace / relative
+                        path.parent.mkdir(parents=True, exist_ok=True)
+                        path.write_text(f"# {name} instruction carrier\nUse existing local behavior.\n", encoding="utf-8")
+
+                    memory_file = workspace / "MEMORY.md"
+                    memory_file.write_text(f"# {name} memory content\nDo not import by default.\n", encoding="utf-8")
+                    old_hot_cache = workspace / ".openclaw" / "wiki" / "cache" / "hot-cache.md"
+                    old_hot_cache.parent.mkdir(parents=True, exist_ok=True)
+                    old_hot_cache.write_text("# old hot cache\n", encoding="utf-8")
+
+                    destination = root / "daos-home"
+                    result = self.run_cli("init", str(destination), "--scan", str(workspace))
+                    self.assertEqual(result.returncode, 0, msg=result.stderr)
+
+                    report = destination / ".daos" / "import-stage" / "instruction-scan.md"
+                    report_text = report.read_text(encoding="utf-8")
+                    self.assertTrue((destination / "wiki" / "cache" / "hot-cache.md").is_file())
+                    self.assertNotIn(str(memory_file), report_text)
+                    self.assertNotIn(str(old_hot_cache), report_text)
+                    if carriers:
+                        for relative in carriers:
+                            self.assertIn(str(workspace / relative), report_text)
+                        self.assertIn("Edits needing approval", report_text)
+                    else:
+                        self.assertIn("- none", report_text)
+
     def test_init_simulates_common_existing_agent_instruction_environments(self) -> None:
         with tempfile.TemporaryDirectory() as tmpdir:
             root = Path(tmpdir)
