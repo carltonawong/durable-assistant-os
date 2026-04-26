@@ -29,12 +29,12 @@ class DaosCliTests(unittest.TestCase):
             check=False,
         )
 
-    def test_help_lists_check_command_without_previewing_unshipped_commands(self) -> None:
+    def test_help_lists_only_shipped_commands_without_previewing_unshipped_commands(self) -> None:
         result = self.run_cli("--help")
 
         self.assertEqual(result.returncode, 0, msg=result.stderr)
         self.assertIn("check", result.stdout)
-        self.assertNotIn("orient", result.stdout)
+        self.assertIn("orient", result.stdout)
         self.assertNotIn("reset-test", result.stdout)
         self.assertNotIn("handoff", result.stdout)
         self.assertNotIn("memory-audit", result.stdout)

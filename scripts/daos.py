@@ -7,7 +7,7 @@ import argparse
 import sys
 from pathlib import Path
 
-from daos_core import validate_pack_dir
+from daos_core import build_orientation_bundle, validate_pack_dir
 
 
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
@@ -22,6 +22,14 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         description="Run a read-only DAOS pack health check. No files are modified.",
     )
     check.add_argument("pack_dir", help="Path to a DAOS pack directory to check")
+
+    orient = subparsers.add_parser(
+        "orient",
+        help="build a read-only assistant orientation bundle",
+        description="Build a deterministic DAOS orientation bundle for an assistant. No files are modified and no LLM is called.",
+    )
+    orient.add_argument("pack_dir", help="Path to a DAOS pack directory to orient from")
+    orient.add_argument("--task", default=None, help="Current task to include in the orientation bundle")
 
     return parser.parse_args(argv)
 
@@ -53,10 +61,21 @@ def run_check(pack_dir_arg: str) -> int:
     return 0
 
 
+def run_orient(pack_dir_arg: str, task: str | None) -> int:
+    exit_code, stdout, stderr = build_orientation_bundle(pack_dir_arg, task=task)
+    if stdout:
+        print(stdout, end="")
+    if stderr:
+        print(stderr, end="", file=sys.stderr)
+    return exit_code
+
+
 def main(argv: list[str] | None = None) -> int:
     args = parse_args(argv)
     if args.command == "check":
         return run_check(args.pack_dir)
+    if args.command == "orient":
+        return run_orient(args.pack_dir, args.task)
     raise AssertionError(f"unhandled command: {args.command}")
 
 
