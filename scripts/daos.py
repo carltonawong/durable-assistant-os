@@ -4,17 +4,30 @@
 from __future__ import annotations
 
 import argparse
+import os
 import sys
 from pathlib import Path
 
-from daos_core import audit_memory_surfaces, build_orientation_bundle, run_reset_recovery_test, validate_pack_dir, write_reset_handoff
+from daos_core import audit_memory_surfaces, build_state_report, build_orientation_bundle, run_reset_recovery_test, validate_pack_dir, write_reset_handoff
 
 
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
+    if argv is None:
+        argv = sys.argv[1:]
+    if not argv:
+        return argparse.Namespace(command="state", pack_dir=None)
+
     parser = argparse.ArgumentParser(
         description="DAOS local harness commands. Only shipped commands are listed here."
     )
     subparsers = parser.add_subparsers(dest="command", required=True)
+
+    state = subparsers.add_parser(
+        "state",
+        help="show a compact DAOS state report",
+        description="Show the current DAOS state report. No files are modified.",
+    )
+    state.add_argument("pack_dir", nargs="?", help="Path to a DAOS pack directory. Defaults to DAOS_HOME or ~/.daos.")
 
     check = subparsers.add_parser(
         "check",
@@ -58,6 +71,25 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     memory_audit.add_argument("pack_dir", help="Path to a DAOS pack directory to audit")
 
     return parser.parse_args(argv)
+
+
+def resolve_default_pack_dir(pack_dir_arg: str | None) -> Path:
+    if pack_dir_arg:
+        return Path(pack_dir_arg).expanduser().resolve()
+    configured = os.environ.get("DAOS_HOME")
+    if configured:
+        return Path(configured).expanduser().resolve()
+    return (Path.home() / ".daos").resolve()
+
+
+def run_state(pack_dir_arg: str | None) -> int:
+    pack_dir = resolve_default_pack_dir(pack_dir_arg)
+    exit_code, stdout, stderr = build_state_report(pack_dir)
+    if stdout:
+        print(stdout, end="")
+    if stderr:
+        print(stderr, end="", file=sys.stderr)
+    return exit_code
 
 
 def run_check(pack_dir_arg: str) -> int:
@@ -132,6 +164,8 @@ def run_memory_audit(pack_dir_arg: str) -> int:
 
 def main(argv: list[str] | None = None) -> int:
     args = parse_args(argv)
+    if args.command == "state":
+        return run_state(args.pack_dir)
     if args.command == "check":
         return run_check(args.pack_dir)
     if args.command == "orient":

@@ -32,6 +32,107 @@ def _surface_status(root: Path, relative_path: str, *, directory: bool = False) 
     return f"{relative_path}: {status}"
 
 
+def _section_bullets(text: str, heading: str) -> list[str]:
+    bullets: list[str] = []
+    in_section = False
+    for line in text.splitlines():
+        if line.strip() == heading:
+            in_section = True
+            continue
+        if in_section and line.startswith("## "):
+            break
+        if in_section and line.startswith("- "):
+            bullets.append(line)
+    return bullets
+
+
+def _recent_log_entries(text: str, limit: int = 3) -> list[str]:
+    entries: list[str] = []
+    current_header = ""
+    for line in text.splitlines():
+        if line.startswith("## "):
+            current_header = line[3:].strip()
+            continue
+        if current_header and line.startswith("- "):
+            entries.append(f"[{current_header}] {line[2:].strip()}")
+            if len(entries) >= limit:
+                break
+    return entries
+
+
+def build_state_report(pack_dir: str | Path) -> tuple[int, str, str]:
+    root = Path(pack_dir).expanduser().resolve()
+    validation = validate_pack_dir(root)
+    if any(error.startswith("Pack directory does not exist") or error.startswith("Pack path is not a directory") for error in validation.errors):
+        return (
+            1,
+            "",
+            f"DAOS State unavailable: {root}\n- run `daos init` to create a DAOS home, or set DAOS_HOME to an existing pack\n",
+        )
+
+    hot_cache = root / "wiki" / "cache" / "hot-cache.md"
+    hot_cache_log = root / "wiki" / "cache" / "hot-cache-log.md"
+    reset_handoff = root / "wiki" / "cache" / "reset-handoff.md"
+    raw_dir = root / "wiki" / "raw"
+    source_dir = root / "wiki" / "sources"
+
+    current: list[str] = []
+    corrections: list[str] = []
+    if hot_cache.is_file():
+        hot_text = _read_text(hot_cache)
+        current = _section_bullets(hot_text, "## Current Focus")[:4]
+        corrections = _section_bullets(hot_text, "## Current Corrections")[:3]
+
+    recent: list[str] = []
+    if hot_cache_log.is_file():
+        recent = _recent_log_entries(_read_text(hot_cache_log), limit=4)
+
+    next_move = "Write or refresh `wiki/cache/reset-handoff.md`."
+    if reset_handoff.is_file():
+        value = _label_value(_read_text(reset_handoff), "- Exact next move:")
+        if value:
+            next_move = value
+
+    warnings: list[str] = []
+    if validation.errors:
+        warnings.extend(validation.errors[:5])
+    if not current:
+        warnings.append("hot-cache.md has no current focus bullets")
+    if reset_handoff.is_file():
+        handoff_text = _read_text(reset_handoff)
+        if not _label_value(handoff_text, "- Exact next move:"):
+            warnings.append("reset-handoff.md has no filled Exact next move")
+        if not _label_value(handoff_text, "- First verification:"):
+            warnings.append("reset-handoff.md has no filled First verification")
+    else:
+        warnings.append("reset-handoff.md is missing")
+
+    raw_count = 0
+    source_count = 0
+    if raw_dir.is_dir():
+        raw_count = len([path for path in raw_dir.rglob("*") if path.is_file() and path.name != "README.md"])
+    if source_dir.is_dir():
+        source_count = len([path for path in source_dir.rglob("*") if path.is_file() and path.name != "README.md"])
+
+    lines = [
+        "DAOS State",
+        f"Pack: {root}",
+        "",
+        "Current",
+    ]
+    lines.extend(current or ["- No current focus found."])
+    if corrections:
+        lines.extend(["", "Corrections"])
+        lines.extend(corrections)
+    lines.extend(["", "Recent Activity"])
+    lines.extend([f"- {entry}" for entry in recent] or ["- No recent hot-cache-log entries found."])
+    lines.extend(["", "Memory Surfaces", f"- raw notes beyond README: {raw_count}", f"- source notes beyond README: {source_count}"])
+    lines.extend(["", "Needs Attention"])
+    lines.extend([f"- {warning}" for warning in warnings] or ["- None"])
+    lines.extend(["", "Next", f"- {next_move}"])
+    return 0, "\n".join(lines) + "\n", ""
+
+
 def build_orientation_bundle(pack_dir: str | Path, task: str | None = None) -> tuple[int, str, str]:
     """Build a deterministic DAOS orientation bundle.
 
