@@ -1,6 +1,6 @@
 # Durable Assistant OS
 
-**Current documented baseline:** `v0.1.5`  
+**Current documented baseline:** `v0.1.6`  
 **Release notes:** `CHANGELOG.md` and `docs/releases/`
 
 Durable Assistant OS (DAOS) is a copyable operating pack for assistants that need to stay useful after the first impressive session.
@@ -13,6 +13,21 @@ It gives a human and an assistant a small shared system for:
 - checking live reality before acting on stale notes
 
 DAOS is not a hosted app and not a full assistant runtime. It is the operating structure you can put beside a runtime.
+
+![Fragile assistant versus DAOS memory surfaces](docs/assets/daos-fragile-vs-memory-surfaces.png)
+
+## Source pattern
+
+DAOS assumes the **LLM Wiki** pattern: a plain markdown knowledge base that an assistant can read, maintain, and improve over time. Read Karpathy's short note first if this idea is new:
+
+- **Karpathy's LLM Wiki pattern**  
+  https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f
+
+Optional companion:
+- **Obsidian** — helpful if you want a dedicated vault-style UI for browsing and editing that wiki  
+  https://obsidian.md/download
+
+DAOS adds operating discipline around that pattern: a compact front door, reset handoff, durable pages, raw/source notes, and a rule that live reality still outranks remembered notes.
 
 ## Who this is for
 

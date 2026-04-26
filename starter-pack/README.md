@@ -18,6 +18,12 @@ The wiki is where durable knowledge should live:
 
 The included `wiki/` folder can be your durable memory home. If you already use another markdown wiki or docs vault, treat this folder as the DAOS shape to copy/adapt.
 
+This follows the **LLM Wiki** pattern: the wiki is the durable knowledge base an assistant can read and maintain, not just a dump of notes. If that pattern is unfamiliar, read Karpathy's note before customizing the structure:
+
+- https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f
+
+Obsidian is optional; it is only a human-facing UI for browsing/editing the same markdown files.
+
 ## The two kinds of files
 
 ### 1. Files you fill

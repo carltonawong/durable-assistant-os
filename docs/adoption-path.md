@@ -22,12 +22,12 @@ Goal:
 Use:
 - `docs/quickstart.md`
 - `docs/public-memory-page.md`
-- Karpathy's LLM Wiki pattern
+- Karpathy's LLM Wiki pattern: https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f
 - `examples/`
 - `starter-pack/`
 
 Optional companion if you want a better wiki UI:
-- Obsidian
+- Obsidian: https://obsidian.md/download
 
 Rule:
 - choose only one install path when you start: copy `starter-pack/`, run bootstrap, or run the wizard

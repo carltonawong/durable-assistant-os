@@ -14,7 +14,26 @@ Do not add entries for every typo fix or private WIP note.
 
 ## Unreleased
 
-No unreleased framework-facing changes are staged after `v0.1.5` yet.
+No unreleased framework-facing changes are staged after `v0.1.6` yet.
+
+## v0.1.6 - 2026-04-25
+
+### Changed
+- Compressed the README and quickstart into a clearer stranger-facing front door with fewer cross-references.
+- Restored the fragile-assistant vs DAOS memory-surfaces visual near the top of the README so the core contrast is visible before deeper docs.
+- Made Karpathy's LLM Wiki pattern visible from the front door and starter pack so adopters understand the markdown-wiki structure before customizing it.
+- Reduced examples to a smaller set of copyable examples, with the filled starter-pack example now overlaying user-owned files onto the locked `starter-pack/` spine instead of duplicating it.
+- Updated `scripts/daos_bootstrap.py` so `--filled-example` preserves the locked baseline spine while applying the filled example files.
+- Generated and updater-created manifests now advertise the current framework baseline, `v0.1.6`.
+
+### Hardened
+- Removed public `docs/plans/` workbench artifacts from the release surface; shipped behavior remains represented by docs, scripts, tests, changelog, release notes, tags, and git history.
+- Clarified starter-pack maintenance as manual-first with optional visible automation, including what a plain markdown `wiki/` means for new users.
+- Eliminated duplicated locked baseline files from `examples/starter-pack-example/`, reducing maintenance drift risk.
+
+### Notes
+- Scope this as a public-surface hardening patch, not a new runtime or architecture release.
+- Internal roadmap/planning docs remain private by default unless intentionally promoted into a shipped, proof-backed repo slice.
 
 ## v0.1.5 - 2026-04-24
 
