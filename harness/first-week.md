@@ -118,7 +118,7 @@ Use alongside:
 - `docs/quickstart.md`
 - `starter-pack/`
 - `templates/cadence-review-template.md`
-- `examples/cadence-review-example.md`
+- `examples/starter-pack-example/cadence-review.md`
 
 ## Bottom line
 

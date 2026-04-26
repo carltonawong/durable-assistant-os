@@ -1,211 +1,73 @@
 # DAOS Quickstart
 
-## Who this is for
+Use this when you want a first usable DAOS pack without reading the whole repo.
 
-This page is for assistant operators/builders who want a first usable DAOS pack without reading the whole repo first.
+The default path does not require scripts.
 
-The operator fills the pack.
-The assistant later uses it.
+## 15-minute path
 
-This is not the full doctrine path.
-It is the shortest path to a first useful setup.
+1. Copy `starter-pack/` into your own workspace.
+2. Open the copied folder.
+3. Fill `assistant-charter.md`.
+4. Fill `operating-profile.md`.
+5. Leave `lane-snapshot.md` blank unless one workstream already needs extra structure.
+6. Save `cadence-review.md` for later upkeep.
+7. Use `harness/first-week.md` after the first setup.
 
-## Quick translation of DAOS terms
+## What each first-run file does
 
-- **assistant charter** — what this assistant is for and how it should behave
-- **operating profile** — your working context, priorities, and support preferences
-- **lane snapshot** — the current state of one workstream
-- **cadence review** — a recurring cleanup and calibration pass
+- `assistant-charter.md` defines what the assistant is for, how it behaves under uncertainty, and what requires approval.
+- `operating-profile.md` defines the working context, lanes, memory defaults, and trust posture.
+- `lane-snapshot.md` is optional extra structure for one high-friction lane.
+- `cadence-review.md` is for later cleanup and calibration, not first install.
 
-## Read this first
+## Minimum good first pass
 
-DAOS works best when your durable memory lives in readable markdown files.
-Before you start, read:
+A first pass is good enough when:
+- the assistant's main job is clear
+- the main failure mode is clear
+- approval boundaries are explicit
+- active lanes are named
+- memory has a durable home
+- live files/runtime are treated as higher authority than remembered notes
 
-- **Karpathy's LLM Wiki pattern**  
-  https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f
+Do not try to model your entire life or organization before first use.
 
-You do not need to master it before trying DAOS.
-You just need the core idea: the durable memory target is a maintained markdown wiki, not leftover chat residue.
+## Optional read-only checks
 
-Optional companion:
-- **Obsidian** — helpful if you want a dedicated vault-style UI for browsing and editing that wiki  
-  https://obsidian.md/download
+If you are comfortable running local Python scripts, use read-only checks after filling the pack:
 
-## The 15-minute path
+```bash
+python scripts/daos_validate.py /path/to/my-daos-pack
+python scripts/daos_memory_parity.py /path/to/my-daos-pack
+```
 
-## Step 1 — Start with the default path
+If you do not want to run scripts, use this page, `starter-pack/README.md`, and `docs/memory-parity-auditor.md` as manual checklists.
 
-**Recommended default:** copy `starter-pack/` first.
-It is the simplest path and the best place to understand DAOS before using bootstrap or the wizard.
+## Optional generated setup
 
-### Default path — Copy `starter-pack/`
-Best if you want the most literal first run.
-- copy `starter-pack/` into your own workspace
-- open `starter-pack/README.md`
-- fill the files in that order
+Manual copying is the default. If you prefer generated setup:
 
-### Alternate path — Generate a new pack
-Best if you want a clean scaffold.
-- run `python scripts/daos_bootstrap.py /path/to/my-daos-pack`
-- fill the generated files
+```bash
+python scripts/daos_bootstrap.py /path/to/my-daos-pack
+```
 
-### Alternate path — Use the guided wizard
-Best if you want interactive setup.
-- run `python scripts/daos_wizard.py /path/to/my-daos-pack`
-- review/fill anything still missing
+For an interactive first pass:
 
-## Step 2 — Know what you are creating
+```bash
+python scripts/daos_wizard.py /path/to/my-daos-pack
+```
 
-A first DAOS install should leave you with:
-- a filled assistant charter
-- a filled operating profile
-- optional lane/continuity notes only where they help
-- a durable markdown memory surface the assistant can later use
+Read `docs/script-safety.md` first if you want to understand the script trust posture.
 
-## The three files that matter most on day one
+## Examples
 
-If you are using the default path, most first-run value comes from just three files:
+Use examples to understand shape, not to copy blindly:
+- `examples/starter-pack-example/` shows filled user-owned files for a realistic pack.
+- `examples/creative-studio-operating-profile-example.md` shows a different persona and lane shape.
 
-1. `starter-pack/assistant-charter.md` — locks how the assistant should behave
-2. `starter-pack/operating-profile.md` — locks your active lanes, memory defaults, and support posture
-3. `harness/first-week.md` — tells you what to tune after real use starts
+## Next step
 
-Everything else is support material.
-Do not treat the rest of the repo as required reading before first value.
+After setup, stop configuring and use the pack for a week.
 
-## What you should have after the first setup
-
-After one sitting, you should have:
-- a clear definition of what your assistant is for
-- explicit trust and approval boundaries
-- a durable place for key working context
-- a simple structure for keeping active work from drifting
-
-## Step 3 — Fill the baseline in order
-
-For the default path, use this order:
-1. Open `starter-pack/README.md`
-2. Fill `assistant-charter.md`
-3. Fill `operating-profile.md`
-4. Read `docs/public-memory-page.md` only if the memory fields feel unclear
-5. Fill `lane-snapshot.md` only if one lane needs more structure
-6. Save `cadence-review.md` for later upkeep, not first install
-
-If you want the fuller operator script behind this flow, then read `harness/core-setup.md`.
-
-## If you get stuck on the memory fields
-
-Use these default starter answers and refine later:
-
-- **Memory front door** — current chat/session first, then a short active summary, then reset handoff on reset/long idle, then any broader continuity note
-- **Durable memory home** — markdown wiki or docs space first
-- **Verified reality rule** — live files, systems, and runtime state outrank remembered notes
-- **Ask-vs-act rule** — ask when ambiguity would change the action; otherwise act on clear low-stakes intent
-- **Escalation / approval rule** — pause for approval on costly, risky, sticky, or socially consequential actions
-- **Durable capture rule** — if something would be annoying to rediscover, move it into durable notes instead of leaving it only in chat or hot context
-
-## Step 4 — Optional read-only checks and first use
-
-If you are comfortable running local scripts, start with read-only checks:
-- `python scripts/daos_validate.py /path/to/my-daos-pack`
-- `python scripts/daos_memory_parity.py /path/to/my-daos-pack`
-
-If you do not want to run scripts yet, use `starter-pack/README.md` and `docs/memory-parity-auditor.md` as manual checklists instead.
-Then use `harness/first-week.md` to keep the system light and calibrated.
-
-That is enough to install a first-pass DAOS baseline.
-
-If you want to understand what comes after setup and the first week, read `docs/adoption-path.md`.
-
-If you want runtime-specific enforcement after the baseline is working, read `docs/agent-integrations.md`.
-
-## If you need the tooling list
-
-You do not need scripts before first value. Copying and filling `starter-pack/` is enough.
-If you do use scripts, start with the read-only checks and see `docs/script-safety.md` for the risk tiers:
-- `scripts/daos_validate.py` — read-only readiness + lint/calibration checks
-- `scripts/daos_memory_parity.py` — read-only memory semantics check
-- `scripts/daos_bootstrap.py` — optional generated setup into a target folder
-- `scripts/daos_wizard.py` — optional interactive setup
-
-Advanced write-capable maintenance and portability tools are intentionally left out of the first-run checklist. Use `docs/script-safety.md` and `docs/portability.md` only when you actually need those mechanics.
-
-## If you want examples before filling anything
-
-Read these worked examples first:
-- `examples/assistant-charter-example.md`
-- `examples/creative-studio-assistant-charter-example.md`
-- `examples/first-pass-setup-output-example.md`
-- `examples/lane-snapshot-example.md`
-- `examples/cadence-review-example.md`
-- `examples/setup-conversation-example.md`
-- `examples/user-operating-profile-example.md`
-- `examples/creative-studio-operating-profile-example.md`
-- `examples/starter-pack-example/`
-
-Use them to understand the target shape.
-Do not copy them blindly.
-
-## Minimum outcome of a first DAOS install
-
-A first pass is good enough when you have:
-- a clear assistant charter
-- a top-level lane map
-- per-lane status / foreground / pressure notes
-- explicit memory and trust defaults
-- a basic reminder / planning posture
-- one clear place for later calibration
-
-You do not need a perfect life model.
-You need a usable operating baseline.
-
-## Fast decision rule
-
-If you are unsure whether to add more structure, use this rule:
-- if the assistant is already useful, stop and operate
-- if one lane keeps drifting, add a lane snapshot
-- if support starts feeling noisy or stale, run a cadence review
-- if setup still feels confusing, simplify before expanding
-
-## Suggested first sitting output
-
-A good first sitting should leave you with:
-- one filled assistant charter
-- one filled operating profile
-- optionally one lane snapshot for the highest-friction lane
-- a clear note that cadence review happens later, not during setup
-
-Then the next step is not more setup.
-The next step is the first week of real use guided by `harness/first-week.md`.
-
-## What to skip at first
-
-Do not start by:
-- trying to model your entire life
-- designing a universal taxonomy
-- building too many memory layers
-- writing long doctrine for your own instance
-- creating a maintenance burden before value appears
-
-## If you want the deeper theory later
-
-Once the first setup is useful, then read more of the repo in this order:
-1. `docs/thesis.md`
-2. `docs/public-memory-page.md`
-3. `docs/memory.md`
-4. `docs/trust.md`
-5. `docs/lane-model.md`
-
-That sequence explains why the quickstart is designed this way.
-
-## Bottom line
-
-DAOS should be tried like an operating baseline, not admired like a concept deck.
-
-Start small.
-Lock the high-leverage defaults.
-Use it.
-Then calibrate.
-
-If you want the lowest-friction real start, copy `starter-pack/` and begin there.
+Then run the first-week calibration path in `harness/first-week.md`.
