@@ -7,7 +7,7 @@ import argparse
 import sys
 from pathlib import Path
 
-from daos_core import build_orientation_bundle, run_reset_recovery_test, validate_pack_dir, write_reset_handoff
+from daos_core import audit_memory_surfaces, build_orientation_bundle, run_reset_recovery_test, validate_pack_dir, write_reset_handoff
 
 
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
@@ -49,6 +49,13 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     handoff.add_argument("--why", required=True, help="Why this handoff exists")
     handoff.add_argument("--next", required=True, help="Exact next move after reset or idle")
     handoff.add_argument("--verify", required=True, help="First verification to run before continuing")
+
+    memory_audit = subparsers.add_parser(
+        "memory-audit",
+        help="audit DAOS memory surfaces",
+        description="Read-only audit of DAOS active and durable memory surfaces. No files are modified.",
+    )
+    memory_audit.add_argument("pack_dir", help="Path to a DAOS pack directory to audit")
 
     return parser.parse_args(argv)
 
@@ -114,6 +121,15 @@ def run_handoff(args: argparse.Namespace) -> int:
     return exit_code
 
 
+def run_memory_audit(pack_dir_arg: str) -> int:
+    exit_code, stdout, stderr = audit_memory_surfaces(pack_dir_arg)
+    if stdout:
+        print(stdout, end="")
+    if stderr:
+        print(stderr, end="", file=sys.stderr)
+    return exit_code
+
+
 def main(argv: list[str] | None = None) -> int:
     args = parse_args(argv)
     if args.command == "check":
@@ -124,6 +140,8 @@ def main(argv: list[str] | None = None) -> int:
         return run_reset_test(args.pack_dir)
     if args.command == "handoff":
         return run_handoff(args)
+    if args.command == "memory-audit":
+        return run_memory_audit(args.pack_dir)
     raise AssertionError(f"unhandled command: {args.command}")
 
 

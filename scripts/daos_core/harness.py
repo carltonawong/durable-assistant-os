@@ -23,6 +23,15 @@ def _presence_line(root: Path, relative_path: str) -> str:
     return f"- `{relative_path}`: {status}"
 
 
+def _surface_status(root: Path, relative_path: str, *, directory: bool = False) -> str:
+    path = root / relative_path
+    if directory:
+        status = "present" if path.is_dir() else "missing"
+    else:
+        status = "present" if path.is_file() else "missing"
+    return f"{relative_path}: {status}"
+
+
 def build_orientation_bundle(pack_dir: str | Path, task: str | None = None) -> tuple[int, str, str]:
     """Build a deterministic DAOS orientation bundle.
 
@@ -203,3 +212,67 @@ If anything here conflicts with verified files, runtime state, or durable wiki p
 """
     handoff_path.write_text(content, encoding="utf-8")
     return 0, f"DAOS handoff written: {handoff_path}\n", ""
+
+
+def audit_memory_surfaces(pack_dir: str | Path) -> tuple[int, str, str]:
+    root = Path(pack_dir).expanduser().resolve()
+    validation = validate_pack_dir(root)
+    if any(error.startswith("Pack directory does not exist") or error.startswith("Pack path is not a directory") for error in validation.errors):
+        lines = [f"DAOS memory audit failed: {root}"]
+        lines.extend(f"- {error}" for error in validation.errors)
+        return 1, "", "\n".join(lines) + "\n"
+
+    file_surfaces = [
+        "wiki/cache/hot-cache.md",
+        "wiki/cache/hot-cache-log.md",
+        "wiki/cache/reset-handoff.md",
+        "wiki/cache/agent-continuity.md",
+        "wiki/index.md",
+        "wiki/log.md",
+        "wiki/WIKI.md",
+    ]
+    directory_surfaces = ["wiki/raw", "wiki/sources"]
+    warnings: list[str] = []
+    lines = [f"DAOS memory audit: {root}", "", "surfaces:"]
+
+    for surface in file_surfaces:
+        status = _surface_status(root, surface)
+        lines.append(f"- {status}")
+        if status.endswith("missing"):
+            warnings.append(f"{surface} is missing")
+
+    for surface in directory_surfaces:
+        display = surface + "/"
+        status = _surface_status(root, surface, directory=True)
+        lines.append(f"- {display}: {status.rsplit(': ', 1)[1]}")
+        if status.endswith("missing"):
+            warnings.append(f"{display} is missing")
+
+    hot_cache = root / "wiki" / "cache" / "hot-cache.md"
+    if hot_cache.is_file():
+        text = _read_text(hot_cache)
+        if "**Updated:**" not in text:
+            warnings.append("hot-cache.md has no Updated field")
+        if "## Current Focus" not in text:
+            warnings.append("hot-cache.md has no Current Focus section")
+
+    reset_handoff = root / "wiki" / "cache" / "reset-handoff.md"
+    if reset_handoff.is_file():
+        text = _read_text(reset_handoff)
+        if not _label_value(text, "- Exact next move:"):
+            warnings.append("reset-handoff.md has no filled Exact next move")
+        if not _label_value(text, "- First verification:"):
+            warnings.append("reset-handoff.md has no filled First verification")
+
+    raw_dir = root / "wiki" / "raw"
+    source_dir = root / "wiki" / "sources"
+    if raw_dir.is_dir():
+        raw_notes = [path for path in raw_dir.rglob("*") if path.is_file() and path.name != "README.md"]
+        lines.append(f"raw notes beyond README: {len(raw_notes)}")
+    if source_dir.is_dir():
+        source_notes = [path for path in source_dir.rglob("*") if path.is_file() and path.name != "README.md"]
+        lines.append(f"source notes beyond README: {len(source_notes)}")
+
+    lines.extend(["", f"warnings: {len(warnings)}"])
+    lines.extend(f"- {warning}" for warning in warnings)
+    return 0, "\n".join(lines) + "\n", ""

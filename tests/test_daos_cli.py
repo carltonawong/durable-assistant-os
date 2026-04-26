@@ -37,7 +37,7 @@ class DaosCliTests(unittest.TestCase):
         self.assertIn("orient", result.stdout)
         self.assertIn("reset-test", result.stdout)
         self.assertIn("handoff", result.stdout)
-        self.assertNotIn("memory-audit", result.stdout)
+        self.assertIn("memory-audit", result.stdout)
 
     def test_check_passes_on_filled_example_pack(self) -> None:
         with tempfile.TemporaryDirectory() as tmpdir:
