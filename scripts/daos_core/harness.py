@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from datetime import datetime
 from pathlib import Path
 
 from .validate import validate_pack_dir
@@ -143,3 +144,62 @@ def run_reset_recovery_test(pack_dir: str | Path) -> tuple[int, str, str]:
         output.extend([f"validation warnings: {len(validation.warnings)}"])
         output.extend(f"- {warning}" for warning in validation.warnings)
     return 0, "\n".join(output) + "\n", ""
+
+
+def write_reset_handoff(
+    pack_dir: str | Path,
+    *,
+    lane: str,
+    status: str,
+    why: str,
+    next_move: str,
+    verify: str,
+) -> tuple[int, str, str]:
+    root = Path(pack_dir).expanduser().resolve()
+    required_values = {
+        "--lane": lane,
+        "--status": status,
+        "--why": why,
+        "--next": next_move,
+        "--verify": verify,
+    }
+    blank = [name for name, value in required_values.items() if not value.strip()]
+    if blank:
+        return 1, "", f"DAOS handoff failed: {blank[0]} must not be blank\n"
+
+    if not root.is_dir():
+        return 1, "", f"DAOS handoff failed: pack directory does not exist: {root}\n"
+    if not (root / "assistant-charter.md").is_file() or not (root / "operating-profile.md").is_file():
+        return 1, "", f"DAOS handoff failed: {root} does not look like a DAOS pack\n"
+
+    cache_dir = root / "wiki" / "cache"
+    cache_dir.mkdir(parents=True, exist_ok=True)
+    handoff_path = cache_dir / "reset-handoff.md"
+    timestamp = datetime.now().astimezone().strftime("%Y-%m-%d %H:%M %Z")
+    content = f"""# Reset Handoff
+
+Use this as the named DAOS reset/wake-up continuity artifact.
+
+Read it when the current thread is not enough after reset or long idle.
+
+If anything here conflicts with verified files, runtime state, or durable wiki pages, verify first and prefer reality.
+
+## Current Handoff
+**Last updated:** {timestamp}  
+**Updated by:** DAOS CLI  
+**Lane:** {lane.strip()}  
+**Status:** {status.strip()}
+
+- Why this handoff exists: {why.strip()}
+- Exact next move: {next_move.strip()}
+- First verification: {verify.strip()}
+- If stale or contradicted: Re-read the current thread, hot cache, and verified files before continuing.
+
+## Editing rules
+- overwrite instead of append
+- keep one resumable handoff, not a diary
+- point to durable notes instead of duplicating them
+- clear or rewrite when the exact handoff changes
+"""
+    handoff_path.write_text(content, encoding="utf-8")
+    return 0, f"DAOS handoff written: {handoff_path}\n", ""

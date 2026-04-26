@@ -7,7 +7,7 @@ import argparse
 import sys
 from pathlib import Path
 
-from daos_core import build_orientation_bundle, run_reset_recovery_test, validate_pack_dir
+from daos_core import build_orientation_bundle, run_reset_recovery_test, validate_pack_dir, write_reset_handoff
 
 
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
@@ -37,6 +37,18 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         description="Check whether a DAOS pack can support fresh-session reset recovery. No files are modified and no LLM is called.",
     )
     reset_test.add_argument("pack_dir", help="Path to a DAOS pack directory to test")
+
+    handoff = subparsers.add_parser(
+        "handoff",
+        help="overwrite the reset handoff artifact",
+        description="Write the current exact reset handoff into a DAOS pack. This overwrites wiki/cache/reset-handoff.md.",
+    )
+    handoff.add_argument("pack_dir", help="Path to a DAOS pack directory to update")
+    handoff.add_argument("--lane", required=True, help="Current lane for the handoff")
+    handoff.add_argument("--status", required=True, help="Current status for the handoff")
+    handoff.add_argument("--why", required=True, help="Why this handoff exists")
+    handoff.add_argument("--next", required=True, help="Exact next move after reset or idle")
+    handoff.add_argument("--verify", required=True, help="First verification to run before continuing")
 
     return parser.parse_args(argv)
 
@@ -86,6 +98,22 @@ def run_reset_test(pack_dir_arg: str) -> int:
     return exit_code
 
 
+def run_handoff(args: argparse.Namespace) -> int:
+    exit_code, stdout, stderr = write_reset_handoff(
+        args.pack_dir,
+        lane=args.lane,
+        status=args.status,
+        why=args.why,
+        next_move=args.next,
+        verify=args.verify,
+    )
+    if stdout:
+        print(stdout, end="")
+    if stderr:
+        print(stderr, end="", file=sys.stderr)
+    return exit_code
+
+
 def main(argv: list[str] | None = None) -> int:
     args = parse_args(argv)
     if args.command == "check":
@@ -94,6 +122,8 @@ def main(argv: list[str] | None = None) -> int:
         return run_orient(args.pack_dir, args.task)
     if args.command == "reset-test":
         return run_reset_test(args.pack_dir)
+    if args.command == "handoff":
+        return run_handoff(args)
     raise AssertionError(f"unhandled command: {args.command}")
 
 
