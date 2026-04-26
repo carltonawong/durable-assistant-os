@@ -5,6 +5,14 @@ from pathlib import Path
 
 from .validate import validate_pack_dir
 
+INSTRUCTION_CARRIER_PATTERNS = (
+    "AGENTS.md",
+    "CLAUDE.md",
+    "GEMINI.md",
+    ".cursorrules",
+    ".github/copilot-instructions.md",
+)
+
 
 def _read_text(path: Path) -> str:
     return path.read_text(encoding="utf-8")
@@ -58,6 +66,66 @@ def _recent_log_entries(text: str, limit: int = 3) -> list[str]:
             if len(entries) >= limit:
                 break
     return entries
+
+
+def _find_instruction_carriers(scan_root: Path) -> list[Path]:
+    found: list[Path] = []
+    if not scan_root.exists():
+        return found
+    if scan_root.is_file():
+        return [scan_root] if scan_root.name in {Path(pattern).name for pattern in INSTRUCTION_CARRIER_PATTERNS} else []
+    for pattern in INSTRUCTION_CARRIER_PATTERNS:
+        candidate = scan_root / pattern
+        if candidate.is_file():
+            found.append(candidate)
+    cursor_rules = scan_root / ".cursor" / "rules"
+    if cursor_rules.is_dir():
+        found.extend(sorted(path for path in cursor_rules.rglob("*") if path.is_file()))
+    return sorted(set(found))
+
+
+def write_instruction_scan_report(pack_dir: str | Path, scan_paths: list[Path]) -> Path:
+    root = Path(pack_dir).expanduser().resolve()
+    report_dir = root / ".daos" / "import-stage"
+    report_dir.mkdir(parents=True, exist_ok=True)
+    report_path = report_dir / "instruction-scan.md"
+
+    carriers: list[Path] = []
+    for scan_path in scan_paths:
+        carriers.extend(_find_instruction_carriers(scan_path))
+    carriers = sorted(set(carriers))
+
+    lines = [
+        "# DAOS Instruction Scan",
+        "",
+        "DAOS always installs the mandatory wiki/cache baseline. Existing agent-private memory can remain in place.",
+        "",
+        "DAOS coexistence rule should be placed at the top/front of existing instruction carriers before older private-memory rules.",
+        "",
+        "## Scan roots",
+    ]
+    lines.extend(f"- {path}" for path in scan_paths)
+    lines.extend(["", "## Instruction carriers found"])
+    if carriers:
+        lines.extend(f"- {path}" for path in carriers)
+    else:
+        lines.append("- none")
+    lines.extend(
+        [
+            "",
+            "## Suggested coexistence rule",
+            "This agent may keep using private/local/session memory for local recall and agent-specific behavior.",
+            "For cross-agent or cross-tool continuity, use the DAOS wiki/cache system as the shared continuity layer.",
+            "Current verified reality outranks all memory.",
+            "",
+            "## Safety posture",
+            "- no existing instruction files were modified by this scan",
+            "- review before patching instruction carriers",
+            "- preserve existing private-memory rules below the DAOS coexistence rule",
+        ]
+    )
+    report_path.write_text("\n".join(lines) + "\n", encoding="utf-8")
+    return report_path
 
 
 def build_state_report(pack_dir: str | Path) -> tuple[int, str, str]:

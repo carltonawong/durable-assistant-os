@@ -8,7 +8,8 @@ import os
 import sys
 from pathlib import Path
 
-from daos_core import audit_memory_surfaces, build_state_report, build_orientation_bundle, run_reset_recovery_test, validate_pack_dir, write_reset_handoff
+from daos_bootstrap import bootstrap
+from daos_core import audit_memory_surfaces, build_state_report, build_orientation_bundle, run_reset_recovery_test, validate_pack_dir, write_instruction_scan_report, write_reset_handoff
 
 
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
@@ -28,6 +29,16 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         description="Show the current DAOS state report. No files are modified.",
     )
     state.add_argument("pack_dir", nargs="?", help="Path to a DAOS pack directory. Defaults to DAOS_HOME or ~/.daos.")
+
+    init = subparsers.add_parser(
+        "init",
+        help="install the DAOS baseline",
+        description="Install the mandatory DAOS baseline and optionally scan existing instruction carriers for coexistence review.",
+    )
+    init.add_argument("pack_dir", nargs="?", help="Destination DAOS home. Defaults to DAOS_HOME or ~/.daos.")
+    init.add_argument("--blank", action="store_true", help="Install baseline without scanning existing instruction carriers")
+    init.add_argument("--scan", action="append", default=[], help="Path to scan for existing memory/instruction carriers")
+    init.add_argument("--force", action="store_true", help="Replace an existing non-empty DAOS destination")
 
     check = subparsers.add_parser(
         "check",
@@ -90,6 +101,28 @@ def run_state(pack_dir_arg: str | None) -> int:
     if stderr:
         print(stderr, end="", file=sys.stderr)
     return exit_code
+
+
+def run_init(args: argparse.Namespace) -> int:
+    pack_dir = resolve_default_pack_dir(args.pack_dir)
+    try:
+        destination = bootstrap(pack_dir, force=args.force)
+        scan_paths = [] if args.blank else [Path(path).expanduser().resolve() for path in (args.scan or [Path.cwd()])]
+        report_path = None
+        if scan_paths:
+            report_path = write_instruction_scan_report(destination, scan_paths)
+    except (FileNotFoundError, ValueError, OSError) as exc:
+        print(f"DAOS init failed: {exc}", file=sys.stderr)
+        return 1
+
+    print(f"DAOS initialized: {destination}")
+    print("baseline: installed mandatory wiki/cache framework")
+    if args.blank:
+        print("instruction scan: skipped (--blank)")
+    elif report_path:
+        print(f"instruction scan: wrote review report: {report_path}")
+    print("next: run `daos` to view state")
+    return 0
 
 
 def run_check(pack_dir_arg: str) -> int:
@@ -166,6 +199,8 @@ def main(argv: list[str] | None = None) -> int:
     args = parse_args(argv)
     if args.command == "state":
         return run_state(args.pack_dir)
+    if args.command == "init":
+        return run_init(args)
     if args.command == "check":
         return run_check(args.pack_dir)
     if args.command == "orient":
