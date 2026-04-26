@@ -9,7 +9,7 @@ import sys
 from pathlib import Path
 
 from daos_bootstrap import bootstrap
-from daos_core import audit_memory_surfaces, build_state_report, build_orientation_bundle, run_reset_recovery_test, validate_pack_dir, write_instruction_scan_report, write_reset_handoff
+from daos_core import audit_memory_surfaces, build_state_report, build_orientation_bundle, find_instruction_carriers, prepend_daos_coexistence_rule, run_reset_recovery_test, validate_pack_dir, write_instruction_scan_report, write_reset_handoff
 
 
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
@@ -37,7 +37,7 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     )
     init.add_argument("pack_dir", nargs="?", help="Destination DAOS home. Defaults to DAOS_HOME or ~/.daos.")
     init.add_argument("--blank", action="store_true", help="Install baseline without scanning existing instruction carriers")
-    init.add_argument("--scan", action="append", default=[], help="Path to scan for existing memory/instruction carriers")
+    init.add_argument("--scan", action="append", default=[], help="Working directory to scan for existing agent instruction files")
     init.add_argument("--force", action="store_true", help="Replace an existing non-empty DAOS destination")
 
     check = subparsers.add_parser(
@@ -103,14 +103,58 @@ def run_state(pack_dir_arg: str | None) -> int:
     return exit_code
 
 
+def _resolve_init_scan_paths(args: argparse.Namespace) -> list[Path]:
+    if args.blank:
+        return []
+    if args.scan:
+        return [Path(path).expanduser().resolve() for path in args.scan]
+    if sys.stdin.isatty():
+        default = Path.cwd()
+        response = input(f"Working directory to scan for agent instructions [{default}]: ").strip()
+        return [Path(response).expanduser().resolve() if response else default.resolve()]
+    return [Path.cwd().resolve()]
+
+
+def _approve_instruction_edits(carriers: list[Path]) -> list[Path]:
+    if not carriers or not sys.stdin.isatty():
+        return []
+    pending = []
+    for carrier in carriers:
+        try:
+            text = carrier.read_text(encoding="utf-8")
+        except OSError:
+            continue
+        if "DAOS coexistence rule" not in text:
+            pending.append(carrier)
+    if not pending:
+        return []
+
+    print("DAOS found existing agent instruction files.")
+    for carrier in pending:
+        print(f"DAOS wants approval to prepend the coexistence rule to: {carrier}")
+    response = input("Apply these approved instruction edits now? [y/N]: ").strip().lower()
+    if response not in {"y", "yes"}:
+        return []
+
+    applied = []
+    for carrier in pending:
+        if prepend_daos_coexistence_rule(carrier):
+            applied.append(carrier)
+    return applied
+
+
 def run_init(args: argparse.Namespace) -> int:
     pack_dir = resolve_default_pack_dir(args.pack_dir)
     try:
+        scan_paths = _resolve_init_scan_paths(args)
         destination = bootstrap(pack_dir, force=args.force)
-        scan_paths = [] if args.blank else [Path(path).expanduser().resolve() for path in (args.scan or [Path.cwd()])]
         report_path = None
+        applied_paths = []
+        carriers = find_instruction_carriers(scan_paths) if scan_paths else []
+        if carriers:
+            applied_paths = _approve_instruction_edits(carriers)
         if scan_paths:
-            report_path = write_instruction_scan_report(destination, scan_paths)
+            report_path = write_instruction_scan_report(destination, scan_paths, applied_paths=applied_paths)
     except (FileNotFoundError, ValueError, OSError) as exc:
         print(f"DAOS init failed: {exc}", file=sys.stderr)
         return 1
@@ -121,6 +165,10 @@ def run_init(args: argparse.Namespace) -> int:
         print("instruction scan: skipped (--blank)")
     elif report_path:
         print(f"instruction scan: wrote review report: {report_path}")
+        if applied_paths:
+            print(f"instruction edits: applied with approval ({len(applied_paths)})")
+        else:
+            print("instruction edits: none applied; review report lists any proposed edits")
     print("next: run `daos` to view state")
     return 0
 

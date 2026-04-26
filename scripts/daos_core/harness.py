@@ -13,6 +13,29 @@ INSTRUCTION_CARRIER_PATTERNS = (
     ".github/copilot-instructions.md",
 )
 
+DAOS_COEXISTENCE_BLOCK = """## DAOS coexistence rule
+
+This agent may keep using private/local/session memory for local recall and agent-specific behavior.
+
+For cross-agent or cross-tool continuity, use the DAOS wiki/cache system as the shared continuity layer.
+
+Private memory can orient this agent, but DAOS is the shared continuity layer for the ecosystem.
+
+Current verified reality outranks all memory.
+"""
+
+PLACEHOLDER_MARKERS = (
+    "Fill with the current shared foreground lane.",
+    "Keep this as the front door only.",
+    "If it feels incongruent, check `hot-cache-log.md`.",
+    "Record only important current corrections.",
+    "Remove stale corrections when superseded.",
+    "Do not turn this into a change diary.",
+    "YYYY-MM-DD",
+    "[lane]",
+    "empty | fresh | stale | blocked",
+)
+
 
 def _read_text(path: Path) -> str:
     return path.read_text(encoding="utf-8")
@@ -92,16 +115,42 @@ def _find_instruction_carriers(scan_root: Path) -> list[Path]:
     return sorted(set(found))
 
 
-def write_instruction_scan_report(pack_dir: str | Path, scan_paths: list[Path]) -> Path:
+def find_instruction_carriers(scan_paths: list[Path]) -> list[Path]:
+    carriers: list[Path] = []
+    for scan_path in scan_paths:
+        carriers.extend(_find_instruction_carriers(scan_path))
+    return sorted(set(carriers))
+
+
+def instruction_carrier_needs_daos_rule(path: Path) -> bool:
+    if not path.is_file():
+        return False
+    return "DAOS coexistence rule" not in _read_text(path)
+
+
+def prepend_daos_coexistence_rule(path: Path) -> bool:
+    """Prepend the DAOS coexistence rule after explicit approval.
+
+    Returns True when the file changed. This function does not ask for approval;
+    callers are responsible for collecting approval before calling it.
+    """
+    current = _read_text(path)
+    if "DAOS coexistence rule" in current:
+        return False
+    path.write_text(DAOS_COEXISTENCE_BLOCK.rstrip() + "\n\n" + current, encoding="utf-8")
+    return True
+
+
+def write_instruction_scan_report(pack_dir: str | Path, scan_paths: list[Path], applied_paths: list[Path] | None = None) -> Path:
     root = Path(pack_dir).expanduser().resolve()
     report_dir = root / ".daos" / "import-stage"
     report_dir.mkdir(parents=True, exist_ok=True)
     report_path = report_dir / "instruction-scan.md"
 
-    carriers: list[Path] = []
-    for scan_path in scan_paths:
-        carriers.extend(_find_instruction_carriers(scan_path))
-    carriers = sorted(set(carriers))
+    carriers = find_instruction_carriers(scan_paths)
+    applied = sorted(set(applied_paths or []))
+    unapplied = [path for path in carriers if path not in applied and instruction_carrier_needs_daos_rule(path)]
+    already_aligned = [path for path in carriers if path not in applied and not instruction_carrier_needs_daos_rule(path)]
 
     lines = [
         "# DAOS Instruction Scan",
@@ -118,22 +167,46 @@ def write_instruction_scan_report(pack_dir: str | Path, scan_paths: list[Path]) 
         lines.extend(f"- {path}" for path in carriers)
     else:
         lines.append("- none")
+    lines.extend(["", "## Edits applied"])
+    if applied:
+        lines.extend(f"- prepended DAOS coexistence rule to `{path}`" for path in applied)
+    else:
+        lines.append("- none")
+    lines.extend(["", "## Edits needing approval"])
+    if unapplied:
+        lines.extend(f"- prepend DAOS coexistence rule to `{path}`" for path in unapplied)
+    else:
+        lines.append("- none")
+    if already_aligned:
+        lines.extend(["", "## Already aligned"])
+        lines.extend(f"- `{path}` already contains DAOS coexistence rule" for path in already_aligned)
     lines.extend(
         [
             "",
             "## Suggested coexistence rule",
-            "This agent may keep using private/local/session memory for local recall and agent-specific behavior.",
-            "For cross-agent or cross-tool continuity, use the DAOS wiki/cache system as the shared continuity layer.",
-            "Current verified reality outranks all memory.",
+            DAOS_COEXISTENCE_BLOCK.rstrip(),
             "",
             "## Safety posture",
-            "- no existing instruction files were modified by this scan",
-            "- review before patching instruction carriers",
+            "- no arbitrary old memory content was imported",
+            "- instruction files are edited only after explicit approval",
             "- preserve existing private-memory rules below the DAOS coexistence rule",
         ]
     )
     report_path.write_text("\n".join(lines) + "\n", encoding="utf-8")
     return report_path
+
+
+def _is_placeholder_bullet(line: str) -> bool:
+    clean = line[2:].strip() if line.startswith("- ") else line.strip()
+    return any(marker in clean for marker in PLACEHOLDER_MARKERS)
+
+
+def _real_bullets(lines: list[str]) -> list[str]:
+    return [line for line in lines if not _is_placeholder_bullet(line)]
+
+
+def _looks_placeholder_text(text: str) -> bool:
+    return any(marker in text for marker in PLACEHOLDER_MARKERS)
 
 
 def build_state_report(pack_dir: str | Path) -> tuple[int, str, str]:
@@ -157,8 +230,8 @@ def build_state_report(pack_dir: str | Path) -> tuple[int, str, str]:
     corrections: list[str] = []
     if hot_cache.is_file():
         hot_text = _read_text(hot_cache)
-        current = _section_bullets(hot_text, "## Current Focus")[:4]
-        corrections = _section_bullets(hot_text, "## Current Corrections")[:3]
+        current = _real_bullets(_section_bullets(hot_text, "## Current Focus"))[:4]
+        corrections = _real_bullets(_section_bullets(hot_text, "## Current Corrections"))[:3]
 
     recent: list[str] = []
     if hot_cache_log.is_file():
@@ -174,7 +247,7 @@ def build_state_report(pack_dir: str | Path) -> tuple[int, str, str]:
     if validation.errors:
         warnings.extend(validation.errors[:5])
     if not current:
-        warnings.append("hot-cache.md has no current focus bullets")
+        warnings.append("hot-cache.md has no real current focus yet")
     if reset_handoff.is_file():
         handoff_text = _read_text(reset_handoff)
         if not _label_value(handoff_text, "- Exact next move:"):
@@ -198,7 +271,7 @@ def build_state_report(pack_dir: str | Path) -> tuple[int, str, str]:
         "",
         "Current",
     ]
-    lines.extend(current or ["- No current focus found."])
+    lines.extend(current or ["- No current focus set yet."])
     if corrections:
         lines.extend(["", "Corrections"])
         lines.extend(corrections)
