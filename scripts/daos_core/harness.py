@@ -10,8 +10,15 @@ INSTRUCTION_CARRIER_PATTERNS = (
     "AGENTS.md",
     "CLAUDE.md",
     "GEMINI.md",
+    "HERMES.md",
+    "OPENCLAW.md",
+    "QUINN.md",
     ".cursorrules",
     ".github/copilot-instructions.md",
+    ".hermes/AGENTS.md",
+    ".hermes/instructions.md",
+    ".openclaw/AGENTS.md",
+    ".openclaw/instructions.md",
 )
 
 DAOS_COEXISTENCE_BLOCK = """## DAOS coexistence rule

@@ -128,6 +128,50 @@ class DaosCliTests(unittest.TestCase):
             self.assertNotIn("Fill with the current shared foreground lane", result.stdout)
             self.assertIn("hot-cache.md has no real current focus yet", result.stdout)
 
+    def test_init_simulates_common_existing_agent_instruction_environments(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            workspace = root / "workspace"
+            workspace.mkdir()
+            carrier_paths = [
+                workspace / "AGENTS.md",
+                workspace / "CLAUDE.md",
+                workspace / "GEMINI.md",
+                workspace / "HERMES.md",
+                workspace / "OPENCLAW.md",
+                workspace / "QUINN.md",
+                workspace / ".cursorrules",
+                workspace / ".github" / "copilot-instructions.md",
+                workspace / ".cursor" / "rules" / "project.mdc",
+                workspace / ".hermes" / "AGENTS.md",
+                workspace / ".hermes" / "instructions.md",
+                workspace / ".openclaw" / "AGENTS.md",
+                workspace / ".openclaw" / "instructions.md",
+            ]
+            for path in carrier_paths:
+                path.parent.mkdir(parents=True, exist_ok=True)
+                path.write_text(f"# Existing instructions for {path.name}\nUse existing local memory.\n", encoding="utf-8")
+
+            # Existing memory content should not be treated as an instruction carrier.
+            memory_file = workspace / "MEMORY.md"
+            memory_file.write_text("# Old memory facts\nDo not import me by default.\n", encoding="utf-8")
+            hot_cache = workspace / ".openclaw" / "wiki" / "cache" / "hot-cache.md"
+            hot_cache.parent.mkdir(parents=True, exist_ok=True)
+            hot_cache.write_text("# Old hot cache\nDo not import me by default.\n", encoding="utf-8")
+
+            destination = root / "daos-home"
+            result = self.run_cli("init", str(destination), "--scan", str(workspace))
+
+            report = destination / ".daos" / "import-stage" / "instruction-scan.md"
+            self.assertEqual(result.returncode, 0, msg=result.stderr)
+            report_text = report.read_text(encoding="utf-8")
+            for path in carrier_paths:
+                self.assertIn(str(path), report_text)
+            self.assertNotIn(str(memory_file), report_text)
+            self.assertNotIn(str(hot_cache), report_text)
+            self.assertIn("Edits needing approval", report_text)
+            self.assertIn("no arbitrary old memory content was imported", report_text)
+
     def test_first_install_status_flow_installs_baseline_bridges_instructions_and_reports_status(self) -> None:
         with tempfile.TemporaryDirectory() as tmpdir:
             root = Path(tmpdir)
