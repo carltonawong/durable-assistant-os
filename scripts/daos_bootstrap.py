@@ -78,6 +78,11 @@ def copy_support_files(source: Path, destination: Path) -> None:
         if item.name in CORE_GENERATED_FILES:
             continue
         target = destination / item.name
+        if target.exists():
+            if target.is_dir():
+                shutil.rmtree(target)
+            else:
+                target.unlink()
         if item.is_dir():
             shutil.copytree(item, target)
         else:
@@ -97,7 +102,9 @@ def bootstrap(output_dir: str | Path, *, use_filled_example: bool = False, force
         else blank_starter_pack(generator="scripts/daos_bootstrap.py")
     )
     write_pack_core_files(destination, pack)
-    copy_support_files(source, destination)
+    copy_support_files(BLANK_SOURCE, destination)
+    if use_filled_example:
+        copy_support_files(source, destination)
     return destination
 
 

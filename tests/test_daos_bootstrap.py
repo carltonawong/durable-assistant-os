@@ -38,6 +38,8 @@ class DaosBootstrapScriptTests(unittest.TestCase):
 
             self.assertEqual(result.returncode, 0, msg=result.stderr)
             self.assertTrue((destination / "operating-profile.md").exists())
+            self.assertTrue((destination / "wiki" / "cache" / "HOT-CACHE-SPEC.md").exists())
+            self.assertTrue((destination / "AGENTS.md").exists())
             self.assertIn("filled starter-pack example", result.stdout)
 
     def test_generated_pack_includes_manifest(self) -> None:

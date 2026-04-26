@@ -161,7 +161,7 @@ It is to establish a usable first map that can later be refined.
 
 Useful companion artifacts:
 - `templates/lane-snapshot-template.md`
-- `examples/lane-snapshot-example.md`
+- `examples/starter-pack-example/lane-snapshot.md`
 
 ## How this connects to calibration
 
@@ -177,7 +177,7 @@ This keeps the lane model adaptive instead of frozen.
 
 If you want a concrete example of lane-level upkeep after first install, see:
 - `templates/cadence-review-template.md`
-- `examples/cadence-review-example.md`
+- `examples/starter-pack-example/cadence-review.md`
 
 ## Bottom line
 

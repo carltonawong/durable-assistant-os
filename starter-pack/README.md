@@ -1,27 +1,38 @@
 # DAOS Starter Pack
 
-This folder is the fastest copyable scaffold in the repo.
+This folder is the default copyable DAOS install.
 
-If you want to try DAOS on a real assistant or real user context, copy this folder into your own workspace and fill the files in order.
+Copy it into your own workspace, then fill the user-owned files. You can use it manually; scripts are optional.
 
-## Quick translation of DAOS terms
+## What “wiki” means here
 
-- **assistant charter** — what this assistant is for and how it should behave
-- **operating profile** — your working context, priorities, and support preferences
-- **lane snapshot** — the current state of one workstream
-- **cadence review** — a recurring cleanup and calibration pass
+In DAOS, the **wiki** is a plain markdown knowledge base that lives in `wiki/`.
 
-## What is already installed here
+It is not Wikipedia, not a hosted app, and not a special database. It is just a structured folder of notes that the human can read and the assistant can maintain.
 
-This starter pack already includes both parts of the baseline:
+The wiki is where durable knowledge should live:
+- decisions that should survive chat history
+- stable project/context notes
+- source notes and raw observations that need later synthesis
+- compact logs of meaningful memory-system changes
 
-### 1. Fillable operator files
-- `assistant-charter.md`
-- `operating-profile.md`
-- `lane-snapshot.md` *(optional)*
-- `cadence-review.md` *(later upkeep)*
+The included `wiki/` folder can be your durable memory home. If you already use another markdown wiki or docs vault, treat this folder as the DAOS shape to copy/adapt.
 
-### 2. Locked mandatory baseline files
+## The two kinds of files
+
+### 1. Files you fill
+
+Start here:
+1. `assistant-charter.md` — what the assistant is for, how it should behave, and what requires approval
+2. `operating-profile.md` — your working context, lanes, memory defaults, and trust posture
+
+Use later:
+3. `lane-snapshot.md` — optional current-state note for one high-friction lane
+4. `cadence-review.md` — recurring cleanup and calibration review after real use starts
+
+### 2. Files DAOS installs
+
+These are the locked baseline spine:
 - `AGENTS.md`
 - `wiki/WIKI.md`
 - `wiki/cache/MEMORY-OPERATING-MODEL.md`
@@ -35,68 +46,39 @@ This starter pack already includes both parts of the baseline:
 - `wiki/raw/README.md`
 - `wiki/sources/README.md`
 
-The operator mainly fills the first group.
-The second group is the installed DAOS spine and should stay structurally intact unless a later framework update explicitly migrates it.
+You do not need to write these from scratch. They are installed so the assistant has a consistent memory/read-order baseline.
 
-## Suggested order
-
-1. `assistant-charter.md`
-2. `operating-profile.md`
-3. `lane-snapshot.md` *(only if one lane needs extra structure)*
-4. `cadence-review.md` *(for later upkeep, not first install)*
-
-## What each file answers
-
-- `assistant-charter.md` answers: what should this assistant do, how should it act when uncertain, and what requires approval?
-- `operating-profile.md` answers: what reality is this assistant operating inside, what lanes matter, and where should memory/trust defaults live?
-- `lane-snapshot.md` answers: what is happening inside one high-friction lane right now?
-- `cadence-review.md` answers: after real use starts, what should be kept, tuned, or simplified?
-
-## What this folder is
-
-This is a ready-to-copy instance scaffold.
-It is the default first-user starting point in the repo.
-It is not the canonical doctrine source.
-
-Those locked files are intentionally written as exact starter payloads so installs get the same baseline memory/doctrine behavior instead of relying on free regeneration.
-
-`wiki/cache/reset-handoff.md` is the named public reset/wake-up artifact inside that baseline. Use it as the exact next-session handoff after reset or long idle. Keep it overwritten rather than appended.
-
-## How the starter pack maps to the model
-
-- `assistant-charter.md` — what this assistant is for and how it should behave
-- `operating-profile.md` — durable working context, priorities, and support preferences
-- `lane-snapshot.md` — optional current state for one workstream
-- `cadence-review.md` — later cleanup and calibration surface
-
-Practical memory mapping inside the pack:
-- `operating-profile.md` is where you lock the default memory and trust posture
-- `lane-snapshot.md` is optional extra context for one lane, not the main memory home
-- your durable wiki/docs space is still the long-lived memory home outside this starter folder
-
-Use the files here when you want to operate.
-Use `templates/` when you want reusable source templates or want to extend the framework itself.
-Use `examples/` when you want to see filled shapes.
-Use `examples/starter-pack-example/` when you want to see this exact folder structure already filled.
-
-## Minimum good outcome
+## Minimum first pass
 
 A first pass is good enough when:
-- the locked baseline files are present and left structurally intact
-- `assistant-charter.md` is filled
-- `operating-profile.md` is filled enough to orient lanes, trust, and reminder defaults
-- `lane-snapshot.md` is either unused or filled for the highest-friction lane
-- `cadence-review.md` is saved for later reviews
+- `assistant-charter.md` has one clear outcome, failure mode, uncertainty rule, and approval boundary
+- `operating-profile.md` names the main lanes and memory/trust defaults
+- `lane-snapshot.md` is either unused or filled for one high-friction lane
+- `cadence-review.md` is saved for later, not overfilled during setup
 
-## Keep it light
+Do not model everything before first use. Get a usable baseline, use it, then calibrate.
 
-Do not try to perfect everything before first use.
-The point of this pack is to get to a usable baseline quickly.
+## Starter defaults
 
-If you are unsure what to write, use these starter defaults:
-- memory front door = current thread/session first, then short active summary, then reset handoff on reset/long idle, then any broader continuity note
-- durable memory home = markdown wiki or docs space first
-- verified reality rule = live files and systems outrank remembered notes
-- approval rule = ask before risky, costly, sticky, or social actions
+If you are unsure what to write, use these defaults and refine later:
+- memory front door = current thread/session first, then hot cache, then reset handoff on reset/long idle, then agent continuity only if still needed
+- durable memory home = the included `wiki/` markdown folder unless you already have another durable docs/wiki space
+- verified reality rule = live files, systems, and runtime state outrank remembered notes when freshness matters
+- approval rule = ask before risky, costly, destructive, public, or socially consequential actions
+
+## Maintenance in plain English
+
+DAOS works best when temporary context has a path into durable memory.
+
+Basic loop:
+1. Use `wiki/cache/hot-cache.md` for what matters now.
+2. Use `wiki/cache/reset-handoff.md` for the exact next move after reset or long idle.
+3. Put durable observations that should survive into `wiki/raw/` or durable wiki pages.
+4. Use `cadence-review.md` after real use starts to decide what to keep, change, or remove.
+5. Compress or prune stale temporary notes after durable facts have been captured.
 
 After the initial fill, use `harness/first-week.md` as the default next guide.
+
+## Examples
+
+Use `examples/starter-pack-example/` to see the user-owned files filled without duplicating this locked baseline spine.

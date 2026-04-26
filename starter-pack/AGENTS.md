@@ -31,8 +31,74 @@ After reset or long idle wake-up:
 - load `wiki/cache/reset-handoff.md`
 - follow the DAOS lookup order above before acting
 
-## Maintenance rule
+## Manual maintenance protocol
 
-This install assumes recurring upkeep exists for ingest, compression, audits, hygiene, and reset-continuity verification.
+Automation is optional. If no maintenance automation exists, use this manual loop:
 
-If those loops are missing or stale, the install is not fully hardened.
+- After meaningful work-context changes, update `wiki/cache/hot-cache.md`.
+- When the hot cache is overwritten or meaningfully re-scoped, add a short entry to `wiki/cache/hot-cache-log.md`.
+- Before reset or long idle, refresh `wiki/cache/reset-handoff.md` with the exact next move and first thing to verify.
+- When a fact should survive temporary context, write it to `wiki/raw/` or the appropriate durable wiki page.
+- During cadence review, compress stale hot-cache/continuity notes after durable facts have been captured.
+- When current facts matter, verify files/runtime/state before trusting memory.
+
+## Automated maintenance protocol
+
+Automation is optional. Add it only after the manual loop is understandable.
+
+Good automation supports the manual loop; it should not become hidden memory truth.
+
+### What to automate first
+
+Start with read-only checks:
+1. hot-cache shape check: verify `hot-cache.md` stays compact and has the required sections
+2. raw-note ingest reminder: report unprocessed notes in `wiki/raw/`
+3. reset-handoff freshness check: warn if reset/idle recovery notes are stale or missing when the workflow depends on them
+4. hot-cache-log hygiene: flag oversized logs, repeated no-op entries, and detail-heavy entries that should be promoted before pruning
+5. memory drift check: compare durable claims against live files/runtime when freshness matters
+
+### How to set it up
+
+Use whatever scheduler your environment already trusts: cron, GitHub Actions, an assistant heartbeat, a local reminder, or a calendar task.
+
+For each automated check, document three things in the operator's durable notes:
+- schedule: when it runs
+- command or prompt: exactly what it does
+- delivery: where the report goes
+
+Keep the first version report-only. It should say what needs attention, not silently rewrite the system.
+
+### Recommended automation shape
+
+Pick one scheduler and record the same fields for every check:
+- scheduler
+- frequency
+- exact command or prompt
+- output destination
+- owner or maintainer
+
+Minimum useful cadence:
+- daily or weekly: report raw-note backlog and oversized hot-cache logs
+- before reset or long idle: refresh `reset-handoff.md`
+- weekly: review stale continuity, memory drift, and durable claims that may need live verification
+
+Example cron-style setup:
+- daily 09:00: report raw notes and oversized cache/log files
+- weekly Friday: review memory drift and stale continuity
+- before planned reset: refresh `wiki/cache/reset-handoff.md`
+
+Example assistant-heartbeat setup:
+- after meaningful work: ask whether `hot-cache.md` needs a compact update
+- weekly: prompt for cadence review and raw-note ingest
+- after long idle: check `reset-handoff.md` before resuming
+
+### Safe automation rules
+
+- prefer read-only checks first
+- make every write or prune recoverable
+- report what changed or needs attention
+- do not silently delete detail-heavy recovery logs unless durable facts have been captured elsewhere
+- keep schedules and delivery channels explicit for the operator
+- document any cron/job/agent hook outside this file so a new maintainer can find it
+
+If automated checks are missing, the install can still work; it just depends on manual cadence reviews until automation is added.
