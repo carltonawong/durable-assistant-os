@@ -68,6 +68,14 @@ def _recent_log_entries(text: str, limit: int = 3) -> list[str]:
     return entries
 
 
+def _count_instruction_carriers(scan_report: Path) -> int:
+    if not scan_report.is_file():
+        return 0
+    text = _read_text(scan_report)
+    carriers = _section_bullets(text, "## Instruction carriers found")
+    return len([line for line in carriers if line != "- none"])
+
+
 def _find_instruction_carriers(scan_root: Path) -> list[Path]:
     found: list[Path] = []
     if not scan_root.exists():
@@ -143,6 +151,7 @@ def build_state_report(pack_dir: str | Path) -> tuple[int, str, str]:
     reset_handoff = root / "wiki" / "cache" / "reset-handoff.md"
     raw_dir = root / "wiki" / "raw"
     source_dir = root / "wiki" / "sources"
+    instruction_scan = root / ".daos" / "import-stage" / "instruction-scan.md"
 
     current: list[str] = []
     corrections: list[str] = []
@@ -181,6 +190,7 @@ def build_state_report(pack_dir: str | Path) -> tuple[int, str, str]:
         raw_count = len([path for path in raw_dir.rglob("*") if path.is_file() and path.name != "README.md"])
     if source_dir.is_dir():
         source_count = len([path for path in source_dir.rglob("*") if path.is_file() and path.name != "README.md"])
+    instruction_count = _count_instruction_carriers(instruction_scan)
 
     lines = [
         "DAOS State",
@@ -195,6 +205,15 @@ def build_state_report(pack_dir: str | Path) -> tuple[int, str, str]:
     lines.extend(["", "Recent Activity"])
     lines.extend([f"- {entry}" for entry in recent] or ["- No recent hot-cache-log entries found."])
     lines.extend(["", "Memory Surfaces", f"- raw notes beyond README: {raw_count}", f"- source notes beyond README: {source_count}"])
+    if instruction_scan.is_file():
+        lines.extend(
+            [
+                "",
+                "Bridge",
+                f"- instruction carriers staged for review: {instruction_count}",
+                "- review: .daos/import-stage/instruction-scan.md",
+            ]
+        )
     lines.extend(["", "Needs Attention"])
     lines.extend([f"- {warning}" for warning in warnings] or ["- None"])
     lines.extend(["", "Next", f"- {next_move}"])
