@@ -131,6 +131,9 @@ class DaosCliTests(unittest.TestCase):
             self.assertIn("- No current focus set yet.", result.stdout)
             self.assertNotIn("Fill with the current shared foreground lane", result.stdout)
             self.assertNotIn("Newest meaningful entries stay at the top", result.stdout)
+            self.assertIn("Setup Required", result.stdout)
+            self.assertIn("Continuity Missing", result.stdout)
+            self.assertIn("Bridge Review", result.stdout)
             self.assertIn("hot-cache.md has no real current focus yet", result.stdout)
 
     def test_init_handles_isolated_existing_agent_systems_without_memory_import(self) -> None:
@@ -258,6 +261,8 @@ class DaosCliTests(unittest.TestCase):
             self.assertEqual(status.returncode, 0, msg=status.stderr)
             self.assertIn("DAOS Status", status.stdout)
             self.assertIn("Bridge", status.stdout)
+            self.assertIn("Bridge Review", status.stdout)
+            self.assertIn("- None", status.stdout)
             self.assertIn("instruction carriers found: 1", status.stdout)
             self.assertIn("instruction edits applied: 1", status.stdout)
             self.assertIn("instruction edits needing approval: 0", status.stdout)

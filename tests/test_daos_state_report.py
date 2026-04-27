@@ -106,7 +106,9 @@ class DaosStateReportTests(unittest.TestCase):
         self.assertIn("- Building no-args DAOS state report.", result.stdout)
         self.assertIn("Recent Activity", result.stdout)
         self.assertIn("Built state report test fixture.", result.stdout)
-        self.assertIn("Needs Attention", result.stdout)
+        self.assertIn("Setup Required", result.stdout)
+        self.assertIn("Continuity Missing", result.stdout)
+        self.assertIn("Bridge Review", result.stdout)
         self.assertIn("Next", result.stdout)
         self.assertIn("Polish the no-args DAOS state report.", result.stdout)
 
@@ -129,6 +131,7 @@ class DaosStateReportTests(unittest.TestCase):
 
         self.assertEqual(result.returncode, 0, msg=result.stderr)
         self.assertIn("Bridge", result.stdout)
+        self.assertIn("Bridge Review", result.stdout)
         self.assertIn("instruction carriers found: 2", result.stdout)
         self.assertIn("instruction edits needing approval: 0", result.stdout)
         self.assertIn(".daos/import-stage/instruction-scan.md", result.stdout)

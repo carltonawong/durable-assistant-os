@@ -298,22 +298,24 @@ def build_state_report(pack_dir: str | Path) -> tuple[int, str, str]:
         if value:
             next_move = value
 
-    warnings: list[str] = []
+    setup_required: list[str] = []
     if validation.errors:
         compact_errors = _compact_validation_errors(validation.errors)
-        warnings.extend(compact_errors[:5])
+        setup_required.extend(compact_errors[:5])
         if len(compact_errors) > 5:
-            warnings.append(f"{len(compact_errors) - 5} more validation issues; run `daos check` for details")
+            setup_required.append(f"{len(compact_errors) - 5} more validation issues; run `daos check` for details")
+
+    continuity_missing: list[str] = []
     if not current:
-        warnings.append("hot-cache.md has no real current focus yet")
+        continuity_missing.append("hot-cache.md has no real current focus yet")
     if reset_handoff.is_file():
         handoff_text = _read_text(reset_handoff)
         if not _label_value(handoff_text, "- Exact next move:"):
-            warnings.append("reset-handoff.md has no filled Exact next move")
+            continuity_missing.append("reset-handoff.md has no filled Exact next move")
         if not _label_value(handoff_text, "- First verification:"):
-            warnings.append("reset-handoff.md has no filled First verification")
+            continuity_missing.append("reset-handoff.md has no filled First verification")
     else:
-        warnings.append("reset-handoff.md is missing")
+        continuity_missing.append("reset-handoff.md is missing")
 
     raw_count = 0
     source_count = 0
@@ -358,8 +360,20 @@ def build_state_report(pack_dir: str | Path) -> tuple[int, str, str]:
                 "- review: .daos/import-stage/instruction-scan.md",
             ]
         )
-    lines.extend(["", "Needs Attention"])
-    lines.extend([f"- {warning}" for warning in warnings] or ["- None"])
+    bridge_review: list[str] = []
+    if instruction_scan.is_file() and instruction_pending_count:
+        bridge_review.append(f"{instruction_pending_count} instruction edits need approval; review `.daos/import-stage/instruction-scan.md`")
+    elif instruction_scan.is_file():
+        bridge_review.append("None")
+    else:
+        bridge_review.append("No instruction bridge review present")
+
+    lines.extend(["", "Setup Required"])
+    lines.extend([f"- {item}" for item in setup_required] or ["- None"])
+    lines.extend(["", "Continuity Missing"])
+    lines.extend([f"- {item}" for item in continuity_missing] or ["- None"])
+    lines.extend(["", "Bridge Review"])
+    lines.extend([f"- {item}" for item in bridge_review])
     lines.extend(["", "Next", f"- {next_move}"])
     return 0, "\n".join(lines) + "\n", ""
 
