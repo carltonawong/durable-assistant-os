@@ -6,6 +6,23 @@
   "bin": {
     "daos": "bin/daos.js"
   },
+  "files": [
+    "bin/",
+    "scripts/*.py",
+    "scripts/daos_core/*.py",
+    "starter-pack/",
+    "examples/starter-pack-example/",
+    "templates/",
+    "harness/mandatory-baseline.md",
+    "docs/quickstart.md",
+    "docs/setup.md",
+    "docs/trust.md",
+    "docs/reset-handoff.md",
+    "docs/memory.md",
+    "docs/agent-integrations.md",
+    "docs/portability.md",
+    "docs/pack-schema.md"
+  ],
   "scripts": {
     "test:wrapper": "python -m unittest discover -s tests -p 'test_npm_wrapper.py' -v"
   },
