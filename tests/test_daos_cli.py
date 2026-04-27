@@ -127,6 +127,11 @@ class DaosCliTests(unittest.TestCase):
 
             self.assertEqual(result.returncode, 0, msg=result.stderr)
             self.assertIn("Setup", result.stdout)
+            self.assertIn("DAOS Files", result.stdout)
+            self.assertIn("`wiki/cache/hot-cache.md`: present", result.stdout)
+            self.assertIn("`wiki/cache/hot-cache-log.md`: present", result.stdout)
+            self.assertIn("`wiki/cache/reset-handoff.md`: present", result.stdout)
+            self.assertIn("`wiki/cache/agent-continuity.md`: present", result.stdout)
             self.assertIn("- DAOS baseline present.", result.stdout)
             self.assertIn("- No current focus set yet.", result.stdout)
             self.assertNotIn("Fill with the current shared foreground lane", result.stdout)

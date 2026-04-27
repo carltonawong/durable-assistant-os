@@ -4,7 +4,7 @@ from datetime import datetime
 import hashlib
 from pathlib import Path
 
-from .validate import validate_pack_dir
+from .validate import BASELINE_FRAMEWORK_FILES, REQUIRED_FILES, validate_pack_dir
 
 INSTRUCTION_CARRIER_PATTERNS = (
     "AGENTS.md",
@@ -72,6 +72,20 @@ def _surface_status(root: Path, relative_path: str, *, directory: bool = False) 
     else:
         status = "present" if path.is_file() else "missing"
     return f"{relative_path}: {status}"
+
+
+def _daos_file_status_lines(root: Path) -> list[str]:
+    files = list(REQUIRED_FILES) + list(BASELINE_FRAMEWORK_FILES)
+    seen: set[str] = set()
+    lines: list[str] = []
+    for relative_path in files:
+        if relative_path in seen:
+            continue
+        seen.add(relative_path)
+        path = root / relative_path
+        status = "present" if path.is_file() else "missing"
+        lines.append(f"- `{relative_path}`: {status}")
+    return lines
 
 
 def _section_bullets(text: str, heading: str) -> list[str]:
@@ -338,6 +352,8 @@ def build_state_report(pack_dir: str | Path) -> tuple[int, str, str]:
         lines.append("- instruction bridge review present: .daos/import-stage/instruction-scan.md")
     else:
         lines.append("- no instruction bridge review present")
+    lines.extend(["", "DAOS Files"])
+    lines.extend(_daos_file_status_lines(root))
     lines.extend([
         "",
         "Current",
