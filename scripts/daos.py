@@ -20,6 +20,7 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         return argparse.Namespace(command="status", pack_dir=None)
 
     parser = argparse.ArgumentParser(
+        prog="daos",
         description="DAOS local harness commands. Only shipped commands are listed here."
     )
     subparsers = parser.add_subparsers(dest="command", required=True)
@@ -175,13 +176,18 @@ def run_init(args: argparse.Namespace) -> int:
     if args.blank:
         print("instruction scan: skipped (--blank)")
     elif report_path:
-        print(f"instruction scan: wrote review report: {report_path}")
+        display_report_path = report_path
+        try:
+            display_report_path = report_path.relative_to(destination)
+        except ValueError:
+            pass
+        print(f"instruction scan: wrote review report inside DAOS home: {display_report_path}")
         if applied_backups:
             print(f"instruction edits: applied with approval ({len(applied_backups)})")
             print("instruction backups: .daos/backups/instructions/")
         else:
             print("instruction edits: none applied; review report lists any proposed edits")
-    print("next: run `daos status` to view setup and continuity status")
+    print("next: run `daos` or `daos status` to view setup and continuity status")
     return 0
 
 

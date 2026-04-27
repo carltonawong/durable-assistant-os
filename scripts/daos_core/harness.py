@@ -363,7 +363,7 @@ def build_state_report(pack_dir: str | Path) -> tuple[int, str, str]:
         "- DAOS baseline present.",
     ]
     if instruction_scan.is_file():
-        lines.append("- instruction bridge review present: .daos/import-stage/instruction-scan.md")
+        lines.append("- instruction bridge review present inside DAOS home: .daos/import-stage/instruction-scan.md")
     else:
         lines.append("- no instruction bridge review present")
     hot_cache_summary = _first_bullet_summary(current, "No current focus set yet.")
@@ -399,12 +399,12 @@ def build_state_report(pack_dir: str | Path) -> tuple[int, str, str]:
                 f"- instruction carriers found: {instruction_count}",
                 f"- instruction edits applied: {instruction_applied_count}",
                 f"- instruction edits needing approval: {instruction_pending_count}",
-                "- review: .daos/import-stage/instruction-scan.md",
+                "- review inside DAOS home: .daos/import-stage/instruction-scan.md",
             ]
         )
     bridge_review: list[str] = []
     if instruction_scan.is_file() and instruction_pending_count:
-        bridge_review.append(f"{instruction_pending_count} instruction edits need approval; review `.daos/import-stage/instruction-scan.md`")
+        bridge_review.append(f"{instruction_pending_count} instruction edits need approval; review `.daos/import-stage/instruction-scan.md` inside DAOS home")
     elif instruction_scan.is_file():
         bridge_review.append("None")
     else:

@@ -74,6 +74,8 @@ class DaosNpmWrapperTests(unittest.TestCase):
         result = self.run_wrapper("--help")
 
         self.assertEqual(result.returncode, 0, msg=result.stderr)
+        self.assertIn("usage: daos", result.stdout)
+        self.assertNotIn("usage: daos.py", result.stdout)
         self.assertIn("DAOS local harness commands", result.stdout)
         self.assertIn("status", result.stdout)
         self.assertIn("init", result.stdout)
@@ -85,7 +87,7 @@ class DaosNpmWrapperTests(unittest.TestCase):
             init = self.run_wrapper("init", str(destination), "--blank")
             self.assertEqual(init.returncode, 0, msg=init.stderr)
             self.assertIn("DAOS initialized", init.stdout)
-            self.assertIn("daos status", init.stdout)
+            self.assertIn("daos` or `daos status", init.stdout)
 
             status = self.run_wrapper("status", str(destination))
 
