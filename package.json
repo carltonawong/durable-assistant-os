@@ -1,0 +1,16 @@
+{
+  "name": "daos",
+  "version": "0.2.0-private",
+  "private": true,
+  "description": "Durable Assistant OS local continuity harness preview.",
+  "bin": {
+    "daos": "bin/daos.js"
+  },
+  "scripts": {
+    "test:wrapper": "python -m unittest discover -s tests -p 'test_npm_wrapper.py' -v"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "license": "MIT"
+}
