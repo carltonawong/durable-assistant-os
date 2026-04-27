@@ -39,6 +39,9 @@ PLACEHOLDER_MARKERS = (
     "Record only important current corrections.",
     "Remove stale corrections when superseded.",
     "Do not turn this into a change diary.",
+    "Newest meaningful entries stay at the top.",
+    "Use this for fallback reconstruction",
+    "Recurring hygiene should prune obvious log bloat.",
     "YYYY-MM-DD",
     "[lane]",
     "empty | fresh | stale | blocked",
@@ -93,18 +96,24 @@ def _recent_log_entries(text: str, limit: int = 3) -> list[str]:
             current_header = line[3:].strip()
             continue
         if current_header and line.startswith("- "):
-            entries.append(f"[{current_header}] {line[2:].strip()}")
+            entry = f"[{current_header}] {line[2:].strip()}"
+            if _looks_placeholder_text(entry):
+                continue
+            entries.append(entry)
             if len(entries) >= limit:
                 break
     return entries
 
 
-def _count_instruction_carriers(scan_report: Path) -> int:
+def _count_report_section_items(scan_report: Path, heading: str) -> int:
     if not scan_report.is_file():
         return 0
-    text = _read_text(scan_report)
-    carriers = _section_bullets(text, "## Instruction carriers found")
-    return len([line for line in carriers if line != "- none"])
+    items = _section_bullets(_read_text(scan_report), heading)
+    return len([line for line in items if line != "- none"])
+
+
+def _count_instruction_carriers(scan_report: Path) -> int:
+    return _count_report_section_items(scan_report, "## Instruction carriers found")
 
 
 def _find_instruction_carriers(scan_root: Path) -> list[Path]:
@@ -238,6 +247,23 @@ def _looks_placeholder_text(text: str) -> bool:
     return any(marker in text for marker in PLACEHOLDER_MARKERS)
 
 
+def _compact_validation_errors(errors: list[str]) -> list[str]:
+    if not errors:
+        return []
+    empty_by_file: dict[str, int] = {}
+    other: list[str] = []
+    for error in errors:
+        if " has an empty required field:" in error:
+            filename = error.split(" has an empty required field:", 1)[0]
+            empty_by_file[filename] = empty_by_file.get(filename, 0) + 1
+        else:
+            other.append(error)
+
+    compact = [f"{filename} has {count} empty required fields" for filename, count in sorted(empty_by_file.items())]
+    compact.extend(other)
+    return compact
+
+
 def build_state_report(pack_dir: str | Path) -> tuple[int, str, str]:
     root = Path(pack_dir).expanduser().resolve()
     validation = validate_pack_dir(root)
@@ -274,7 +300,10 @@ def build_state_report(pack_dir: str | Path) -> tuple[int, str, str]:
 
     warnings: list[str] = []
     if validation.errors:
-        warnings.extend(validation.errors[:5])
+        compact_errors = _compact_validation_errors(validation.errors)
+        warnings.extend(compact_errors[:5])
+        if len(compact_errors) > 5:
+            warnings.append(f"{len(compact_errors) - 5} more validation issues; run `daos check` for details")
     if not current:
         warnings.append("hot-cache.md has no real current focus yet")
     if reset_handoff.is_file():
@@ -293,13 +322,24 @@ def build_state_report(pack_dir: str | Path) -> tuple[int, str, str]:
     if source_dir.is_dir():
         source_count = len([path for path in source_dir.rglob("*") if path.is_file() and path.name != "README.md"])
     instruction_count = _count_instruction_carriers(instruction_scan)
+    instruction_applied_count = _count_report_section_items(instruction_scan, "## Edits applied")
+    instruction_pending_count = _count_report_section_items(instruction_scan, "## Edits needing approval")
 
     lines = [
         "DAOS Status",
         f"Pack: {root}",
         "",
-        "Current",
+        "Setup",
+        "- DAOS baseline present.",
     ]
+    if instruction_scan.is_file():
+        lines.append("- instruction bridge review present: .daos/import-stage/instruction-scan.md")
+    else:
+        lines.append("- no instruction bridge review present")
+    lines.extend([
+        "",
+        "Current",
+    ])
     lines.extend(current or ["- No current focus set yet."])
     if corrections:
         lines.extend(["", "Corrections"])
@@ -312,7 +352,9 @@ def build_state_report(pack_dir: str | Path) -> tuple[int, str, str]:
             [
                 "",
                 "Bridge",
-                f"- instruction carriers staged for review: {instruction_count}",
+                f"- instruction carriers found: {instruction_count}",
+                f"- instruction edits applied: {instruction_applied_count}",
+                f"- instruction edits needing approval: {instruction_pending_count}",
                 "- review: .daos/import-stage/instruction-scan.md",
             ]
         )

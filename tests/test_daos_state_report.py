@@ -100,6 +100,8 @@ class DaosStateReportTests(unittest.TestCase):
 
         self.assertEqual(result.returncode, 0, msg=result.stderr)
         self.assertIn("DAOS Status", result.stdout)
+        self.assertIn("Setup", result.stdout)
+        self.assertIn("DAOS baseline present", result.stdout)
         self.assertIn("Current", result.stdout)
         self.assertIn("- Building no-args DAOS state report.", result.stdout)
         self.assertIn("Recent Activity", result.stdout)
@@ -127,7 +129,8 @@ class DaosStateReportTests(unittest.TestCase):
 
         self.assertEqual(result.returncode, 0, msg=result.stderr)
         self.assertIn("Bridge", result.stdout)
-        self.assertIn("instruction carriers staged for review: 2", result.stdout)
+        self.assertIn("instruction carriers found: 2", result.stdout)
+        self.assertIn("instruction edits needing approval: 0", result.stdout)
         self.assertIn(".daos/import-stage/instruction-scan.md", result.stdout)
 
     def test_no_args_uses_daos_home_environment_as_state_report(self) -> None:
