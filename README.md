@@ -1,39 +1,88 @@
 # Durable Assistant OS
 
-**Current documented baseline:** `v0.1.6`  
+**Current documented baseline:** `v0.2.0`  
 **Release notes:** `CHANGELOG.md` and `docs/releases/`
 
-Durable Assistant OS (DAOS) is a copyable operating pack for assistants that need to stay useful after the first impressive session.
+Durable Assistant OS (DAOS) is a local continuity layer for AI assistants that need to stay useful after resets, long gaps, model switches, and messy memory.
 
-It gives a human and an assistant a small shared system for:
-- knowing what the assistant is for
-- separating current context from durable memory
-- preserving trust boundaries
-- recovering after resets or long gaps
+It gives your assistant a small shared operating pack for:
+- knowing what it is for
+- separating active context from durable memory
+- recovering after resets or idle time
+- coexisting with existing agent instruction files
 - checking live reality before acting on stale notes
 
-DAOS is not a hosted app and not a full assistant runtime. It is the operating structure you can put beside a runtime.
+DAOS is not a hosted app and not a full assistant runtime. It is the reliability layer you put beside a runtime so the assistant can stay oriented, auditable, and resettable.
 
-![Fragile assistant versus DAOS memory surfaces](docs/assets/daos-fragile-vs-memory-surfaces.png)
+## Try it first
 
-## Source pattern
+If you only try one thing, run:
 
-DAOS assumes the **LLM Wiki** pattern: a plain markdown knowledge base that an assistant can read, maintain, and improve over time. Read Karpathy's short note first if this idea is new:
+```bash
+npx daos init
+npx daos
+```
 
-- **Karpathy's LLM Wiki pattern**  
-  https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f
+That creates a local DAOS home, installs the mandatory wiki/cache baseline, scans nearby agent instruction files, and shows what DAOS is currently on.
 
-Optional companion:
-- **Obsidian** — helpful if you want a dedicated vault-style UI for browsing and editing that wiki  
-  https://obsidian.md/download
+The status view starts with:
 
-DAOS adds operating discipline around that pattern: a compact front door, reset handoff, durable pages, raw/source notes, and a rule that live reality still outranks remembered notes.
+```text
+DAOS Status
 
-## Who this is for
+Setup
+...
 
-DAOS is for people who already feel the pain of assistant context drift, memory clutter, repeated re-steering, or unclear trust boundaries.
+DAOS On
+- Hot Cache: ...
+- Hot Cache Log: ...
+- Reset Handoff: ...
+- Agent Continuity: ...
+```
 
-It is probably not the right first stop if you only want a plug-and-play consumer assistant with no markdown, no operating discipline, and no local files to maintain.
+This is the core product loop:
+
+1. `daos init` installs a shared continuity baseline.
+2. DAOS scans existing instruction carriers like `AGENTS.md`, `CLAUDE.md`, `.cursorrules`, and Copilot instructions.
+3. DAOS asks before editing existing instruction files.
+4. `daos` shows the current setup and continuity status.
+5. Your assistant uses the DAOS files to recover orientation without treating memory as live truth.
+
+## What you should have after one sitting
+
+You should have:
+- a local DAOS pack with the locked baseline files installed
+- a visible `DAOS Status` report
+- a `DAOS On` section showing current active-memory surfaces
+- explicit continuity files for hot cache, hot-cache log, reset handoff, and agent continuity
+- a staged bridge report if DAOS found existing agent instructions
+- no silent import of arbitrary old memory content
+
+Do not model everything up front. Start small, use it, then tighten what real use proves is weak.
+
+## Existing agent instructions
+
+DAOS is designed to coexist with agent-specific memory and instruction systems.
+
+During `daos init`, it can scan for instruction carriers such as:
+
+```text
+AGENTS.md
+CLAUDE.md
+GEMINI.md
+HERMES.md
+OPENCLAW.md
+QUINN.md
+.cursorrules
+.cursor/rules/*
+.github/copilot-instructions.md
+.hermes/instructions.md
+.openclaw/AGENTS.md
+```
+
+If DAOS finds them, it stages a review report. In interactive mode, it asks before prepending the DAOS coexistence rule. If approved, it backs up the original first.
+
+DAOS does **not** import arbitrary memory files like `MEMORY.md` by default. Existing private memory can keep orienting its own agent, while DAOS becomes the shared continuity layer across tools.
 
 ## Why this exists
 
@@ -41,16 +90,9 @@ Assistants usually do not fail at the first impressive answer. They fail later, 
 
 DAOS exists to keep that operating loop small, legible, and repairable.
 
-## Start here
+The important rule:
 
-If you only try one thing, copy `starter-pack/`.
-
-1. Copy `starter-pack/` into your own workspace.
-2. Fill `assistant-charter.md`.
-3. Fill `operating-profile.md`.
-4. Use `harness/first-week.md` during the first week of real use.
-
-You can use DAOS without running scripts. Optional read-only checks are available later.
+> Memory can orient the assistant, but current reality wins when action depends on what is true now.
 
 ## The core model
 
@@ -62,57 +104,63 @@ DAOS keeps five things separate:
 4. **Durable memory** — stable knowledge, decisions, and synthesized context.
 5. **Live reality** — repo files, configs, runtime state, inboxes, calendars, and other sources that must be checked when freshness matters.
 
-The important rule:
+## Manual path
 
-> Memory can orient the assistant, but current reality wins when action depends on what is true now.
+You can still use DAOS without npm or scripts.
+
+1. Copy `starter-pack/` into your workspace.
+2. Fill `assistant-charter.md`.
+3. Fill `operating-profile.md`.
+4. Use the `wiki/cache/` files as the assistant's shared continuity layer.
+
+The CLI is the easier first path, but the pack remains plain markdown by design.
 
 ## What is in the repo
 
-- `starter-pack/` — the default copyable DAOS pack.
-- `docs/quickstart.md` — the shortest first-run procedure.
-- `docs/public-memory-page.md` — the plain-language memory model.
+- `bin/daos.js` — thin npm wrapper for the DAOS CLI.
+- `scripts/daos.py` — Python reference CLI used by the wrapper.
+- `starter-pack/` — the default DAOS baseline installed by `daos init`.
+- `docs/quickstart.md` — short first-run procedure.
 - `docs/memory.md` — deeper memory doctrine.
-- `harness/first-week.md` — how to calibrate after real use starts.
+- `docs/agent-integrations.md` — notes for wiring DAOS beside assistants.
+- `docs/portability.md` — durable wiki portability model.
+- `harness/mandatory-baseline.md` — locked baseline install contract.
 - `examples/starter-pack-example/` — filled user-owned files for a realistic pack.
-- `examples/creative-studio-operating-profile-example.md` — a compact alternate-persona example.
-- `scripts/` — optional local helpers; read `docs/script-safety.md` before using them.
-- `tests/` — regression tests for the pack, scripts, and safety posture.
+- `tests/` — regression tests for scripts, package behavior, and safety posture.
 
 ## What is already proven
 
-DAOS is not just a set of ideas. The current repo includes:
-- a copyable starter pack with a locked baseline memory spine
-- optional generated setup and wizard setup
-- read-only validation and memory-parity checks
-- tests covering generation, validation, wizard flow, portability, update safety, and script trust posture
-- release notes and changelog entries showing how the operating model has been hardened over time
+The current v0.2 line includes:
+- `daos init` and no-args `daos` as the first-user CLI surface
+- mandatory baseline install from the starter pack
+- safe instruction-carrier scanning
+- approval-gated instruction edits with backups
+- `DAOS Status` / `DAOS On` active-context summaries
+- wrapper tests for Node/npm delegation, Python discovery, exit-code forwarding, and interactive prompts
+- packed-tarball smoke testing from a fresh npm consumer project
+- regression tests covering generation, validation, wizard flow, portability, update safety, memory parity, and script trust posture
 
-The detailed development trail lives in `CHANGELOG.md`, `docs/releases/`, and git history rather than public planning files.
+## Requirements
 
-## Optional scripts
+- Node.js 18+
+- Python 3 available as one of:
+  - `python3`
+  - `python`
+  - `py -3`
+  - or `DAOS_PYTHON=/path/to/python`
 
-Scripts are not required for first value. If you are cautious, start manually with `starter-pack/`.
+If Python is missing, the wrapper prints a direct setup message instead of failing silently.
 
-Read-only checks:
+## Safety posture
 
-```bash
-python scripts/daos_validate.py /path/to/my-daos-pack
-python scripts/daos_memory_parity.py /path/to/my-daos-pack
-```
+DAOS is local-first and markdown-first.
 
-Setup helpers and advanced maintenance tools are documented in `docs/script-safety.md`.
-
-## What good looks like after one sitting
-
-You should have:
-- a clear assistant charter
-- a usable operating profile
-- explicit approval boundaries
-- a durable memory home
-- a simple active-context front door
-- a first-week calibration path
-
-Do not model everything up front. Start small, use it, then tighten what real use proves is weak.
+The first-user path should not:
+- send network requests from the Python core
+- import arbitrary old memory content by default
+- silently edit existing instruction files
+- overwrite user-owned operating files without explicit action
+- treat remembered notes as live truth
 
 ## Public-framework hygiene
 
