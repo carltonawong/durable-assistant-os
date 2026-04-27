@@ -4,7 +4,7 @@ from datetime import datetime
 import hashlib
 from pathlib import Path
 
-from .validate import BASELINE_FRAMEWORK_FILES, REQUIRED_FILES, validate_pack_dir
+from .validate import validate_pack_dir
 
 INSTRUCTION_CARRIER_PATTERNS = (
     "AGENTS.md",
@@ -45,6 +45,10 @@ PLACEHOLDER_MARKERS = (
     "YYYY-MM-DD",
     "[lane]",
     "empty | fresh | stale | blocked",
+    "uncertain | resumable | blocked",
+    "Last meaningful lane:",
+    "Current verified takeaway:",
+    "Next resumable move and what to verify first:",
 )
 
 
@@ -73,19 +77,6 @@ def _surface_status(root: Path, relative_path: str, *, directory: bool = False) 
         status = "present" if path.is_file() else "missing"
     return f"{relative_path}: {status}"
 
-
-def _daos_file_status_lines(root: Path) -> list[str]:
-    files = list(REQUIRED_FILES) + list(BASELINE_FRAMEWORK_FILES)
-    seen: set[str] = set()
-    lines: list[str] = []
-    for relative_path in files:
-        if relative_path in seen:
-            continue
-        seen.add(relative_path)
-        path = root / relative_path
-        status = "present" if path.is_file() else "missing"
-        lines.append(f"- `{relative_path}`: {status}")
-    return lines
 
 
 def _section_bullets(text: str, heading: str) -> list[str]:
@@ -257,6 +248,26 @@ def _real_bullets(lines: list[str]) -> list[str]:
     return [line for line in lines if not _is_placeholder_bullet(line)]
 
 
+def _first_bullet_summary(lines: list[str], fallback: str) -> str:
+    real = _real_bullets(lines)
+    if not real:
+        return fallback
+    return real[0][2:].strip() if real[0].startswith("- ") else real[0].strip()
+
+
+def _agent_continuity_summary(path: Path) -> str:
+    if not path.is_file():
+        return "agent-continuity.md is missing"
+    text = _read_text(path)
+    status = _label_value(text, "**Status:**")
+    if status and not _looks_placeholder_text(status):
+        return status
+    bullets = _real_bullets([line for line in text.splitlines() if line.startswith("- ")])
+    if bullets:
+        return bullets[0][2:].strip()
+    return "No agent continuity set yet."
+
+
 def _looks_placeholder_text(text: str) -> bool:
     return any(marker in text for marker in PLACEHOLDER_MARKERS)
 
@@ -291,6 +302,7 @@ def build_state_report(pack_dir: str | Path) -> tuple[int, str, str]:
     hot_cache = root / "wiki" / "cache" / "hot-cache.md"
     hot_cache_log = root / "wiki" / "cache" / "hot-cache-log.md"
     reset_handoff = root / "wiki" / "cache" / "reset-handoff.md"
+    agent_continuity = root / "wiki" / "cache" / "agent-continuity.md"
     raw_dir = root / "wiki" / "raw"
     source_dir = root / "wiki" / "sources"
     instruction_scan = root / ".daos" / "import-stage" / "instruction-scan.md"
@@ -306,10 +318,12 @@ def build_state_report(pack_dir: str | Path) -> tuple[int, str, str]:
     if hot_cache_log.is_file():
         recent = _recent_log_entries(_read_text(hot_cache_log), limit=4)
 
+    reset_summary = "No exact next move set."
     next_move = "Set current focus in `wiki/cache/hot-cache.md`; create a reset handoff when real work begins."
     if reset_handoff.is_file():
         value = _label_value(_read_text(reset_handoff), "- Exact next move:")
         if value:
+            reset_summary = value
             next_move = value
 
     setup_required: list[str] = []
@@ -352,8 +366,20 @@ def build_state_report(pack_dir: str | Path) -> tuple[int, str, str]:
         lines.append("- instruction bridge review present: .daos/import-stage/instruction-scan.md")
     else:
         lines.append("- no instruction bridge review present")
-    lines.extend(["", "DAOS Files"])
-    lines.extend(_daos_file_status_lines(root))
+    hot_cache_summary = _first_bullet_summary(current, "No current focus set yet.")
+    hot_cache_log_summary = recent[0] if recent else "No recent hot-cache-log entries found."
+    agent_summary = _agent_continuity_summary(agent_continuity)
+
+    lines.extend(
+        [
+            "",
+            "DAOS Context",
+            f"- Hot Cache: {hot_cache_summary}",
+            f"- Hot Cache Log: {hot_cache_log_summary}",
+            f"- Reset Handoff: {reset_summary}",
+            f"- Agent Continuity: {agent_summary}",
+        ]
+    )
     lines.extend([
         "",
         "Current",
