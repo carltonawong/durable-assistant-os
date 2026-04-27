@@ -170,6 +170,7 @@ def run_init(args: argparse.Namespace) -> int:
         return 1
 
     print(f"DAOS initialized: {destination}")
+    print("purpose: shared continuity baseline for agents; existing instruction files are edited only with approval")
     print("baseline: installed mandatory wiki/cache framework")
     if args.blank:
         print("instruction scan: skipped (--blank)")
@@ -180,7 +181,7 @@ def run_init(args: argparse.Namespace) -> int:
             print("instruction backups: .daos/backups/instructions/")
         else:
             print("instruction edits: none applied; review report lists any proposed edits")
-    print("next: run `daos` to view state")
+    print("next: run `daos status` to view setup and continuity status")
     return 0
 
 

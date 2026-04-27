@@ -292,7 +292,7 @@ def build_state_report(pack_dir: str | Path) -> tuple[int, str, str]:
     if hot_cache_log.is_file():
         recent = _recent_log_entries(_read_text(hot_cache_log), limit=4)
 
-    next_move = "Write or refresh `wiki/cache/reset-handoff.md`."
+    next_move = "Set current focus in `wiki/cache/hot-cache.md`; create a reset handoff when real work begins."
     if reset_handoff.is_file():
         value = _label_value(_read_text(reset_handoff), "- Exact next move:")
         if value:

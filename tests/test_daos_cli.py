@@ -120,6 +120,8 @@ class DaosCliTests(unittest.TestCase):
             destination = Path(tmpdir) / "blank-pack"
             init = self.run_cli("init", str(destination), "--blank")
             self.assertEqual(init.returncode, 0, msg=init.stderr)
+            self.assertIn("shared continuity baseline", init.stdout)
+            self.assertIn("daos status", init.stdout)
 
             result = self.run_cli("status", str(destination))
 
@@ -262,6 +264,7 @@ class DaosCliTests(unittest.TestCase):
             self.assertIn("- No current focus set yet.", status.stdout)
             self.assertNotIn("Fill with the current shared foreground lane", status.stdout)
             self.assertIn("reset-handoff.md has no filled Exact next move", status.stdout)
+            self.assertIn("Set current focus in `wiki/cache/hot-cache.md`", status.stdout)
 
 
 if __name__ == "__main__":
