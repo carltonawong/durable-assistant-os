@@ -31,6 +31,7 @@ No unreleased framework-facing changes are staged after `v0.2.0` yet.
 - Shifted immediate-value proof from file presence to visible active-context content under `DAOS On`.
 - Kept deeper commands such as `check`, `orient`, `reset-test`, `handoff`, and `memory-audit` available as advanced/operator surfaces rather than the primary public story.
 - Added a `package.json.files` allowlist so npm packaging excludes tests, large docs assets, and Python bytecode caches.
+- Strengthened memory doctrine around project checkpoints so active work that changes infrastructure, data ownership, provider/tool/account choice, auth, deployment/runtime mode, live-vs-dry-run posture, risk, money, customer impact, or operator setup is captured durably before assumptions drift.
 
 ### Hardened
 - `daos init` does not silently edit existing instruction files; interactive mode asks for approval before prepending the DAOS coexistence rule.

@@ -139,6 +139,7 @@ Lock these defaults:
 - durable memory home: wiki first, with docs/repo files for publishable framework outputs
 - verified reality rule: files, runtime, and live state outrank remembered context for operational facts
 - durable capture rule: if a second review shows something should not live mainly in hot cache or chat, create or update durable memory in the same pass
+- project checkpoint rule: when active work changes infrastructure, data ownership, provider/tool/account choice, auth, deployment mode, live-vs-dry-run behavior, risk, money, customer impact, or operator setup assumptions, capture what changed and what to verify before continuing
 - active continuity rule: when one lane is likely to be resumed later, preserve the next concrete move and first verification point if that would otherwise be ambiguous
 
 Recommended explanation to the user:

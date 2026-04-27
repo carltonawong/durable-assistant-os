@@ -56,6 +56,7 @@ Good starter defaults if the operator is unsure:
 - Ask-vs-act rule: ask when ambiguity changes the action; otherwise act on clear low-stakes intent
 - Escalation / approval rule: pause for approval on risky, costly, sticky, or socially consequential actions
 - Durable capture rule: if something would be annoying to rediscover, move it into durable notes in the same pass
+- Project checkpoint rule: if active work changes infrastructure, data ownership, provider/tool/account choice, auth, deployment/runtime mode, live-vs-dry-run posture, risk, money, customer impact, or operator setup assumptions, capture what changed and what to verify before continuing
 
 - Memory front door:
 - Durable memory home:
@@ -63,6 +64,7 @@ Good starter defaults if the operator is unsure:
 - Ask-vs-act rule:
 - Escalation / approval rule:
 - Durable capture rule: if a second review shows something should not live mainly in hot cache or chat, create/update a durable note in the same pass
+- Project checkpoint rule:
 
 ## 6. Calibration later
 

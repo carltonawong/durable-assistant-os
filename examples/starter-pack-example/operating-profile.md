@@ -68,6 +68,7 @@
 - Ask-vs-act rule: ask when ambiguity changes action; act when intent is clear and stakes are low or reversible
 - Escalation / approval rule: critical, sticky, costly, or socially consequential actions require explicit approval
 - Durable capture rule: if a second review shows something should not live mainly in hot cache or chat, create/update a durable note in the same pass
+- Project checkpoint rule: if active work changes infrastructure, data ownership, provider/tool/account choice, auth, deployment/runtime mode, live-vs-dry-run posture, risk, money, customer impact, or operator setup assumptions, capture what changed and what to verify before continuing
 
 ## 6. Calibration later
 

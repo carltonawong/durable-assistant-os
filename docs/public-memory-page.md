@@ -122,6 +122,8 @@ The point is to:
 - verify reality before acting when stakes depend on freshness
 - compress memory before it turns into clutter
 
+One practical project checkpoint rule: if active project work changes future assumptions about infrastructure, data ownership, providers, auth, deployment mode, live-vs-dry-run posture, risk, money, customer impact, or operator setup, capture a durable checkpoint immediately. Do not leave that decision only in chat, hot cache, or a short transition log.
+
 ## Volatility in multi-lane systems
 
 Shared front-door memory is useful, but it is intentionally volatile.

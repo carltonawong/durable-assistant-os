@@ -130,6 +130,29 @@ Examples:
 
 This layer should be compressed and rewritten as reality changes.
 
+### Project checkpoints inside active work
+Active work sometimes changes future assumptions before the project is finished.
+Those changes need durable capture immediately, not only during a final wrap-up.
+
+Create a durable checkpoint when a step changes:
+- infrastructure or hosting
+- data/database ownership or routing
+- provider, tool, or account selection
+- auth, secrets, keys, or protected surfaces
+- deployment or runtime mode
+- live-vs-dry-run behavior
+- risk, money, or customer-impacting behavior
+- operator-facing setup assumptions
+
+A good checkpoint is small:
+- what changed
+- why it matters
+- source of truth or verification target
+- what not to assume next time
+- next concrete step or blocker
+
+The hot front door can mention that checkpoint, but the checkpoint itself belongs in durable wiki/docs memory.
+
 ### 3. Source-of-truth reality
 This is not memory in the usual sense.
 It is the set of live artifacts the assistant should verify against before acting.
