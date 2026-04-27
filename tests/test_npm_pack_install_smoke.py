@@ -99,6 +99,30 @@ class DaosNpmPackInstallSmokeTests(unittest.TestCase):
             self.assertIn("DAOS On", status.stdout)
             self.assertIn("Bridge Review", status.stdout)
 
+    def test_packed_tarball_no_arg_init_uses_home_daos_when_no_daos_home_is_set(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            tarball = self.pack_tarball(root)
+            consumer = root / "consumer"
+            daos = self.install_package_in_consumer(tarball, consumer)
+            fake_home = root / "fake-home"
+            fake_home.mkdir()
+            workspace = root / "workspace"
+            workspace.mkdir()
+            env = {"HOME": str(fake_home), "DAOS_HOME": ""}
+            expected_home = fake_home / ".daos"
+
+            init = self.run_cmd([str(daos), "init", "--blank"], cwd=workspace, env=env)
+            self.assertEqual(init.returncode, 0, msg=init.stderr)
+            self.assertIn(f"DAOS initialized: {expected_home}", init.stdout)
+            self.assertTrue((expected_home / "wiki" / "cache" / "hot-cache.md").is_file())
+
+            status = self.run_cmd([str(daos)], cwd=workspace, env=env)
+            self.assertEqual(status.returncode, 0, msg=status.stderr)
+            self.assertIn("DAOS Status", status.stdout)
+            self.assertIn("DAOS On", status.stdout)
+            self.assertIn("Hot Cache: No current focus set yet.", status.stdout)
+
     def test_packed_tarball_stages_instruction_review_without_importing_memory_content(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)

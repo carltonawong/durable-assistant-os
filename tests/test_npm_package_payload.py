@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import re
 import subprocess
 import unittest
 from pathlib import Path
@@ -35,6 +36,7 @@ class DaosNpmPackagePayloadTests(unittest.TestCase):
             "docs/memory-parity-auditor.md",
             "docs/releases/v0.2.0.md",
             "docs/script-safety.md",
+            "docs/wiki-governance.md",
             "examples/creative-studio-operating-profile-example.md",
             "harness/core-setup.md",
             "harness/first-week.md",
@@ -63,6 +65,43 @@ class DaosNpmPackagePayloadTests(unittest.TestCase):
         )
         self.assertEqual(offenders, [], "npm package includes test/cache/asset bloat")
 
+
+    def test_packaged_markdown_references_only_packaged_repo_files(self) -> None:
+        package = self.npm_pack_dry_run()
+        paths = {entry["path"] for entry in package["files"]}
+        markdown_paths = sorted(
+            path for path in paths if path.endswith(".md") and path != "CHANGELOG.md"
+        )
+        repo_prefixes = ("docs/", "examples/", "harness/", "scripts/", "starter-pack/", "templates/")
+        repo_files = {
+            str(path.relative_to(REPO_ROOT)).replace("\\", "/")
+            for path in REPO_ROOT.rglob("*")
+            if path.is_file()
+        }
+
+        offenders: list[str] = []
+        reference_pattern = re.compile(r"(?:\[[^\]]*\]\(([^)]+)\))|`([^`]+)`")
+        for markdown_path in markdown_paths:
+            text = (REPO_ROOT / markdown_path).read_text(encoding="utf-8")
+            for match in reference_pattern.finditer(text):
+                raw_reference = (match.group(1) or match.group(2) or "").strip()
+                target = raw_reference.split("#", 1)[0].strip()
+                if not target or "://" in target or target.startswith(("#", "mailto:")):
+                    continue
+                if target.startswith("./"):
+                    target = target[2:]
+                candidate_paths = [target]
+                if not target.startswith(repo_prefixes) and not target.startswith("/"):
+                    candidate_paths.append(
+                        str((Path(markdown_path).parent / target).as_posix())
+                    )
+                for candidate in candidate_paths:
+                    candidate = candidate.lstrip("/")
+                    if candidate in repo_files and candidate not in paths:
+                        offenders.append(f"{markdown_path} references unpackaged {candidate}")
+
+        self.assertEqual(sorted(set(offenders)), [])
+
     def test_npm_package_stays_small_enough_for_preview_distribution(self) -> None:
         package = self.npm_pack_dry_run()
 
@@ -72,3 +111,4 @@ class DaosNpmPackagePayloadTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
