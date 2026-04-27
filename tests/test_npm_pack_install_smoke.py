@@ -69,6 +69,36 @@ class DaosNpmPackInstallSmokeTests(unittest.TestCase):
             self.assertIn("Hot Cache: No current focus set yet.", status.stdout)
             self.assertIn("Next", status.stdout)
 
+    def test_packed_tarball_supports_documented_no_arg_init_then_no_arg_status(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            tarball = self.pack_tarball(root)
+            consumer = root / "consumer"
+            daos = self.install_package_in_consumer(tarball, consumer)
+            workspace = root / "workspace"
+            workspace.mkdir()
+            agents = workspace / "AGENTS.md"
+            agents.write_text("# Existing agent instructions\nUse local memory.\n", encoding="utf-8")
+            pack_home = root / "documented-daos-home"
+            env = {"DAOS_HOME": str(pack_home)}
+
+            init = self.run_cmd([str(daos), "init"], cwd=workspace, env=env)
+            self.assertEqual(init.returncode, 0, msg=init.stderr)
+            self.assertIn(f"DAOS initialized: {pack_home}", init.stdout)
+            self.assertIn("instruction scan: wrote review report", init.stdout)
+            self.assertIn("instruction edits: none applied", init.stdout)
+            self.assertTrue((pack_home / "wiki" / "cache" / "hot-cache.md").is_file())
+            self.assertNotIn("DAOS coexistence rule", agents.read_text(encoding="utf-8"))
+            report = pack_home / ".daos" / "import-stage" / "instruction-scan.md"
+            self.assertTrue(report.is_file())
+            self.assertIn("AGENTS.md", report.read_text(encoding="utf-8"))
+
+            status = self.run_cmd([str(daos)], cwd=workspace, env=env)
+            self.assertEqual(status.returncode, 0, msg=status.stderr)
+            self.assertIn("DAOS Status", status.stdout)
+            self.assertIn("DAOS On", status.stdout)
+            self.assertIn("Bridge Review", status.stdout)
+
     def test_packed_tarball_stages_instruction_review_without_importing_memory_content(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
