@@ -18,7 +18,7 @@ Before acting on current operational context:
 - For live facts, verified reality outranks memory.
 - If not recording something would likely create ambiguity, repeated investigation, or false assumptions later, write a dated raw note under `wiki/raw/`.
 - Keep `hot-cache.md` compact and front-door only.
-- Use `hot-cache-log.md` as fallback reconstruction context, not primary working memory.
+- Use `hot-cache-log.md` as near-term transition recovery when the front door was recently overwritten, not as primary working memory or durable history.
 - Use `reset-handoff.md` for exact post-reset/wake-up recovery, not as a running log.
 - Use `agent-continuity.md` only after hot cache and hot-cache log are not enough.
 
