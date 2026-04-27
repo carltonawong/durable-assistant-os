@@ -2,22 +2,65 @@
 
 Use this when you want a first usable DAOS pack without reading the whole repo.
 
-The default path does not require scripts.
+## Fast path
 
-## 15-minute path
+```bash
+npx daos init
+npx daos
+```
 
-1. Copy `starter-pack/` into your own workspace.
-2. Open the copied folder.
-3. Fill `assistant-charter.md`.
-4. Fill `operating-profile.md`.
-5. Leave `lane-snapshot.md` blank unless one workstream already needs extra structure.
-6. Save `cadence-review.md` for later upkeep.
-7. Use `harness/first-week.md` after the first setup.
+`daos init` installs the DAOS baseline into your DAOS home, scans the current working directory for existing agent instruction files, and stages a bridge review when needed.
+
+No-args `daos` shows the compact status view:
+
+```text
+DAOS Status
+
+Setup
+...
+
+DAOS On
+- Hot Cache: ...
+- Hot Cache Log: ...
+- Reset Handoff: ...
+- Agent Continuity: ...
+```
+
+That is enough for a first pass. You do not need to understand every file before using it.
+
+## If DAOS finds existing agent instructions
+
+DAOS scans instruction carriers such as:
+
+```text
+AGENTS.md
+CLAUDE.md
+GEMINI.md
+.cursorrules
+.cursor/rules/*
+.github/copilot-instructions.md
+.hermes/instructions.md
+.openclaw/AGENTS.md
+```
+
+In interactive mode, DAOS asks before editing those files. If you approve, it prepends the DAOS coexistence rule and backs up the original under `.daos/backups/instructions/`.
+
+If you do not approve, or if the command is non-interactive, DAOS writes a review report instead:
+
+```text
+.daos/import-stage/instruction-scan.md
+```
+
+DAOS does not import arbitrary old memory files like `MEMORY.md` by default.
 
 ## What each first-run file does
 
 - `assistant-charter.md` defines what the assistant is for, how it behaves under uncertainty, and what requires approval.
 - `operating-profile.md` defines the working context, lanes, memory defaults, and trust posture.
+- `wiki/cache/hot-cache.md` is the compact current front door.
+- `wiki/cache/hot-cache-log.md` is recent front-door transition history.
+- `wiki/cache/reset-handoff.md` is the exact next move after reset or long idle.
+- `wiki/cache/agent-continuity.md` is last-resort continuity for agent-specific recovery.
 - `lane-snapshot.md` is optional extra structure for one high-friction lane.
 - `cadence-review.md` is for later cleanup and calibration, not first install.
 
@@ -25,13 +68,26 @@ The default path does not require scripts.
 
 A first pass is good enough when:
 - the assistant's main job is clear
-- the main failure mode is clear
 - approval boundaries are explicit
-- active lanes are named
-- memory has a durable home
+- the current focus is visible in `wiki/cache/hot-cache.md`
+- reset recovery has an exact next move when real work begins
+- any existing instruction files are reviewed or explicitly left alone
 - live files/runtime are treated as higher authority than remembered notes
 
 Do not try to model your entire life or organization before first use.
+
+## Manual path
+
+If you do not want npm or scripts:
+
+1. Copy `starter-pack/` into your own workspace.
+2. Open the copied folder.
+3. Fill `assistant-charter.md`.
+4. Fill `operating-profile.md`.
+5. Use `wiki/cache/` as the assistant's shared continuity layer.
+6. Use `harness/first-week.md` after the first setup.
+
+The CLI is the easier path, but DAOS remains plain markdown by design.
 
 ## Optional read-only checks
 
@@ -44,17 +100,12 @@ python scripts/daos_memory_parity.py /path/to/my-daos-pack
 
 If you do not want to run scripts, use this page, `starter-pack/README.md`, and `docs/memory-parity-auditor.md` as manual checklists.
 
-## Optional generated setup
+## Advanced generated setup
 
-Manual copying is the default. If you prefer generated setup:
+The v0.2 front door is `npx daos init`. Older local Python helpers remain available for development and manual workflows:
 
 ```bash
 python scripts/daos_bootstrap.py /path/to/my-daos-pack
-```
-
-For an interactive first pass:
-
-```bash
 python scripts/daos_wizard.py /path/to/my-daos-pack
 ```
 

@@ -22,9 +22,21 @@ class DaosReleaseFrontDoorTests(unittest.TestCase):
         self.assertIn("does **not** import arbitrary memory files", readme)
         self.assertLess(readme.index("npx daos init"), readme.index("## Manual path"))
 
+    def test_quickstart_leads_with_v02_cli_product_loop(self) -> None:
+        quickstart = self.read("docs/quickstart.md")
+        first_window = quickstart[:1800]
+
+        self.assertIn("npx daos init", first_window)
+        self.assertIn("npx daos", first_window)
+        self.assertIn("DAOS Status", first_window)
+        self.assertIn("DAOS On", first_window)
+        self.assertIn("DAOS does not import arbitrary old memory files", quickstart)
+        self.assertLess(quickstart.index("npx daos init"), quickstart.index("## Manual path"))
+
     def test_release_docs_do_not_expose_private_draft_language(self) -> None:
         release_facing_files = [
             "README.md",
+            "docs/quickstart.md",
             "CHANGELOG.md",
             "docs/releases/v0.2.0.md",
         ]
