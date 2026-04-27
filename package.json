@@ -24,7 +24,10 @@
     "docs/pack-schema.md"
   ],
   "scripts": {
-    "test:wrapper": "python -m unittest discover -s tests -p 'test_npm_wrapper.py' -v"
+    "test:wrapper": "python -m unittest discover -s tests -p 'test_npm_wrapper.py' -v",
+    "test:package": "python -m unittest discover -s tests -p 'test_npm_package_payload.py' -v",
+    "test:pack-install": "python -m unittest discover -s tests -p 'test_npm_pack_install_smoke.py' -v",
+    "test:release-front-door": "python -m unittest discover -s tests -p 'test_release_front_door.py' -v"
   },
   "engines": {
     "node": ">=18"
