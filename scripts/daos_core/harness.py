@@ -373,7 +373,7 @@ def build_state_report(pack_dir: str | Path) -> tuple[int, str, str]:
     lines.extend(
         [
             "",
-            "DAOS Context",
+            "DAOS On",
             f"- Hot Cache: {hot_cache_summary}",
             f"- Hot Cache Log: {hot_cache_log_summary}",
             f"- Reset Handoff: {reset_summary}",

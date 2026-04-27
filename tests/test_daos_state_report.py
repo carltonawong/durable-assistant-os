@@ -101,7 +101,7 @@ class DaosStateReportTests(unittest.TestCase):
         self.assertEqual(result.returncode, 0, msg=result.stderr)
         self.assertIn("DAOS Status", result.stdout)
         self.assertIn("Setup", result.stdout)
-        self.assertIn("DAOS Context", result.stdout)
+        self.assertIn("DAOS On", result.stdout)
         self.assertIn("Hot Cache: Building no-args DAOS state report.", result.stdout)
         self.assertIn("Hot Cache Log: [2026-04-26 15:10 PDT - Test] Built state report test fixture.", result.stdout)
         self.assertIn("Reset Handoff: Polish the no-args DAOS state report.", result.stdout)

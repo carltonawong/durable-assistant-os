@@ -127,7 +127,7 @@ class DaosCliTests(unittest.TestCase):
 
             self.assertEqual(result.returncode, 0, msg=result.stderr)
             self.assertIn("Setup", result.stdout)
-            self.assertIn("DAOS Context", result.stdout)
+            self.assertIn("DAOS On", result.stdout)
             self.assertIn("Hot Cache: No current focus set yet.", result.stdout)
             self.assertIn("Hot Cache Log: No recent hot-cache-log entries found.", result.stdout)
             self.assertIn("Reset Handoff: No exact next move set.", result.stdout)
