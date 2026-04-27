@@ -1,8 +1,11 @@
 from __future__ import annotations
 
 import os
+import pty
+import select
 import subprocess
 import tempfile
+import time
 import unittest
 from pathlib import Path
 
@@ -28,6 +31,44 @@ class DaosNpmWrapperTests(unittest.TestCase):
             check=False,
             env=merged_env,
         )
+
+    def run_wrapper_in_pty(self, *args: str, input_after_prompt: str = "y\n") -> tuple[int, str]:
+        master, slave = pty.openpty()
+        proc = subprocess.Popen(
+            ["node", str(WRAPPER), *args],
+            cwd=REPO_ROOT,
+            stdin=slave,
+            stdout=slave,
+            stderr=slave,
+            env=os.environ.copy(),
+        )
+        os.close(slave)
+        output = bytearray()
+        sent = False
+        start = time.time()
+        while True:
+            if time.time() - start > 10:
+                proc.kill()
+                break
+            readable, _, _ = select.select([master], [], [], 0.1)
+            if master in readable:
+                try:
+                    chunk = os.read(master, 4096)
+                except OSError:
+                    break
+                if not chunk:
+                    break
+                output.extend(chunk)
+                if not sent and b"Apply these approved instruction edits now?" in output:
+                    os.write(master, input_after_prompt.encode())
+                    sent = True
+            if proc.poll() is not None:
+                break
+        try:
+            os.close(master)
+        except OSError:
+            pass
+        return proc.wait(), output.decode(errors="replace")
 
     def test_wrapper_help_delegates_to_python_cli(self) -> None:
         result = self.run_wrapper("--help")
@@ -77,6 +118,24 @@ class DaosNpmWrapperTests(unittest.TestCase):
         self.assertEqual(result.returncode, 1)
         self.assertIn("DAOS needs Python 3", result.stderr)
         self.assertIn("npx daos init", result.stderr)
+
+    def test_wrapper_preserves_interactive_instruction_approval(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            workspace = root / "workspace"
+            workspace.mkdir()
+            agents = workspace / "AGENTS.md"
+            agents.write_text("# Existing agent rules\nUse local memory.\n", encoding="utf-8")
+            destination = root / "daos-home"
+
+            code, output = self.run_wrapper_in_pty("init", str(destination), "--scan", str(workspace))
+
+            self.assertEqual(code, 0, msg=output)
+            self.assertIn("DAOS wants approval", output)
+            self.assertIn("instruction edits: applied with approval (1)", output)
+            self.assertIn("DAOS coexistence rule", agents.read_text(encoding="utf-8"))
+            backups = list((destination / ".daos" / "backups" / "instructions").rglob("AGENTS.md*.bak"))
+            self.assertEqual(len(backups), 1)
 
 
 if __name__ == "__main__":

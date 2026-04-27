@@ -52,6 +52,7 @@ function main() {
     return 1;
   }
 
+  const interactive = Boolean(process.stdin.isTTY);
   const result = spawnSync(
     python.command,
     [...python.prefixArgs, pythonScript, ...process.argv.slice(2)],
@@ -59,6 +60,7 @@ function main() {
       cwd: process.cwd(),
       env: process.env,
       encoding: 'utf8',
+      stdio: interactive ? 'inherit' : ['pipe', 'pipe', 'pipe'],
       windowsHide: true,
     }
   );
