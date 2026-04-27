@@ -1,0 +1,43 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: Python and npm-wrapper tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Run full Python test suite
+        run: python -m unittest discover -s tests -v
+
+      - name: Run npm wrapper tests
+        run: npm run test:wrapper
+
+      - name: Run npm package payload gate
+        run: npm run test:package
+
+      - name: Run packed install smoke
+        run: npm run test:pack-install
+
+      - name: Run release front-door gate
+        run: npm run test:release-front-door
