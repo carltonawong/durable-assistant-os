@@ -32,6 +32,13 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     )
     status.add_argument("pack_dir", nargs="?", help="Path to a DAOS pack directory. Defaults to DAOS_HOME or ~/.daos.")
 
+    on = subparsers.add_parser(
+        "on",
+        help="show what DAOS is currently on",
+        description="Alias for status: show the current DAOS setup and DAOS On continuity surface. No files are modified.",
+    )
+    on.add_argument("pack_dir", nargs="?", help="Path to a DAOS pack directory. Defaults to DAOS_HOME or ~/.daos.")
+
 
     init = subparsers.add_parser(
         "init",
@@ -263,7 +270,7 @@ def run_memory_audit(pack_dir_arg: str) -> int:
 
 def main(argv: list[str] | None = None) -> int:
     args = parse_args(argv)
-    if args.command == "status":
+    if args.command in {"status", "on"}:
         return run_status(args.pack_dir)
     if args.command == "init":
         return run_init(args)

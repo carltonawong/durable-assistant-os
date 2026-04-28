@@ -124,6 +124,43 @@ class DaosNpmPackInstallSmokeTests(unittest.TestCase):
             self.assertIn("DAOS On", status.stdout)
             self.assertIn("Hot Cache: No current focus set yet.", status.stdout)
 
+    def test_packed_tarball_on_command_shows_populated_daos_on_surface(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            tarball = self.pack_tarball(root)
+            consumer = root / "consumer"
+            daos = self.install_package_in_consumer(tarball, consumer)
+            workspace = root / "workspace"
+            workspace.mkdir()
+            pack_home = root / "daos-home"
+            init = self.run_cmd([str(daos), "init", str(pack_home), "--blank"], cwd=workspace)
+            self.assertEqual(init.returncode, 0, msg=init.stderr)
+            hot_cache = pack_home / "wiki" / "cache" / "hot-cache.md"
+            hot_cache.write_text(
+                "# Hot Cache\n\n"
+                "**Updated:** 2026-04-27 17:30 PDT  \n"
+                "**Updated by:** DAOS package smoke test  \n"
+                "**Scope:** Demo workspace onboarding\n\n"
+                "> Shared volatile front door: short-horizon context.\n\n"
+                "## Current Focus\n"
+                "- Evaluate DAOS in an existing Hermes-style workspace.\n\n"
+                "## Current Corrections\n"
+                "- Existing Hermes private memory stays private.\n\n"
+                "## Current State\n"
+                "- DAOS baseline installed under the user's home directory.\n\n"
+                "## Open Problems\n"
+                "- Assistant charter and operating profile still need user-specific filling.\n\n"
+                "## System Priorities\n"
+                "- Keep install non-destructive.\n",
+                encoding="utf-8",
+            )
+
+            result = self.run_cmd([str(daos), "on", str(pack_home)], cwd=workspace)
+
+            self.assertEqual(result.returncode, 0, msg=result.stderr)
+            self.assertIn("DAOS On", result.stdout)
+            self.assertIn("Evaluate DAOS in an existing Hermes-style workspace.", result.stdout)
+
     def test_packed_tarball_stages_instruction_review_without_importing_memory_content(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
