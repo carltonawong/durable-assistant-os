@@ -289,7 +289,7 @@ def _compact_validation_errors(errors: list[str]) -> list[str]:
     return compact
 
 
-def build_state_report(pack_dir: str | Path) -> tuple[int, str, str]:
+def build_state_report(pack_dir: str | Path, *, heading: str = "DAOS Status") -> tuple[int, str, str]:
     root = Path(pack_dir).expanduser().resolve()
     validation = validate_pack_dir(root)
     if any(error.startswith("Pack directory does not exist") or error.startswith("Pack path is not a directory") for error in validation.errors):
@@ -356,7 +356,7 @@ def build_state_report(pack_dir: str | Path) -> tuple[int, str, str]:
     instruction_pending_count = _count_report_section_items(instruction_scan, "## Edits needing approval")
 
     lines = [
-        "DAOS Status",
+        heading,
         f"Pack: {root}",
         "",
         "Setup",
@@ -411,7 +411,11 @@ def build_state_report(pack_dir: str | Path) -> tuple[int, str, str]:
         bridge_review.append("No instruction bridge review present")
 
     lines.extend(["", "Setup Required"])
-    lines.extend([f"- {item}" for item in setup_required] or ["- None"])
+    if setup_required:
+        lines.append("- This DAOS home is readable, but it still needs personalization before it is operational.")
+        lines.extend([f"- {item}" for item in setup_required])
+    else:
+        lines.append("- None")
     lines.extend(["", "Continuity Missing"])
     lines.extend([f"- {item}" for item in continuity_missing] or ["- None"])
     lines.extend(["", "Bridge Review"])

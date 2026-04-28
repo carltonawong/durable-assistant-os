@@ -116,6 +116,17 @@ class DaosStateReportTests(unittest.TestCase):
         self.assertIn("Next", result.stdout)
         self.assertIn("Polish the no-args DAOS state report.", result.stdout)
 
+    def test_on_command_uses_daos_on_as_top_level_heading(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            pack = self.make_state_pack(tmpdir)
+
+            result = self.run_cli("on", str(pack))
+
+        self.assertEqual(result.returncode, 0, msg=result.stderr)
+        self.assertTrue(result.stdout.startswith("DAOS On\n"), result.stdout)
+        self.assertNotIn("DAOS Status\n", result.stdout)
+        self.assertIn("Hot Cache: Building no-args DAOS state report.", result.stdout)
+
     def test_state_report_surfaces_instruction_bridge_review_when_present(self) -> None:
         with tempfile.TemporaryDirectory() as tmpdir:
             pack = self.make_state_pack(tmpdir)
@@ -158,6 +169,18 @@ class DaosStateReportTests(unittest.TestCase):
         self.assertNotEqual(result.returncode, 0)
         self.assertIn("DAOS Status unavailable", result.stderr)
         self.assertIn("run `daos init`", result.stderr)
+
+    def test_blank_status_uses_plain_personalization_guidance(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            destination = Path(tmpdir) / "blank-pack"
+            init = self.run_cli("init", str(destination), "--blank")
+            self.assertEqual(init.returncode, 0, msg=init.stderr)
+
+            result = self.run_cli("status", str(destination))
+
+        self.assertEqual(result.returncode, 0, msg=result.stderr)
+        self.assertIn("This DAOS home is readable, but it still needs personalization before it is operational.", result.stdout)
+        self.assertIn("Setup Required", result.stdout)
 
 
 if __name__ == "__main__":

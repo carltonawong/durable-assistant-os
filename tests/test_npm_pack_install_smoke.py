@@ -159,7 +159,8 @@ class DaosNpmPackInstallSmokeTests(unittest.TestCase):
             result = self.run_cmd([str(daos), "on", str(pack_home)], cwd=workspace)
 
             self.assertEqual(result.returncode, 0, msg=result.stderr)
-            self.assertIn("DAOS On", result.stdout)
+            self.assertTrue(result.stdout.startswith("DAOS On\n"), result.stdout)
+            self.assertNotIn("DAOS Status\n", result.stdout)
             self.assertIn("Evaluate DAOS in an existing Hermes-style workspace.", result.stdout)
 
     def test_packed_tarball_can_read_existing_openclaw_style_home_without_creating_default_daos(self) -> None:

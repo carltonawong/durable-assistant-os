@@ -22,7 +22,8 @@ No unreleased framework-facing changes are staged after `v0.2.0` yet.
 - Added a unified `scripts/daos.py` front door with `init`, `status`, and no-args status behavior.
 - Added a thin npm wrapper so the intended first-user surface can be `npx daos init` and `npx daos` while still delegating to the Python reference implementation.
 - Added `DAOS Status` output with a `DAOS On` section summarizing active continuity surfaces: Hot Cache, Hot Cache Log, Reset Handoff, and Agent Continuity.
-- Added `daos on` as a direct alias for viewing the current DAOS On/status surface, including explicit existing-home paths.
+- Added `daos on` as a direct command for viewing the current DAOS On surface, including explicit existing-home paths.
+- Polished `daos on` output so it opens with `DAOS On` rather than the generic status heading, and blank homes now explain that the home is readable but still needs personalization before it is operational.
 - Added bridge-aware `daos init` behavior that installs the mandatory starter-pack baseline and scans existing agent instruction carriers for coexistence review.
 - Added tests for common existing agent ecosystems, including Claude, Gemini, GitHub Copilot, Cursor, Hermes, OpenClaw/Quinn, memory-only, and mixed instruction environments.
 - Added npm-wrapper tests covering help delegation, init/status, no-args status via `DAOS_HOME`, Python-missing messaging, exit-code forwarding, and interactive approval prompts.

@@ -103,9 +103,9 @@ def resolve_default_pack_dir(pack_dir_arg: str | None) -> Path:
     return (Path.home() / ".daos").resolve()
 
 
-def run_status(pack_dir_arg: str | None) -> int:
+def run_status(pack_dir_arg: str | None, *, heading: str = "DAOS Status") -> int:
     pack_dir = resolve_default_pack_dir(pack_dir_arg)
-    exit_code, stdout, stderr = build_state_report(pack_dir)
+    exit_code, stdout, stderr = build_state_report(pack_dir, heading=heading)
     if stdout:
         print(stdout, end="")
     if stderr:
@@ -270,7 +270,9 @@ def run_memory_audit(pack_dir_arg: str) -> int:
 
 def main(argv: list[str] | None = None) -> int:
     args = parse_args(argv)
-    if args.command in {"status", "on"}:
+    if args.command == "on":
+        return run_status(args.pack_dir, heading="DAOS On")
+    if args.command == "status":
         return run_status(args.pack_dir)
     if args.command == "init":
         return run_init(args)
