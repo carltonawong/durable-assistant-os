@@ -53,6 +53,20 @@ If you do not approve, or if the command is non-interactive, DAOS writes a revie
 
 DAOS does not import arbitrary old memory files like `MEMORY.md` by default.
 
+## Existing assistant homes
+
+The default new-user home is `~/.daos`, but DAOS can also read an existing assistant home that already contains the DAOS pack/wiki surfaces. The folder name does not matter as much as the structure.
+
+For an existing OpenClaw/Hermes-style home, point DAOS at it explicitly:
+
+```bash
+DAOS_HOME=/path/to/existing-assistant-home daos
+
+daos on /path/to/existing-assistant-home
+```
+
+Use this when the existing home already has `wiki/cache/hot-cache.md`, `wiki/cache/hot-cache-log.md`, `wiki/cache/reset-handoff.md`, and related DAOS surfaces. This avoids creating a second `~/.daos` home when your current assistant home already acts as the DAOS home.
+
 ## What each first-run file does
 
 - `assistant-charter.md` defines what the assistant is for, how it behaves under uncertainty, and what requires approval.

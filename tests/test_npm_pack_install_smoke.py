@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import os
+import shutil
 import subprocess
 import tempfile
 import unittest
@@ -160,6 +161,48 @@ class DaosNpmPackInstallSmokeTests(unittest.TestCase):
             self.assertEqual(result.returncode, 0, msg=result.stderr)
             self.assertIn("DAOS On", result.stdout)
             self.assertIn("Evaluate DAOS in an existing Hermes-style workspace.", result.stdout)
+
+    def test_packed_tarball_can_read_existing_openclaw_style_home_without_creating_default_daos(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            tarball = self.pack_tarball(root)
+            consumer = root / "consumer"
+            daos = self.install_package_in_consumer(tarball, consumer)
+            package_root = consumer / "node_modules" / "daos"
+            existing_home = root / ".openclaw"
+            fake_home = root / "fake-home"
+            fake_home.mkdir()
+            shutil.copytree(package_root / "starter-pack", existing_home)
+            hot_cache = existing_home / "wiki" / "cache" / "hot-cache.md"
+            hot_cache.write_text(
+                "# Hot Cache\n\n"
+                "**Updated:** 2026-04-27 18:00 PDT  \n"
+                "**Updated by:** Existing assistant home smoke test  \n"
+                "**Scope:** Existing OpenClaw-style home\n\n"
+                "> Shared volatile front door: short-horizon context.\n\n"
+                "## Current Focus\n"
+                "- Use an existing .openclaw-style assistant home as the DAOS home.\n\n"
+                "## Current Corrections\n"
+                "- DAOS home is a structure, not a required folder name.\n\n"
+                "## Current State\n"
+                "- Wiki/cache surfaces already exist in the assistant home.\n\n"
+                "## Open Problems\n"
+                "- No separate ~/.daos home should be created for this explicit path check.\n\n"
+                "## System Priorities\n"
+                "- Read explicit pack paths without side effects.\n",
+                encoding="utf-8",
+            )
+
+            result = self.run_cmd(
+                [str(daos), "on", str(existing_home)],
+                cwd=root,
+                env={"HOME": str(fake_home), "DAOS_HOME": ""},
+            )
+
+            self.assertEqual(result.returncode, 0, msg=result.stderr)
+            self.assertIn("DAOS On", result.stdout)
+            self.assertIn("Use an existing .openclaw-style assistant home", result.stdout)
+            self.assertFalse((fake_home / ".daos").exists(), "explicit existing home should not create ~/.daos")
 
     def test_packed_tarball_stages_instruction_review_without_importing_memory_content(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:

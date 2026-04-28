@@ -20,6 +20,8 @@ class DaosReleaseFrontDoorTests(unittest.TestCase):
         self.assertIn("DAOS Status", first_window)
         self.assertIn("DAOS On", first_window)
         self.assertIn("does **not** import arbitrary memory files", readme)
+        self.assertIn("DAOS home is the folder with the DAOS pack/wiki", readme)
+        self.assertIn("existing assistant home", readme)
         self.assertLess(readme.index("npx daos init"), readme.index("## Manual path"))
 
     def test_quickstart_leads_with_v02_cli_product_loop(self) -> None:
@@ -31,6 +33,8 @@ class DaosReleaseFrontDoorTests(unittest.TestCase):
         self.assertIn("DAOS Status", first_window)
         self.assertIn("DAOS On", first_window)
         self.assertIn("DAOS does not import arbitrary old memory files", quickstart)
+        self.assertIn("DAOS_HOME=/path/to/existing-assistant-home", quickstart)
+        self.assertIn("daos on /path/to/existing-assistant-home", quickstart)
         self.assertLess(quickstart.index("npx daos init"), quickstart.index("## Manual path"))
 
     def test_release_docs_do_not_expose_private_draft_language(self) -> None:

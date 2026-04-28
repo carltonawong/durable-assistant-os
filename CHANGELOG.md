@@ -22,12 +22,14 @@ No unreleased framework-facing changes are staged after `v0.2.0` yet.
 - Added a unified `scripts/daos.py` front door with `init`, `status`, and no-args status behavior.
 - Added a thin npm wrapper so the intended first-user surface can be `npx daos init` and `npx daos` while still delegating to the Python reference implementation.
 - Added `DAOS Status` output with a `DAOS On` section summarizing active continuity surfaces: Hot Cache, Hot Cache Log, Reset Handoff, and Agent Continuity.
+- Added `daos on` as a direct alias for viewing the current DAOS On/status surface, including explicit existing-home paths.
 - Added bridge-aware `daos init` behavior that installs the mandatory starter-pack baseline and scans existing agent instruction carriers for coexistence review.
 - Added tests for common existing agent ecosystems, including Claude, Gemini, GitHub Copilot, Cursor, Hermes, OpenClaw/Quinn, memory-only, and mixed instruction environments.
 - Added npm-wrapper tests covering help delegation, init/status, no-args status via `DAOS_HOME`, Python-missing messaging, exit-code forwarding, and interactive approval prompts.
 
 ### Changed
 - Reframed the README front door around the v0.2 product loop: `npx daos init` followed by no-args `npx daos`.
+- Clarified that DAOS home is the folder with the DAOS pack/wiki surfaces, so existing assistant homes such as `.openclaw` can be used directly instead of duplicating memory into `~/.daos`.
 - Shifted immediate-value proof from file presence to visible active-context content under `DAOS On`.
 - Kept deeper commands such as `check`, `orient`, `reset-test`, `handoff`, and `memory-audit` available as advanced/operator surfaces rather than the primary public story.
 - Added a `package.json.files` allowlist so npm packaging excludes tests, large docs assets, and Python bytecode caches.
@@ -40,6 +42,7 @@ No unreleased framework-facing changes are staged after `v0.2.0` yet.
 - Arbitrary old memory content such as `MEMORY.md` is not imported by default.
 - npm-wrapper interactivity now preserves TTY behavior so Python approval prompts still work through Node/npm.
 - Packed-tarball smoke testing now verifies install-from-package behavior in a fresh consumer project, not just from the repo root.
+- Packed-tarball smoke testing now verifies explicit existing assistant homes can be read without creating a default `~/.daos` home.
 
 ### Notes
 - Scope this as the first practical DAOS product-surface release, not a hosted runtime or autonomous assistant app.

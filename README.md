@@ -60,6 +60,20 @@ You should have:
 
 Do not model everything up front. Start small, use it, then tighten what real use proves is weak.
 
+## DAOS home can be an existing assistant home
+
+The default new-user home is `~/.daos`, but the folder name is not the product. DAOS home is the folder with the DAOS pack/wiki: `assistant-charter.md`, `operating-profile.md`, and `wiki/cache/`.
+
+If you already have an existing assistant home with those surfaces, such as an OpenClaw-style workspace, use it directly instead of creating a duplicate home:
+
+```bash
+DAOS_HOME=/path/to/existing-assistant-home daos
+
+daos on /path/to/existing-assistant-home
+```
+
+The important part is that agents can find and read the shared `wiki/cache/` surfaces. The home can be `~/.daos`, `.openclaw`, or another explicit path.
+
 ## Existing agent instructions
 
 DAOS is designed to coexist with agent-specific memory and instruction systems.
