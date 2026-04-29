@@ -20,6 +20,7 @@ No unreleased framework-facing changes are staged after `v0.2.0` yet.
 
 ### Added
 - Added a unified `scripts/daos.py` front door with `init`, `status`, and no-args status behavior.
+- Added `daos setup`, a guided first-run activation step for the minimum assistant charter, operating profile, current focus, and reset handoff.
 - Added a thin npm wrapper so the intended first-user surface can be `npx daos init` and `npx daos` while still delegating to the Python reference implementation.
 - Added `DAOS Status` output with a `DAOS On` section summarizing active continuity surfaces: Hot Cache, Hot Cache Log, Reset Handoff, and Agent Continuity.
 - Added `daos on` as a direct command for viewing the current DAOS On surface, including explicit existing-home paths.
@@ -30,6 +31,7 @@ No unreleased framework-facing changes are staged after `v0.2.0` yet.
 
 ### Changed
 - Reframed the README front door around the v0.2 product loop: `npx daos init` followed by no-args `npx daos`.
+- Expanded the explicit first-run proof path to `npx daos init`, `npx daos setup`, `npx daos check`, `npx daos on`, and `npx daos reset-test`, ending with `You're complete!` when reset recovery passes.
 - Clarified that DAOS home is the folder with the DAOS pack/wiki surfaces, so existing assistant homes such as `.openclaw` can be used directly instead of duplicating memory into `~/.daos`.
 - Shifted immediate-value proof from file presence to visible active-context content under `DAOS On`.
 - Kept deeper commands such as `check`, `orient`, `reset-test`, `handoff`, and `memory-audit` available as advanced/operator surfaces rather than the primary public story.
@@ -40,6 +42,7 @@ No unreleased framework-facing changes are staged after `v0.2.0` yet.
 - `daos init` does not silently edit existing instruction files; interactive mode asks for approval before prepending the DAOS coexistence rule.
 - Approved instruction edits create backups under `.daos/backups/instructions/`.
 - Non-interactive or declined instruction edits are staged as review artifacts instead of being applied.
+- `daos setup` refuses to silently answer personalization questions in non-interactive mode unless answers are supplied or defaults are explicitly accepted.
 - Arbitrary old memory content such as `MEMORY.md` is not imported by default.
 - npm-wrapper interactivity now preserves TTY behavior so Python approval prompts still work through Node/npm.
 - Packed-tarball smoke testing now verifies install-from-package behavior in a fresh consumer project, not just from the repo root.

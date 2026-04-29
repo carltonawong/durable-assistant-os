@@ -6,12 +6,23 @@ Use this when you want a first usable DAOS pack without reading the whole repo.
 
 ```bash
 npx daos init
-npx daos
+npx daos setup
+npx daos check
+npx daos on
+npx daos reset-test
 ```
 
 `daos init` installs the DAOS baseline into your DAOS home, scans the current working directory for existing agent instruction files, and stages a bridge review when needed.
 
-No-args `daos` shows the compact status view:
+`daos setup` is the guided activation step. It explains and fills the minimum assistant charter, operating profile, current focus, and reset handoff.
+
+`daos check`, `daos on`, and `daos reset-test` should all default to the active DAOS home. When the sequence passes, DAOS ends with:
+
+```text
+You're complete!
+```
+
+No-args `daos` still shows the compact status view:
 
 ```text
 DAOS Status

@@ -16,6 +16,10 @@ class DaosReleaseFrontDoorTests(unittest.TestCase):
         first_window = readme[:2500]
 
         self.assertIn("npx daos init", first_window)
+        self.assertIn("npx daos setup", first_window)
+        self.assertIn("npx daos check", first_window)
+        self.assertIn("npx daos on", first_window)
+        self.assertIn("npx daos reset-test", first_window)
         self.assertIn("npx daos", first_window)
         self.assertIn("DAOS Status", first_window)
         self.assertIn("DAOS On", first_window)
@@ -29,6 +33,10 @@ class DaosReleaseFrontDoorTests(unittest.TestCase):
         first_window = quickstart[:1800]
 
         self.assertIn("npx daos init", first_window)
+        self.assertIn("npx daos setup", first_window)
+        self.assertIn("npx daos check", first_window)
+        self.assertIn("npx daos on", first_window)
+        self.assertIn("npx daos reset-test", first_window)
         self.assertIn("npx daos", first_window)
         self.assertIn("DAOS Status", first_window)
         self.assertIn("DAOS On", first_window)
@@ -72,6 +80,11 @@ class DaosReleaseFrontDoorTests(unittest.TestCase):
         combined = self.read("CHANGELOG.md") + "\n" + self.read("docs/releases/v0.2.0.md")
         required_phrases = [
             "npx daos init",
+            "npx daos setup",
+            "npx daos check",
+            "npx daos on",
+            "npx daos reset-test",
+            "You're complete!",
             "DAOS On",
             "does not silently edit existing instruction files",
             "Arbitrary old memory content",

@@ -87,7 +87,7 @@ class DaosNpmWrapperTests(unittest.TestCase):
             init = self.run_wrapper("init", str(destination), "--blank")
             self.assertEqual(init.returncode, 0, msg=init.stderr)
             self.assertIn("DAOS initialized", init.stdout)
-            self.assertIn("daos` or `daos status", init.stdout)
+            self.assertIn("daos setup", init.stdout)
 
             status = self.run_wrapper("status", str(destination))
 

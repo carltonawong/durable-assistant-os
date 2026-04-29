@@ -20,10 +20,19 @@ If you only try one thing, run:
 
 ```bash
 npx daos init
-npx daos
+npx daos setup
+npx daos check
+npx daos on
+npx daos reset-test
 ```
 
-That creates a local DAOS home, installs the mandatory wiki/cache baseline, scans nearby agent instruction files, and shows what DAOS is currently on.
+That creates a local DAOS home, installs the mandatory wiki/cache baseline, scans nearby agent instruction files, guides the minimum setup, checks the pack, shows what DAOS is on, and verifies reset recovery.
+
+When the first-run sequence passes, DAOS ends with:
+
+```text
+You're complete!
+```
 
 The status view starts with:
 
