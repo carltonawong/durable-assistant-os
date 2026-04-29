@@ -1,8 +1,11 @@
 # Durable Assistant OS
 
-**Current documented baseline:** `v0.2.0`
-
-**Release notes:** `CHANGELOG.md` and `docs/releases/`
+<p align="center">
+  <a href="https://www.npmjs.com/package/use-daos"><img src="https://img.shields.io/badge/npm-use--daos-CB3837?style=flat-square&logo=npm&logoColor=white" alt="npm package: use-daos"></a>
+  <a href="./CHANGELOG.md"><img src="https://img.shields.io/badge/Changelog-CHANGELOG.md-111827?style=flat-square" alt="Changelog"></a>
+  <a href="./docs/releases/"><img src="https://img.shields.io/badge/Releases-docs%2Freleases-2563EB?style=flat-square" alt="Release notes"></a>
+  <a href="./LICENSE"><img src="https://img.shields.io/badge/License-MIT-green?style=flat-square" alt="License: MIT"></a>
+</p>
 
 > **AI assistants are amazing until you realize you’re becoming their memory system.**
 >
