@@ -14,8 +14,47 @@ Do not add entries for every typo fix or private WIP note.
 
 ## Unreleased
 
+No unreleased framework-facing changes are staged after `v0.2.0` yet.
+
+## v0.2.0 - 2026-04-29
+
+### Added
+- Added a unified `scripts/daos.py` front door with `init`, `status`, and no-args status behavior.
+- Added `use-daos setup`, a guided first-run activation step for the minimum assistant charter, operating profile, current focus, and reset handoff.
+- Added a thin npm wrapper so the intended first-user surface can be `npx use-daos init` and `npx use-daos` while still delegating to the Python reference implementation.
+- Added `DAOS Status` output with a `DAOS On` section summarizing active continuity surfaces: Hot Cache, Hot Cache Log, Reset Handoff, and Agent Continuity.
+- Added `use-daos on` as a direct command for viewing the current DAOS On surface, including explicit existing-home paths.
+- Polished `use-daos on` output so it opens with `DAOS On` rather than the generic status heading, and blank homes now explain that the home is readable but still needs personalization before it is operational.
+- Added bridge-aware `use-daos init` behavior that installs the mandatory starter-pack baseline and scans existing agent instruction carriers for coexistence review.
+- Added tests for common existing agent ecosystems, including Claude, Gemini, GitHub Copilot, Cursor, Hermes, OpenClaw/Quinn, memory-only, and mixed instruction environments.
+- Added npm-wrapper tests covering help delegation, init/status, no-args status via `DAOS_HOME`, Python-missing messaging, exit-code forwarding, and interactive approval prompts.
+- Generated and updater-created manifests now advertise the current framework baseline, `v0.2.0`.
+
 ### Changed
+- Reframed the README front door around the v0.2 product loop: `npx use-daos init` followed by no-args `npx use-daos`.
+- Expanded the explicit first-run proof path to `npx use-daos init`, `npx use-daos setup`, `npx use-daos check`, `npx use-daos on`, and `npx use-daos reset-test`, ending with `You're complete!` when reset recovery passes.
+- Clarified that DAOS home is the folder with the DAOS pack/wiki surfaces, so existing assistant homes such as `.openclaw` can be used directly instead of duplicating memory into `~/.daos`.
+- Shifted immediate-value proof from file presence to visible active-context content under `DAOS On`.
+- Kept deeper commands such as `check`, `orient`, `reset-test`, `handoff`, and `memory-audit` available as advanced/operator surfaces rather than the primary public story.
+- Added a `package.json.files` allowlist so npm packaging excludes tests, large docs assets, and Python bytecode caches.
+- Strengthened memory doctrine around project checkpoints so active work that changes infrastructure, data ownership, provider/tool/account choice, auth, deployment/runtime mode, live-vs-dry-run posture, risk, money, customer impact, or operator setup is captured durably before assumptions drift.
 - Refreshed starter-pack cache templates and older-touched public surface files with baseline-provenance notes so GitHub per-file last-touched labels are not mistaken for the current framework version.
+
+### Hardened
+- `use-daos init` does not silently edit existing instruction files; interactive mode asks for approval before prepending the DAOS coexistence rule.
+- Approved instruction edits create backups under `.daos/backups/instructions/`.
+- Non-interactive or declined instruction edits are staged as review artifacts instead of being applied.
+- `use-daos setup` refuses to silently answer personalization questions in non-interactive mode unless answers are supplied or defaults are explicitly accepted.
+- `use-daos setup` refuses to overwrite existing personalized setup-managed files unless `--force` is explicit, and forced overwrites create setup backups first.
+- Arbitrary old memory content such as `MEMORY.md` is not imported by default.
+- npm-wrapper interactivity now preserves TTY behavior so Python approval prompts still work through Node/npm.
+- npm-wrapper Python discovery now rejects Python runtimes older than Python 3.8 instead of accepting any `python --version` success.
+- Packed-tarball smoke testing now verifies install-from-package behavior in a fresh consumer project, not just from the repo root.
+- Packed-tarball smoke testing now verifies explicit existing assistant homes can be read without creating a default `~/.daos` home.
+
+### Notes
+- Scope this as the first practical DAOS product-surface release, not a hosted runtime or autonomous assistant app.
+- Keep the Python-core plus npm-wrapper approach until the CLI contract stabilizes enough to justify a native TypeScript port.
 
 ## v0.1.6 - 2026-04-25
 

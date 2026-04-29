@@ -41,15 +41,23 @@ Keep `hot-cache.md`:
 
 ## Hot-cache log rule
 
-`hot-cache-log.md` exists for fallback audit/reconstruction and lane-rescope disambiguation.
+`hot-cache-log.md` exists for near-term transition recovery when the shared front door moves between lanes.
 
-It is not primary working memory.
+It is not durable memory, project history, or primary working memory.
+
+Use it to answer:
+- what foreground was recently displaced
+- what changed recently enough to confuse another agent
+- which search key can recover a lane without reading long history
+
+If a log fact should still matter after the near term, promote it to `wiki/raw/`, `wiki/sources/`, a durable wiki page, a maintained skill, repo docs, or canonical runtime/config state.
 
 Keep it:
 - reverse-chronological
-- compact
+- compact enough that the first ~50 lines usually recover active multi-lane context
 - meaningful
 - pruned by recurring hygiene
+- backed up before compaction, with backups treated as emergency recovery rather than normal context
 
 ## Agent continuity rule
 

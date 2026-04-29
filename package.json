@@ -1,0 +1,43 @@
+{
+  "name": "use-daos",
+  "version": "0.2.0",
+  "description": "Durable Assistant OS local continuity harness.",
+  "bin": {
+    "use-daos": "bin/use-daos.js"
+  },
+  "files": [
+    "bin/",
+    "scripts/*.py",
+    "scripts/daos_core/*.py",
+    "starter-pack/",
+    "examples/starter-pack-example/",
+    "examples/creative-studio-operating-profile-example.md",
+    "templates/",
+    "harness/mandatory-baseline.md",
+    "harness/core-setup.md",
+    "harness/first-week.md",
+    "CHANGELOG.md",
+    "docs/quickstart.md",
+    "docs/memory-parity-auditor.md",
+    "docs/releases/v0.2.0.md",
+    "docs/script-safety.md",
+    "docs/wiki-governance.md",
+    "docs/setup.md",
+    "docs/trust.md",
+    "docs/reset-handoff.md",
+    "docs/memory.md",
+    "docs/agent-integrations.md",
+    "docs/portability.md",
+    "docs/pack-schema.md"
+  ],
+  "scripts": {
+    "test:wrapper": "python -m unittest discover -s tests -p 'test_npm_wrapper.py' -v",
+    "test:package": "python -m unittest discover -s tests -p 'test_npm_package_payload.py' -v",
+    "test:pack-install": "python -m unittest discover -s tests -p 'test_npm_pack_install_smoke.py' -v",
+    "test:release-front-door": "python -m unittest discover -s tests -p 'test_release_front_door.py' -v"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "license": "MIT"
+}

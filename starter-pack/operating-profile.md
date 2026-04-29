@@ -58,6 +58,7 @@ If you are unsure, start here:
 - Ask-vs-act rule: ask when ambiguity changes the action; otherwise act on clear low-stakes intent
 - Escalation / approval rule: pause for approval on risky, costly, sticky, or socially consequential actions
 - Durable capture rule: if something would be annoying to rediscover, move it into durable notes instead of leaving it only in chat or hot context
+- Project checkpoint rule: if active work changes infrastructure, data ownership, provider/tool/account choice, auth, deployment/runtime mode, live-vs-dry-run posture, risk, money, customer impact, or operator setup assumptions, capture what changed and what to verify before continuing
 
 - Memory front door:
 - Durable memory home:
@@ -65,6 +66,7 @@ If you are unsure, start here:
 - Ask-vs-act rule:
 - Escalation / approval rule:
 - Durable capture rule:
+- Project checkpoint rule:
 
 ## 6. Calibration later
 

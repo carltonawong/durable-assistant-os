@@ -17,8 +17,10 @@ Before acting on current operational context:
 - Do not let hot cache or continuity override the immediate thread on their own.
 - For live facts, verified reality outranks memory.
 - If not recording something would likely create ambiguity, repeated investigation, or false assumptions later, write a dated raw note under `wiki/raw/`.
+- During active project work, capture a durable checkpoint when a step changes infrastructure, data ownership, provider/tool/account choice, auth, deployment/runtime mode, live-vs-dry-run posture, risk, money, customer impact, or operator setup assumptions.
+- A project checkpoint should say what changed, why it matters, the source of truth or verification target, what not to assume next time, and the next blocker or step.
 - Keep `hot-cache.md` compact and front-door only.
-- Use `hot-cache-log.md` as fallback reconstruction context, not primary working memory.
+- Use `hot-cache-log.md` as near-term transition recovery when the front door was recently overwritten, not as primary working memory or durable history.
 - Use `reset-handoff.md` for exact post-reset/wake-up recovery, not as a running log.
 - Use `agent-continuity.md` only after hot cache and hot-cache log are not enough.
 

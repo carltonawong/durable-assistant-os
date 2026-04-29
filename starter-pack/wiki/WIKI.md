@@ -32,6 +32,10 @@ For exact handoff/resume:
 
 If not capturing something would likely create ambiguity, repeated investigation, or false assumptions later, create a dated raw note under `wiki/raw/`.
 
+During active project work, capture a project checkpoint before future assumptions drift when a step changes infrastructure, data ownership, provider/tool/account choice, auth, deployment/runtime mode, live-vs-dry-run posture, risk, money, customer impact, or operator setup.
+
+A project checkpoint should record what changed, why it matters, the source of truth or verification target, what not to assume next time, and the next blocker or step.
+
 ## Durable capture rule
 
 Promote to durable memory when the finding changes any of:

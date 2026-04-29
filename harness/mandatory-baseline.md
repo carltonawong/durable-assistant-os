@@ -100,8 +100,32 @@ A hardened DAOS install must also provide these behaviors:
 - DAOS memory lookup order after local thread
 - verified reality outranks remembered state for live facts
 - durable capture when non-capture would create ambiguity later
+- project checkpoint capture before active work changes future assumptions invisibly
 - reset/wake-up continuity mechanism
 - maintenance automation for ingest, compression, audits, and hygiene
+
+## Project checkpoint baseline
+
+During active project work, do not wait for final completion before preserving the operational decision layer.
+
+Capture a durable checkpoint in the same pass when a step changes future assumptions about:
+- infrastructure or hosting
+- data ownership, database ownership, or routing
+- provider/tool/account choice
+- auth, secrets, keys, or protected surfaces
+- deployment/runtime mode
+- live-vs-dry-run behavior
+- risk, money, or customer-impacting behavior
+- operator-facing setup assumptions
+
+A useful checkpoint records:
+- what changed
+- why it matters
+- the source of truth or verification target
+- what not to assume next time
+- the next blocker or concrete step
+
+Hot cache, current chat, and short logs may point to the checkpoint, but they should not be its only durable home.
 
 ## Mandatory maintenance baseline
 

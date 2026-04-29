@@ -27,7 +27,25 @@
 - What deserves a stronger support system?
 - What should be simplified?
 
-## 4. Keep / add / remove
+## 4. Event-trigger review
+
+Use when a meaningful change happens:
+- a project stalls repeatedly
+- a lane becomes unusually high pressure
+- reminders stop helping
+- a trust or memory boundary fails
+- active work changes infrastructure, data ownership, provider/tool/account choice, auth, deployment/runtime mode, live-vs-dry-run posture, risk, money, customer impact, or operator setup assumptions
+- a new recurring obligation appears
+
+Questions:
+- What changed?
+- What layer should absorb the change?
+- Does a default need to be updated?
+- Does something need to be reclassified?
+- Did a durable claim drift away from live reality enough to require a correction?
+- Was the project checkpoint captured durably with the source of truth, what not to assume, and the next blocker/step?
+
+## 5. Keep / add / remove
 
 - Keep:
 - Add:

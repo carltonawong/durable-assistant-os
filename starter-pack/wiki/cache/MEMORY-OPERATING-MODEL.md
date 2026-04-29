@@ -52,6 +52,7 @@ Highest authority for current operational truth.
 
 Shared short-horizon operational context.
 This is shared volatile front-door context, not private agent memory.
+`hot-cache-log.md` is near-term transition recovery, not durable history; facts that should matter later belong in the wiki/raw/source/doc layers.
 
 ### 4. Reset handoff
 - `wiki/cache/reset-handoff.md`
@@ -82,9 +83,12 @@ When sources disagree, prefer:
 - refresh reset handoff when the exact next move changes and a reset/idle resume would otherwise be ambiguous
 - update agent continuity when resumable state meaningfully changes
 - create a raw note when non-capture would likely create ambiguity later
+- capture project checkpoints durably when active work changes future assumptions about infrastructure, data ownership, provider/tool/account choice, auth, deployment/runtime mode, live-vs-dry-run posture, risk, money, customer impact, or operator setup
 - ingest regularly into durable wiki surfaces
 
-If hot cache feels mismatched, prefer recent front-door history before deeper private continuity:
+A useful project checkpoint records what changed, why it matters, the source of truth or verification target, what not to assume next time, and the next blocker or step.
+
+If hot cache feels mismatched, use near-term front-door transition recovery before deeper private continuity:
 - local thread
 - hot cache
 - hot-cache log
