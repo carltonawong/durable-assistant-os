@@ -4,6 +4,10 @@
 
 **Release notes:** `CHANGELOG.md` and `docs/releases/`
 
+> **AI assistants are amazing until you realize you’re becoming their memory system.**
+>
+> DAOS exists for everyone who has rebuilt context for the same assistant three times in one week — making AI work feel less like starting over, and more like continuing a real conversation.
+
 Durable Assistant OS (DAOS) is a local continuity layer for AI assistants that need to stay useful after resets, long gaps, model switches, and messy memory.
 
 It gives your assistant a small shared operating pack for:
