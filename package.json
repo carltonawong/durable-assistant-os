@@ -1,7 +1,6 @@
 {
   "name": "daos",
-  "version": "0.2.0-private",
-  "private": true,
+  "version": "0.2.0",
   "description": "Durable Assistant OS local continuity harness preview.",
   "bin": {
     "daos": "bin/daos.js"

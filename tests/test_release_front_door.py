@@ -70,11 +70,11 @@ class DaosReleaseFrontDoorTests(unittest.TestCase):
                     offenders.append(f"{relative} contains {term!r}")
         self.assertEqual(offenders, [])
 
-    def test_private_package_metadata_stays_private_until_release_approval(self) -> None:
+    def test_package_metadata_is_ready_for_v02_release(self) -> None:
         package = json.loads(self.read("package.json"))
 
-        self.assertEqual(package["version"], "0.2.0-private")
-        self.assertIs(package["private"], True)
+        self.assertEqual(package["version"], "0.2.0")
+        self.assertNotIn("private", package)
 
     def test_changelog_and_release_note_cover_v02_safety_contract(self) -> None:
         combined = self.read("CHANGELOG.md") + "\n" + self.read("docs/releases/v0.2.0.md")
