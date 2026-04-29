@@ -149,7 +149,7 @@ def main(argv: list[str] | None = None) -> int:
         init_blank = run([str(daos), "init", "--blank"], cwd=consumer, env=env_default)
         record_command(lines, "fresh user: no-arg init --blank", init_blank, [str(daos), "init", "--blank"])
         default_status = run([str(daos)], cwd=consumer, env=env_default)
-        record_command(lines, "fresh user: no-arg daos status", default_status, [str(daos)])
+        record_command(lines, "fresh user: no-arg use-daos status", default_status, [str(daos)])
         checks["fresh_default_home_created"] = (fake_home / ".daos").exists()
         checks["fresh_status_mentions_personalization"] = "still needs personalization before it is operational" in default_status.stdout
         checks["fresh_status_visible"] = default_status.returncode == 0 and default_status.stdout.startswith("DAOS Status\n")
@@ -188,7 +188,7 @@ def main(argv: list[str] | None = None) -> int:
         status_existing = run([str(daos), "status", str(existing_home)], cwd=consumer, env=env_existing)
         record_command(lines, "existing home: explicit status", status_existing, [str(daos), "status", str(existing_home)])
         on_existing = run([str(daos), "on", str(existing_home)], cwd=consumer, env=env_existing)
-        record_command(lines, "existing home: explicit daos on", on_existing, [str(daos), "on", str(existing_home)])
+        record_command(lines, "existing home: explicit use-daos on", on_existing, [str(daos), "on", str(existing_home)])
         checks["existing_status_succeeded"] = status_existing.returncode == 0 and "Deep simulation: evaluate explicit existing .openclaw home." in status_existing.stdout
         checks["existing_on_succeeded"] = on_existing.returncode == 0 and on_existing.stdout.startswith("DAOS On\n")
         checks["existing_default_home_not_created"] = not (tmpdir / "existing-fake-home" / ".daos").exists()
@@ -231,9 +231,9 @@ def main(argv: list[str] | None = None) -> int:
                 "--why",
                 "Verify DAOS can support reset recovery mechanics from a packed install.",
                 "--next",
-                "Run daos reset-test and confirm the handoff is readable.",
+                "Run use-daos reset-test and confirm the handoff is readable.",
                 "--verify",
-                "daos reset-test exits zero.",
+                "use-daos reset-test exits zero.",
             ],
             cwd=consumer,
             env={"HOME": str(tmpdir / "handoff-fake-home")},

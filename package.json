@@ -1,9 +1,9 @@
 {
-  "name": "daos",
+  "name": "use-daos",
   "version": "0.2.0",
   "description": "Durable Assistant OS local continuity harness preview.",
   "bin": {
-    "daos": "bin/daos.js"
+    "use-daos": "bin/use-daos.js"
   },
   "files": [
     "bin/",

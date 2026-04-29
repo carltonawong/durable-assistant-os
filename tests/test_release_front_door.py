@@ -15,35 +15,35 @@ class DaosReleaseFrontDoorTests(unittest.TestCase):
         readme = self.read("README.md")
         first_window = readme[:2500]
 
-        self.assertIn("npx daos init", first_window)
-        self.assertIn("npx daos setup", first_window)
-        self.assertIn("npx daos check", first_window)
-        self.assertIn("npx daos on", first_window)
-        self.assertIn("npx daos reset-test", first_window)
-        self.assertIn("npx daos", first_window)
+        self.assertIn("npx use-daos init", first_window)
+        self.assertIn("npx use-daos setup", first_window)
+        self.assertIn("npx use-daos check", first_window)
+        self.assertIn("npx use-daos on", first_window)
+        self.assertIn("npx use-daos reset-test", first_window)
+        self.assertIn("npx use-daos", first_window)
         self.assertIn("DAOS Status", first_window)
         self.assertIn("DAOS On", first_window)
         self.assertIn("does **not** import arbitrary memory files", readme)
         self.assertIn("DAOS home is the folder with the DAOS pack/wiki", readme)
         self.assertIn("existing assistant home", readme)
-        self.assertLess(readme.index("npx daos init"), readme.index("## Manual path"))
+        self.assertLess(readme.index("npx use-daos init"), readme.index("## Manual path"))
 
     def test_quickstart_leads_with_v02_cli_product_loop(self) -> None:
         quickstart = self.read("docs/quickstart.md")
         first_window = quickstart[:1800]
 
-        self.assertIn("npx daos init", first_window)
-        self.assertIn("npx daos setup", first_window)
-        self.assertIn("npx daos check", first_window)
-        self.assertIn("npx daos on", first_window)
-        self.assertIn("npx daos reset-test", first_window)
-        self.assertIn("npx daos", first_window)
+        self.assertIn("npx use-daos init", first_window)
+        self.assertIn("npx use-daos setup", first_window)
+        self.assertIn("npx use-daos check", first_window)
+        self.assertIn("npx use-daos on", first_window)
+        self.assertIn("npx use-daos reset-test", first_window)
+        self.assertIn("npx use-daos", first_window)
         self.assertIn("DAOS Status", first_window)
         self.assertIn("DAOS On", first_window)
         self.assertIn("DAOS does not import arbitrary old memory files", quickstart)
         self.assertIn("DAOS_HOME=/path/to/existing-assistant-home", quickstart)
-        self.assertIn("daos on /path/to/existing-assistant-home", quickstart)
-        self.assertLess(quickstart.index("npx daos init"), quickstart.index("## Manual path"))
+        self.assertIn("use-daos on /path/to/existing-assistant-home", quickstart)
+        self.assertLess(quickstart.index("npx use-daos init"), quickstart.index("## Manual path"))
 
     def test_release_docs_do_not_expose_private_draft_language(self) -> None:
         release_facing_files = [
@@ -73,17 +73,19 @@ class DaosReleaseFrontDoorTests(unittest.TestCase):
     def test_package_metadata_is_ready_for_v02_release(self) -> None:
         package = json.loads(self.read("package.json"))
 
+        self.assertEqual(package["name"], "use-daos")
         self.assertEqual(package["version"], "0.2.0")
+        self.assertEqual(package["bin"], {"use-daos": "bin/use-daos.js"})
         self.assertNotIn("private", package)
 
     def test_changelog_and_release_note_cover_v02_safety_contract(self) -> None:
         combined = self.read("CHANGELOG.md") + "\n" + self.read("docs/releases/v0.2.0.md")
         required_phrases = [
-            "npx daos init",
-            "npx daos setup",
-            "npx daos check",
-            "npx daos on",
-            "npx daos reset-test",
+            "npx use-daos init",
+            "npx use-daos setup",
+            "npx use-daos check",
+            "npx use-daos on",
+            "npx use-daos reset-test",
             "You're complete!",
             "DAOS On",
             "does not silently edit existing instruction files",

@@ -296,7 +296,7 @@ def build_state_report(pack_dir: str | Path, *, heading: str = "DAOS Status") ->
         return (
             1,
             "",
-            f"DAOS Status unavailable: {root}\n- run `daos init` to create a DAOS home, or set DAOS_HOME to an existing pack\n",
+            f"DAOS Status unavailable: {root}\n- run `use-daos init` to create a DAOS home, or set DAOS_HOME to an existing pack\n",
         )
 
     hot_cache = root / "wiki" / "cache" / "hot-cache.md"
@@ -331,7 +331,7 @@ def build_state_report(pack_dir: str | Path, *, heading: str = "DAOS Status") ->
         compact_errors = _compact_validation_errors(validation.errors)
         setup_required.extend(compact_errors[:5])
         if len(compact_errors) > 5:
-            setup_required.append(f"{len(compact_errors) - 5} more validation issues; run `daos check` for details")
+            setup_required.append(f"{len(compact_errors) - 5} more validation issues; run `use-daos check` for details")
 
     continuity_missing: list[str] = []
     if not current:

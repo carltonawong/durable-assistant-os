@@ -121,7 +121,7 @@ class DaosCliTests(unittest.TestCase):
             init = self.run_cli("init", str(destination), "--blank")
             self.assertEqual(init.returncode, 0, msg=init.stderr)
             self.assertIn("shared continuity baseline", init.stdout)
-            self.assertIn("daos setup", init.stdout)
+            self.assertIn("use-daos setup", init.stdout)
 
             result = self.run_cli("status", str(destination))
 

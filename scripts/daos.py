@@ -22,7 +22,7 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         return argparse.Namespace(command="status", pack_dir=None)
 
     parser = argparse.ArgumentParser(
-        prog="daos",
+        prog="use-daos",
         description="DAOS local harness commands. Only shipped commands are listed here."
     )
     subparsers = parser.add_subparsers(dest="command", required=True)
@@ -214,7 +214,7 @@ def run_init(args: argparse.Namespace) -> int:
             print("instruction backups: .daos/backups/instructions/")
         else:
             print("instruction edits: none applied; review report lists any proposed edits")
-    print("next: run `daos setup` to fill the minimum assistant charter, operating profile, current focus, and reset handoff")
+    print("next: run `use-daos setup` to fill the minimum assistant charter, operating profile, current focus, and reset handoff")
     return 0
 
 
@@ -291,7 +291,7 @@ def run_setup(args: argparse.Namespace) -> int:
     pack_dir = resolve_default_pack_dir(args.pack_dir)
     if not pack_dir.exists():
         print(f"DAOS setup failed: pack directory does not exist: {pack_dir}", file=sys.stderr)
-        print("next: run `daos init` first", file=sys.stderr)
+        print("next: run `use-daos init` first", file=sys.stderr)
         return 1
 
     dirty_files = _setup_dirty_files(pack_dir)
@@ -299,7 +299,7 @@ def run_setup(args: argparse.Namespace) -> int:
         print("DAOS setup refused to overwrite existing personalized setup files.", file=sys.stderr)
         for relative_path in dirty_files:
             print(f"- {relative_path}", file=sys.stderr)
-        print("next: review those files, then rerun with `daos setup --force` only if you want DAOS to back them up and overwrite them.", file=sys.stderr)
+        print("next: review those files, then rerun with `use-daos setup --force` only if you want DAOS to back them up and overwrite them.", file=sys.stderr)
         return 1
 
     provided_answers = [
@@ -314,8 +314,8 @@ def run_setup(args: argparse.Namespace) -> int:
     ]
     if not sys.stdin.isatty() and not args.accept_defaults and not all(provided_answers):
         print("DAOS setup needs an interactive terminal so it does not silently answer personalization questions for you.", file=sys.stderr)
-        print("Run `daos setup` yourself in a terminal to answer the 8 setup questions.", file=sys.stderr)
-        print("For automation only, pass all setup flags or explicitly use `daos setup --accept-defaults`.", file=sys.stderr)
+        print("Run `use-daos setup` yourself in a terminal to answer the 8 setup questions.", file=sys.stderr)
+        print("For automation only, pass all setup flags or explicitly use `use-daos setup --accept-defaults`.", file=sys.stderr)
         return 1
 
     print("DAOS setup")
@@ -456,7 +456,7 @@ def run_setup(args: argparse.Namespace) -> int:
         ## 4. Reminder / planning defaults
 
         - Master list source: Current thread plus DAOS cache files for this setup.
-        - Review layer / dashboard: `daos on` and `daos status`.
+        - Review layer / dashboard: `use-daos on` and `use-daos status`.
         - Same-day overdue follow-up: Not configured yet.
         - Focus-set default: Keep the foreground lane pointed at `{active_lane}` until the user changes it.
         - Importance / urgency rules: Prioritize verified command outcomes and continuity health over speculative personalization.
@@ -504,7 +504,7 @@ def run_setup(args: argparse.Namespace) -> int:
 
         ## System Priorities
         - Keep the first setup lightweight and verified.
-        - Use `daos check`, `daos on`, and `daos reset-test` to confirm readiness.
+        - Use `use-daos check`, `use-daos on`, and `use-daos reset-test` to confirm readiness.
         """).strip() + "\n"
 
     reset_handoff = dedent(f"""
@@ -521,8 +521,8 @@ def run_setup(args: argparse.Namespace) -> int:
         **Status:** fresh
 
         - Why this handoff exists: First-run DAOS setup created an initial recovery point.
-        - Exact next move: Recover {reset_recovery}; then work from `{working_directory}` and run `daos on` to confirm current continuity.
-        - First verification: Check {live_sources}; then run `daos check` and `daos reset-test` from the active DAOS environment.
+        - Exact next move: Recover {reset_recovery}; then work from `{working_directory}` and run `use-daos on` to confirm current continuity.
+        - First verification: Check {live_sources}; then run `use-daos check` and `use-daos reset-test` from the active DAOS environment.
         - If stale or contradicted: Re-read the current thread, then `wiki/cache/hot-cache.md`, then verify live files/runtime before continuing.
 
         ## Editing rules
@@ -551,7 +551,7 @@ def run_setup(args: argparse.Namespace) -> int:
     print("wrote: operating-profile.md")
     print("wrote: wiki/cache/hot-cache.md")
     print("wrote: wiki/cache/reset-handoff.md")
-    print("next: run `daos check`")
+    print("next: run `use-daos check`")
     return 0
 
 
@@ -586,7 +586,7 @@ def run_check(pack_dir_arg: str | None) -> int:
     if actionable_warnings:
         print("next: review warnings before relying on this pack operationally")
     else:
-        print("next: run `daos on`, then `daos reset-test`")
+        print("next: run `use-daos on`, then `use-daos reset-test`")
     return 0
 
 

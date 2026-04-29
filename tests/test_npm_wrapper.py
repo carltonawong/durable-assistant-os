@@ -10,7 +10,7 @@ import unittest
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
-WRAPPER = REPO_ROOT / "bin" / "daos.js"
+WRAPPER = REPO_ROOT / "bin" / "use-daos.js"
 
 
 class DaosNpmWrapperTests(unittest.TestCase):
@@ -74,8 +74,8 @@ class DaosNpmWrapperTests(unittest.TestCase):
         result = self.run_wrapper("--help")
 
         self.assertEqual(result.returncode, 0, msg=result.stderr)
-        self.assertIn("usage: daos", result.stdout)
-        self.assertNotIn("usage: daos.py", result.stdout)
+        self.assertIn("usage: use-daos", result.stdout)
+        self.assertNotIn("usage: use-daos.py", result.stdout)
         self.assertIn("DAOS local harness commands", result.stdout)
         self.assertIn("status", result.stdout)
         self.assertIn("init", result.stdout)
@@ -87,7 +87,7 @@ class DaosNpmWrapperTests(unittest.TestCase):
             init = self.run_wrapper("init", str(destination), "--blank")
             self.assertEqual(init.returncode, 0, msg=init.stderr)
             self.assertIn("DAOS initialized", init.stdout)
-            self.assertIn("daos setup", init.stdout)
+            self.assertIn("use-daos setup", init.stdout)
 
             status = self.run_wrapper("status", str(destination))
 
@@ -119,7 +119,7 @@ class DaosNpmWrapperTests(unittest.TestCase):
 
         self.assertEqual(result.returncode, 1)
         self.assertIn("DAOS needs Python 3", result.stderr)
-        self.assertIn("npx daos init", result.stderr)
+        self.assertIn("npx use-daos init", result.stderr)
 
     def test_wrapper_rejects_python_that_is_too_old(self) -> None:
         with tempfile.TemporaryDirectory() as tmpdir:

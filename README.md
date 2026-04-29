@@ -20,11 +20,11 @@ DAOS is not a hosted app and not a full assistant runtime. It is the reliability
 If you only try one thing, run:
 
 ```bash
-npx daos init
-npx daos setup
-npx daos check
-npx daos on
-npx daos reset-test
+npx use-daos init
+npx use-daos setup
+npx use-daos check
+npx use-daos on
+npx use-daos reset-test
 ```
 
 That creates a local DAOS home, installs the mandatory wiki/cache baseline, scans nearby agent instruction files, guides the minimum setup, checks the pack, shows what DAOS is on, and verifies reset recovery.
@@ -52,10 +52,10 @@ DAOS On
 
 This is the core product loop:
 
-1. `daos init` installs a shared continuity baseline.
+1. `use-daos init` installs a shared continuity baseline.
 2. DAOS scans existing instruction carriers like `AGENTS.md`, `CLAUDE.md`, `.cursorrules`, and Copilot instructions.
 3. DAOS asks before editing existing instruction files.
-4. `daos` shows the current setup and continuity status.
+4. `use-daos` shows the current setup and continuity status.
 5. Your assistant uses the DAOS files to recover orientation without treating memory as live truth.
 
 ## What you should have after one sitting
@@ -77,9 +77,9 @@ The default new-user home is `~/.daos`, but the folder name is not the product. 
 If you already have an existing assistant home with those surfaces, use it directly instead of creating a duplicate home:
 
 ```bash
-DAOS_HOME=/path/to/existing-assistant-home daos
+DAOS_HOME=/path/to/existing-assistant-home use-daos
 
-daos on /path/to/existing-assistant-home
+use-daos on /path/to/existing-assistant-home
 ```
 
 The important part is that agents can find and read the shared `wiki/cache/` surfaces. The home can be `~/.daos` or another explicit assistant-home path.
@@ -88,7 +88,7 @@ The important part is that agents can find and read the shared `wiki/cache/` sur
 
 DAOS is designed to coexist with agent-specific memory and instruction systems.
 
-During `daos init`, it can scan for instruction carriers such as:
+During `use-daos init`, it can scan for instruction carriers such as:
 
 ```text
 AGENTS.md
@@ -141,9 +141,9 @@ The CLI is the easier first path, but the pack remains plain markdown by design.
 
 ## What is in the repo
 
-- `bin/daos.js` — thin npm wrapper for the DAOS CLI.
+- `bin/use-daos.js` — thin npm wrapper for the DAOS CLI.
 - `scripts/daos.py` — Python reference CLI used by the wrapper.
-- `starter-pack/` — the default DAOS baseline installed by `daos init`.
+- `starter-pack/` — the default DAOS baseline installed by `use-daos init`.
 - `docs/quickstart.md` — short first-run procedure.
 - `docs/memory.md` — deeper memory doctrine.
 - `docs/agent-integrations.md` — notes for wiring DAOS beside assistants.
@@ -155,8 +155,8 @@ The CLI is the easier first path, but the pack remains plain markdown by design.
 ## What is already proven
 
 The current v0.2 line includes:
-- `daos init` and no-args `daos` as the first-user CLI surface
-- `daos setup`, `daos check`, `daos on`, and `daos reset-test` as the explicit first-run proof loop
+- `use-daos init` and no-args `use-daos` as the first-user CLI surface
+- `use-daos setup`, `use-daos check`, `use-daos on`, and `use-daos reset-test` as the explicit first-run proof loop
 - mandatory baseline install from the starter pack
 - safe instruction-carrier scanning
 - approval-gated instruction edits with backups

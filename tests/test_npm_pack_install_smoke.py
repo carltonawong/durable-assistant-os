@@ -46,7 +46,7 @@ class DaosNpmPackInstallSmokeTests(unittest.TestCase):
         self.assertEqual(init.returncode, 0, msg=init.stderr)
         install = self.run_cmd(["npm", "install", str(tarball)], cwd=consumer)
         self.assertEqual(install.returncode, 0, msg=install.stderr)
-        binary = consumer / "node_modules" / ".bin" / "daos"
+        binary = consumer / "node_modules" / ".bin" / "use-daos"
         self.assertTrue(binary.exists(), f"installed package did not expose {binary}")
         return binary
 
@@ -169,7 +169,7 @@ class DaosNpmPackInstallSmokeTests(unittest.TestCase):
             tarball = self.pack_tarball(root)
             consumer = root / "consumer"
             daos = self.install_package_in_consumer(tarball, consumer)
-            package_root = consumer / "node_modules" / "daos"
+            package_root = consumer / "node_modules" / "use-daos"
             existing_home = root / ".openclaw"
             fake_home = root / "fake-home"
             fake_home.mkdir()

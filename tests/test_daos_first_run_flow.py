@@ -66,7 +66,7 @@ class DaosFirstRunFlowTests(unittest.TestCase):
             reset = self.run_cli("reset-test", env=env)
 
             self.assertEqual(init.returncode, 0, msg=init.stderr)
-            self.assertIn("next: run `daos setup`", init.stdout)
+            self.assertIn("next: run `use-daos setup`", init.stdout)
 
             self.assertEqual(setup.returncode, 0, msg=setup.stderr)
             self.assertIn("DAOS setup", setup.stdout)
@@ -80,7 +80,7 @@ class DaosFirstRunFlowTests(unittest.TestCase):
             self.assertIn("5/8 What live sources should the assistant check before trusting memory?", setup.stdout)
             self.assertIn("Default: current thread, repo files/git status, logs/runtime state", setup.stdout)
             self.assertIn("8/8 What would make this assistant feel genuinely useful after one week?", setup.stdout)
-            self.assertIn("next: run `daos check`", setup.stdout)
+            self.assertIn("next: run `use-daos check`", setup.stdout)
 
             self.assertTrue((pack / "assistant-charter.md").exists())
             self.assertTrue((pack / "operating-profile.md").exists())
@@ -114,7 +114,7 @@ class DaosFirstRunFlowTests(unittest.TestCase):
 
         self.assertNotEqual(setup.returncode, 0)
         self.assertIn("DAOS setup needs an interactive terminal", setup.stderr)
-        self.assertIn("Run `daos setup` yourself", setup.stderr)
+        self.assertIn("Run `use-daos setup` yourself", setup.stderr)
         self.assertIn("--accept-defaults", setup.stderr)
 
     def test_setup_can_accept_defaults_when_explicitly_requested(self) -> None:
@@ -149,7 +149,7 @@ class DaosFirstRunFlowTests(unittest.TestCase):
             self.assertNotEqual(second_setup.returncode, 0)
             self.assertIn("refused to overwrite existing personalized setup files", second_setup.stderr)
             self.assertIn("assistant-charter.md", second_setup.stderr)
-            self.assertIn("daos setup --force", second_setup.stderr)
+            self.assertIn("use-daos setup --force", second_setup.stderr)
             self.assertEqual(charter_path.read_text(encoding="utf-8"), personalized)
 
     def test_setup_force_backs_up_before_overwriting_personalized_files(self) -> None:

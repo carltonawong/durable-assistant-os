@@ -5,24 +5,24 @@ Use this when you want a first usable DAOS pack without reading the whole repo.
 ## Fast path
 
 ```bash
-npx daos init
-npx daos setup
-npx daos check
-npx daos on
-npx daos reset-test
+npx use-daos init
+npx use-daos setup
+npx use-daos check
+npx use-daos on
+npx use-daos reset-test
 ```
 
-`daos init` installs the DAOS baseline into your DAOS home, scans the current working directory for existing agent instruction files, and stages a bridge review when needed.
+`use-daos init` installs the DAOS baseline into your DAOS home, scans the current working directory for existing agent instruction files, and stages a bridge review when needed.
 
-`daos setup` is the guided activation step. It explains and fills the minimum assistant charter, operating profile, current focus, and reset handoff.
+`use-daos setup` is the guided activation step. It explains and fills the minimum assistant charter, operating profile, current focus, and reset handoff.
 
-`daos check`, `daos on`, and `daos reset-test` should all default to the active DAOS home. When the sequence passes, DAOS ends with:
+`use-daos check`, `use-daos on`, and `use-daos reset-test` should all default to the active DAOS home. When the sequence passes, DAOS ends with:
 
 ```text
 You're complete!
 ```
 
-No-args `daos` still shows the compact status view:
+No-args `use-daos` still shows the compact status view:
 
 ```text
 DAOS Status
@@ -71,9 +71,9 @@ The default new-user home is `~/.daos`, but DAOS can also read an existing assis
 For an existing assistant home, point DAOS at it explicitly:
 
 ```bash
-DAOS_HOME=/path/to/existing-assistant-home daos
+DAOS_HOME=/path/to/existing-assistant-home use-daos
 
-daos on /path/to/existing-assistant-home
+use-daos on /path/to/existing-assistant-home
 ```
 
 Use this when the existing home already has `wiki/cache/hot-cache.md`, `wiki/cache/hot-cache-log.md`, `wiki/cache/reset-handoff.md`, and related DAOS surfaces. This avoids creating a second `~/.daos` home when your current assistant home already acts as the DAOS home.
@@ -127,7 +127,7 @@ If you do not want to run scripts, use this page, `starter-pack/README.md`, and 
 
 ## Advanced generated setup
 
-The v0.2 front door is `npx daos init`. Older local Python helpers remain available for development and manual workflows:
+The v0.2 front door is `npx use-daos init`. Older local Python helpers remain available for development and manual workflows:
 
 ```bash
 python scripts/daos_bootstrap.py /path/to/my-daos-pack

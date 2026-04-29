@@ -168,7 +168,7 @@ class DaosStateReportTests(unittest.TestCase):
 
         self.assertNotEqual(result.returncode, 0)
         self.assertIn("DAOS Status unavailable", result.stderr)
-        self.assertIn("run `daos init`", result.stderr)
+        self.assertIn("run `use-daos init`", result.stderr)
 
     def test_blank_status_uses_plain_personalization_guidance(self) -> None:
         with tempfile.TemporaryDirectory() as tmpdir:

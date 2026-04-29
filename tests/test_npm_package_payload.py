@@ -32,7 +32,7 @@ class DaosNpmPackagePayloadTests(unittest.TestCase):
             "README.md",
             "LICENSE",
             "CHANGELOG.md",
-            "bin/daos.js",
+            "bin/use-daos.js",
             "docs/memory-parity-auditor.md",
             "docs/releases/v0.2.0.md",
             "docs/script-safety.md",
