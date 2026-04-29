@@ -16,7 +16,7 @@ Do not add entries for every typo fix or private WIP note.
 
 No unreleased framework-facing changes are staged after `v0.2.0` yet.
 
-## v0.2.0 - 2026-04-26
+## v0.2.0 - 2026-04-29
 
 ### Added
 - Added a unified `scripts/daos.py` front door with `init`, `status`, and no-args status behavior.

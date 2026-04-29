@@ -102,7 +102,7 @@ class DaosNpmPackagePayloadTests(unittest.TestCase):
 
         self.assertEqual(sorted(set(offenders)), [])
 
-    def test_npm_package_stays_small_enough_for_preview_distribution(self) -> None:
+    def test_npm_package_stays_small_enough_for_release_distribution(self) -> None:
         package = self.npm_pack_dry_run()
 
         self.assertLessEqual(package["entryCount"], 70)

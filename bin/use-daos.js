@@ -51,7 +51,7 @@ function main() {
 
   const python = findPython();
   if (!python) {
-    process.stderr.write('DAOS needs Python 3 to run this preview build.\n');
+    process.stderr.write('DAOS needs Python 3 to run the local continuity harness.\n');
     process.stderr.write('Install Python 3, then run: npx use-daos init\n');
     return 1;
   }
