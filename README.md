@@ -1,15 +1,25 @@
 # Durable Assistant OS
 
 <p align="center">
+  <strong>Stop being your AI assistant’s context bank.</strong><br>
+  <span>A local continuity harness for AI agents.</span>
+</p>
+
+<p align="center">
   <a href="https://www.npmjs.com/package/use-daos"><img src="https://img.shields.io/badge/npm-use--daos-CB3837?style=flat-square&logo=npm&logoColor=white" alt="npm package: use-daos"></a>
   <a href="./CHANGELOG.md"><img src="https://img.shields.io/badge/Changelog-CHANGELOG.md-111827?style=flat-square" alt="Changelog"></a>
   <a href="./docs/releases/"><img src="https://img.shields.io/badge/Releases-docs%2Freleases-2563EB?style=flat-square" alt="Release notes"></a>
   <a href="./LICENSE"><img src="https://img.shields.io/badge/License-MIT-green?style=flat-square" alt="License: MIT"></a>
 </p>
 
-> **AI assistants are amazing until you realize you’re becoming their memory system.**
->
-> DAOS exists for everyone who has rebuilt context for the same assistant three times in one week — making AI work feel less like starting over, and more like continuing a real conversation.
+<p align="center">
+  <code>npx use-daos init → setup → check → on → reset-test → You're complete!</code>
+</p>
+
+<p align="center">
+  <strong>AI assistants are amazing until you realize you’re becoming their memory system.</strong><br>
+  DAOS exists for everyone who has rebuilt context for the same assistant three times in one week — making AI work feel less like starting over, and more like continuing a real conversation.
+</p>
 
 Durable Assistant OS (DAOS) is a local continuity layer for AI assistants that need to stay useful after resets, long gaps, model switches, and messy memory.
 
