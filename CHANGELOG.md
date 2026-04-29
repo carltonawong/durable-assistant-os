@@ -28,6 +28,7 @@ No unreleased framework-facing changes are staged after `v0.2.0` yet.
 - Added bridge-aware `daos init` behavior that installs the mandatory starter-pack baseline and scans existing agent instruction carriers for coexistence review.
 - Added tests for common existing agent ecosystems, including Claude, Gemini, GitHub Copilot, Cursor, Hermes, OpenClaw/Quinn, memory-only, and mixed instruction environments.
 - Added npm-wrapper tests covering help delegation, init/status, no-args status via `DAOS_HOME`, Python-missing messaging, exit-code forwarding, and interactive approval prompts.
+- Generated and updater-created manifests now advertise the current framework baseline, `v0.2.0`.
 
 ### Changed
 - Reframed the README front door around the v0.2 product loop: `npx daos init` followed by no-args `npx daos`.
