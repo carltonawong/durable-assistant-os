@@ -130,6 +130,50 @@ class DaosFirstRunFlowTests(unittest.TestCase):
         self.assertIn("non-interactive defaults explicitly accepted", setup.stdout)
         self.assertIn("1/8 What do you want this assistant to help you make progress on first?", setup.stdout)
 
+    def test_setup_refuses_to_overwrite_personalized_files_without_force(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            home = Path(tmpdir) / "fresh-home"
+            pack = home / ".daos"
+            env = {"HOME": str(home)}
+            init = self.run_cli("init", "--blank", env=env)
+            self.assertEqual(init.returncode, 0, msg=init.stderr)
+            first_setup = self.run_cli("setup", "--accept-defaults", env=env)
+            self.assertEqual(first_setup.returncode, 0, msg=first_setup.stderr)
+            charter_path = pack / "assistant-charter.md"
+            original = charter_path.read_text(encoding="utf-8")
+            personalized = original + "\n<!-- user personalization -->\n"
+            charter_path.write_text(personalized, encoding="utf-8")
+
+            second_setup = self.run_cli("setup", "--accept-defaults", env=env)
+
+            self.assertNotEqual(second_setup.returncode, 0)
+            self.assertIn("refused to overwrite existing personalized setup files", second_setup.stderr)
+            self.assertIn("assistant-charter.md", second_setup.stderr)
+            self.assertIn("daos setup --force", second_setup.stderr)
+            self.assertEqual(charter_path.read_text(encoding="utf-8"), personalized)
+
+    def test_setup_force_backs_up_before_overwriting_personalized_files(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            home = Path(tmpdir) / "fresh-home"
+            pack = home / ".daos"
+            env = {"HOME": str(home)}
+            init = self.run_cli("init", "--blank", env=env)
+            self.assertEqual(init.returncode, 0, msg=init.stderr)
+            first_setup = self.run_cli("setup", "--accept-defaults", env=env)
+            self.assertEqual(first_setup.returncode, 0, msg=first_setup.stderr)
+            charter_path = pack / "assistant-charter.md"
+            personalized = charter_path.read_text(encoding="utf-8") + "\n<!-- user personalization -->\n"
+            charter_path.write_text(personalized, encoding="utf-8")
+
+            forced = self.run_cli("setup", "--accept-defaults", "--force", env=env)
+            backups = list((pack / ".daos" / "backups" / "setup").glob("*/assistant-charter.md"))
+
+            self.assertEqual(forced.returncode, 0, msg=forced.stderr)
+            self.assertIn("backed up existing setup files", forced.stdout)
+            self.assertEqual(len(backups), 1)
+            self.assertEqual(backups[0].read_text(encoding="utf-8"), personalized)
+            self.assertNotEqual(charter_path.read_text(encoding="utf-8"), personalized)
+
 
 if __name__ == "__main__":
     unittest.main()

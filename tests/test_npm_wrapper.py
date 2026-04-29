@@ -121,6 +121,17 @@ class DaosNpmWrapperTests(unittest.TestCase):
         self.assertIn("DAOS needs Python 3", result.stderr)
         self.assertIn("npx daos init", result.stderr)
 
+    def test_wrapper_rejects_python_that_is_too_old(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            fake_python = Path(tmpdir) / "python"
+            fake_python.write_text("#!/usr/bin/env sh\nexit 1\n", encoding="utf-8")
+            fake_python.chmod(0o755)
+
+            result = self.run_wrapper("--help", env={"DAOS_PYTHON": str(fake_python)})
+
+        self.assertEqual(result.returncode, 1)
+        self.assertIn("DAOS needs Python 3", result.stderr)
+
     def test_wrapper_preserves_interactive_instruction_approval(self) -> None:
         with tempfile.TemporaryDirectory() as tmpdir:
             root = Path(tmpdir)

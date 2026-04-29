@@ -44,8 +44,10 @@ No unreleased framework-facing changes are staged after `v0.2.0` yet.
 - Approved instruction edits create backups under `.daos/backups/instructions/`.
 - Non-interactive or declined instruction edits are staged as review artifacts instead of being applied.
 - `daos setup` refuses to silently answer personalization questions in non-interactive mode unless answers are supplied or defaults are explicitly accepted.
+- `daos setup` refuses to overwrite existing personalized setup-managed files unless `--force` is explicit, and forced overwrites create setup backups first.
 - Arbitrary old memory content such as `MEMORY.md` is not imported by default.
 - npm-wrapper interactivity now preserves TTY behavior so Python approval prompts still work through Node/npm.
+- npm-wrapper Python discovery now rejects Python runtimes older than Python 3.8 instead of accepting any `python --version` success.
 - Packed-tarball smoke testing now verifies install-from-package behavior in a fresh consumer project, not just from the repo root.
 - Packed-tarball smoke testing now verifies explicit existing assistant homes can be read without creating a default `~/.daos` home.
 

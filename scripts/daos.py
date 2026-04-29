@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import argparse
 import os
+import shutil
 import sys
 from datetime import datetime
 from pathlib import Path
@@ -67,6 +68,7 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     setup.add_argument("--reset-recovery", default=None, help="What the assistant should recover first after reset or long idle")
     setup.add_argument("--week-success", default=None, help="What would make the assistant useful after one week")
     setup.add_argument("--accept-defaults", action="store_true", help="Allow non-interactive setup to accept all defaults explicitly")
+    setup.add_argument("--force", action="store_true", help="Overwrite existing setup-managed files after backing them up")
 
     check = subparsers.add_parser(
         "check",
@@ -236,11 +238,68 @@ def _setup_answer(
     return default
 
 
+SETUP_MANAGED_FILES = (
+    Path("assistant-charter.md"),
+    Path("operating-profile.md"),
+    Path("wiki/cache/hot-cache.md"),
+    Path("wiki/cache/reset-handoff.md"),
+)
+
+
+SETUP_STARTER_MARKERS = {
+    Path("assistant-charter.md"): ("Starter-pack working copy", "- Primary outcome:", "- Actions that always require approval:"),
+    Path("operating-profile.md"): ("Starter-pack working copy", "- Primary outcome:", "- Durable capture rule:"),
+    Path("wiki/cache/hot-cache.md"): ("**Updated:** YYYY-MM-DD HH:MM TZ", "Fill with the current shared foreground lane."),
+    Path("wiki/cache/reset-handoff.md"): ("**Status:** empty | fresh | stale | blocked", "- Exact next move:"),
+}
+
+
+def _is_setup_starter_file(path: Path, relative_path: Path) -> bool:
+    if not path.exists():
+        return True
+    try:
+        text = path.read_text(encoding="utf-8")
+    except UnicodeDecodeError:
+        return False
+    return all(marker in text for marker in SETUP_STARTER_MARKERS[relative_path])
+
+
+def _setup_dirty_files(pack_dir: Path) -> list[Path]:
+    dirty: list[Path] = []
+    for relative_path in SETUP_MANAGED_FILES:
+        target = pack_dir / relative_path
+        if target.exists() and not _is_setup_starter_file(target, relative_path):
+            dirty.append(relative_path)
+    return dirty
+
+
+def _backup_setup_files(pack_dir: Path, relative_paths: tuple[Path, ...]) -> Path | None:
+    existing = [relative_path for relative_path in relative_paths if (pack_dir / relative_path).exists()]
+    if not existing:
+        return None
+    timestamp = datetime.now().astimezone().strftime("%Y%m%d-%H%M%S")
+    backup_root = pack_dir / ".daos" / "backups" / "setup" / timestamp
+    for relative_path in existing:
+        source = pack_dir / relative_path
+        destination = backup_root / relative_path
+        destination.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(source, destination)
+    return backup_root
+
+
 def run_setup(args: argparse.Namespace) -> int:
     pack_dir = resolve_default_pack_dir(args.pack_dir)
     if not pack_dir.exists():
         print(f"DAOS setup failed: pack directory does not exist: {pack_dir}", file=sys.stderr)
         print("next: run `daos init` first", file=sys.stderr)
+        return 1
+
+    dirty_files = _setup_dirty_files(pack_dir)
+    if dirty_files and not args.force:
+        print("DAOS setup refused to overwrite existing personalized setup files.", file=sys.stderr)
+        for relative_path in dirty_files:
+            print(f"- {relative_path}", file=sys.stderr)
+        print("next: review those files, then rerun with `daos setup --force` only if you want DAOS to back them up and overwrite them.", file=sys.stderr)
         return 1
 
     provided_answers = [
@@ -473,6 +532,8 @@ def run_setup(args: argparse.Namespace) -> int:
         - clear or rewrite when the exact handoff changes
         """).strip() + "\n"
 
+    backup_root = _backup_setup_files(pack_dir, SETUP_MANAGED_FILES) if args.force else None
+
     (pack_dir / "assistant-charter.md").write_text(assistant_charter, encoding="utf-8")
     (pack_dir / "operating-profile.md").write_text(operating_profile, encoding="utf-8")
     cache_dir = pack_dir / "wiki" / "cache"
@@ -484,6 +545,8 @@ def run_setup(args: argparse.Namespace) -> int:
     print("Step 2: operating profile — defines the active lane, working directory, and memory/trust defaults.")
     print("Step 3: current focus — writes the hot cache so agents know what DAOS is on right now.")
     print("Step 4: reset handoff — writes the exact recovery note for resets or long idle gaps.")
+    if backup_root:
+        print(f"backed up existing setup files: {backup_root}")
     print("wrote: assistant-charter.md")
     print("wrote: operating-profile.md")
     print("wrote: wiki/cache/hot-cache.md")

@@ -68,7 +68,7 @@ DAOS does not import arbitrary old memory files like `MEMORY.md` by default.
 
 The default new-user home is `~/.daos`, but DAOS can also read an existing assistant home that already contains the DAOS pack/wiki surfaces. The folder name does not matter as much as the structure.
 
-For an existing OpenClaw/Hermes-style home, point DAOS at it explicitly:
+For an existing assistant home, point DAOS at it explicitly:
 
 ```bash
 DAOS_HOME=/path/to/existing-assistant-home daos

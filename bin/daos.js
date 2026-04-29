@@ -14,13 +14,17 @@ function candidateCommands() {
   }
   return [
     ['python3', []],
-    ['python', []],
     ['py', ['-3']],
+    ['python', []],
   ];
 }
 
 function probePython(command, prefixArgs) {
-  const result = spawnSync(command, [...prefixArgs, '--version'], {
+  const result = spawnSync(command, [
+    ...prefixArgs,
+    '-c',
+    'import sys; raise SystemExit(0 if sys.version_info >= (3, 8) else 1)',
+  ], {
     encoding: 'utf8',
     windowsHide: true,
   });

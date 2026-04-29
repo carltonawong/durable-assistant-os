@@ -1,6 +1,7 @@
 # Durable Assistant OS
 
-**Current documented baseline:** `v0.2.0`  
+**Current documented baseline:** `v0.2.0`
+
 **Release notes:** `CHANGELOG.md` and `docs/releases/`
 
 Durable Assistant OS (DAOS) is a local continuity layer for AI assistants that need to stay useful after resets, long gaps, model switches, and messy memory.
@@ -73,7 +74,7 @@ Do not model everything up front. Start small, use it, then tighten what real us
 
 The default new-user home is `~/.daos`, but the folder name is not the product. DAOS home is the folder with the DAOS pack/wiki: `assistant-charter.md`, `operating-profile.md`, and `wiki/cache/`.
 
-If you already have an existing assistant home with those surfaces, such as an OpenClaw-style workspace, use it directly instead of creating a duplicate home:
+If you already have an existing assistant home with those surfaces, use it directly instead of creating a duplicate home:
 
 ```bash
 DAOS_HOME=/path/to/existing-assistant-home daos
@@ -81,7 +82,7 @@ DAOS_HOME=/path/to/existing-assistant-home daos
 daos on /path/to/existing-assistant-home
 ```
 
-The important part is that agents can find and read the shared `wiki/cache/` surfaces. The home can be `~/.daos`, `.openclaw`, or another explicit path.
+The important part is that agents can find and read the shared `wiki/cache/` surfaces. The home can be `~/.daos` or another explicit assistant-home path.
 
 ## Existing agent instructions
 
@@ -155,6 +156,7 @@ The CLI is the easier first path, but the pack remains plain markdown by design.
 
 The current v0.2 line includes:
 - `daos init` and no-args `daos` as the first-user CLI surface
+- `daos setup`, `daos check`, `daos on`, and `daos reset-test` as the explicit first-run proof loop
 - mandatory baseline install from the starter pack
 - safe instruction-carrier scanning
 - approval-gated instruction edits with backups
@@ -185,12 +187,6 @@ The first-user path should not:
 - overwrite user-owned operating files without explicit action
 - treat remembered notes as live truth
 
-## Public-framework hygiene
+## Documentation principle
 
-DAOS should stay tight:
-- fewer public artifacts with clearer jobs
-- no roadmap or planning graveyard in the front door
-- no template soup
-- no assumption that a reader has our private runtime setup
-
-Every public file should help a stranger understand, install, verify, or operate the system.
+DAOS docs should stay practical: every public file should help a reader understand, install, verify, or operate the system.
