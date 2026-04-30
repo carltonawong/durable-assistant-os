@@ -1,6 +1,10 @@
 # Durable Assistant OS
 
 <p align="center">
+  <img src="./docs/assets/daos-wordmark-banner.svg" alt="Durable Assistant OS" width="100%">
+</p>
+
+<p align="center">
   <strong>Stop being your AI assistant’s context bank.</strong><br>
   <span>A local continuity harness for AI agents.</span>
 </p>
