@@ -1,0 +1,9 @@
+<svg width="1600" height="360" viewBox="0 0 1600 360" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Durable Assistant OS final wordmark remix - 02-clean-obsidian-gold.svg">
+<defs><style>.pix{font-family:'Courier New',monospace;font-size:82px;font-weight:900;letter-spacing:-3px;fill:#fde68a}.shadow{fill:#3f2505}</style></defs><defs><filter id="g"><feDropShadow dx="0" dy="0" stdDeviation="5" flood-color="#facc15" flood-opacity=".22"/></filter></defs><defs><style>.pix{font-family:'Courier New',monospace;font-size:82px;font-weight:900;letter-spacing:-3px;fill:#fde68a}.shadow{fill:#3f2505}.glow{filter:url(#g)}</style></defs>
+
+<rect width="1600" height="360" fill="#050505"/>
+<rect x="70" y="70" width="1460" height="220" fill="#0f0f0e" stroke="#a16207" stroke-width="7"/>
+<rect x="106" y="106" width="1388" height="148" fill="#020617" stroke="#facc15" stroke-width="2"/>
+<path d="M138 126H1462M138 234H1462" stroke="#facc15" stroke-opacity=".22" stroke-width="2"/>
+<g class="glow"><text x="800" y="213" text-anchor="middle" class="pix shadow">Durable Assistant OS</text><text x="792" y="205" text-anchor="middle" class="pix">Durable Assistant OS</text></g>
+</svg>
