@@ -1,5 +1,3 @@
-# Durable Assistant OS
-
 <p align="center">
   <img src="./docs/assets/daos-wordmark-banner.svg" alt="Durable Assistant OS" width="100%">
 </p>
