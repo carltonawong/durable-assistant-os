@@ -2,7 +2,7 @@
 
 This folder is the default copyable DAOS install.
 
-Copy it into your own workspace, then fill the user-owned files. You can use it manually; scripts are optional.
+Copy it into your own workspace, then fill the user-owned files. You can use it manually; scripts are optional. The goal is continuity first: help the assistant recover the right context without treating remembered notes as live truth.
 
 ## What “wiki” means here
 
@@ -16,7 +16,7 @@ The wiki is where durable knowledge should live:
 - source notes and raw observations that need later synthesis
 - compact logs of meaningful memory-system changes
 
-The included `wiki/` folder can be your durable memory home. If you already use another markdown wiki or docs vault, treat this folder as the DAOS shape to copy/adapt.
+The included `wiki/` folder can be your durable context/memory home. If you already use another markdown wiki or docs vault, treat this folder as the DAOS shape to copy/adapt.
 
 This follows the **LLM Wiki** pattern: the wiki is the durable knowledge base an assistant can read and maintain, not just a dump of notes. If that pattern is unfamiliar, read Karpathy's note before customizing the structure:
 
@@ -58,7 +58,7 @@ You do not need to write these from scratch. They are installed so the assistant
 
 A first pass is good enough when:
 - `assistant-charter.md` has one clear outcome, failure mode, uncertainty rule, and approval boundary
-- `operating-profile.md` names the main lanes and memory/trust defaults
+- `operating-profile.md` names the main lanes and context/memory/trust defaults
 - `lane-snapshot.md` is either unused or filled for one high-friction lane
 - `cadence-review.md` is saved for later, not overfilled during setup
 
@@ -67,8 +67,8 @@ Do not model everything before first use. Get a usable baseline, use it, then ca
 ## Starter defaults
 
 If you are unsure what to write, use these defaults and refine later:
-- memory front door = current thread/session first, then hot cache, then reset handoff on reset/long idle, then agent continuity only if still needed
-- durable memory home = the included `wiki/` markdown folder unless you already have another durable docs/wiki space
+- context front door = current thread/session first, then hot cache, then reset handoff on reset/long idle, then agent continuity only if still needed
+- durable context/memory home = the included `wiki/` markdown folder unless you already have another durable docs/wiki space
 - verified reality rule = live files, systems, and runtime state outrank remembered notes when freshness matters
 - approval rule = ask before risky, costly, destructive, public, or socially consequential actions
 

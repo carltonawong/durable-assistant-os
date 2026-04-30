@@ -23,14 +23,14 @@
 
 Durable Assistant OS (DAOS) is a local continuity layer for AI assistants that need to stay useful after resets, long gaps, model switches, and messy memory.
 
-It gives your assistant a small shared operating pack for:
-- knowing what it is for
-- separating active context from durable memory
-- recovering after resets or idle time
-- coexisting with existing agent instruction files
+It gives a human and an assistant a small shared system for:
+- knowing what the assistant is for
+- separating current context from durable memory
+- preserving trust boundaries
+- recovering after resets or long gaps
 - checking live reality before acting on stale notes
 
-DAOS is not a hosted app and not a full assistant runtime. It is the reliability layer you put beside a runtime so the assistant can stay oriented, auditable, and resettable.
+DAOS is not a hosted app and not a full assistant runtime. It is the operating structure you can put beside a runtime.
 
 ## Try it first
 
@@ -127,7 +127,7 @@ DAOS does **not** import arbitrary memory files like `MEMORY.md` by default. Exi
 
 ## Why this exists
 
-Assistants usually do not fail at the first impressive answer. They fail later, when context gets noisy, memory stops matching reality, and the user starts maintaining the assistant more than using it.
+Assistants usually do not fail at the first impressive answer. They fail later, when context gets noisy, short-term state is mistaken for durable truth, and the user starts maintaining the assistant more than using it.
 
 DAOS exists to keep that operating loop small, legible, and repairable.
 
@@ -137,13 +137,25 @@ The important rule:
 
 ## The core model
 
-DAOS keeps five things separate:
+DAOS is not about making agents remember more. It is about making the right context available to the right agent at the right moment.
+
+It keeps six things separate:
 
 1. **Local thread** — what is being asked right now.
 2. **Hot front door** — the shortest current orientation note.
-3. **Reset handoff** — the exact next move after reset or long idle.
-4. **Durable memory** — stable knowledge, decisions, and synthesized context.
-5. **Live reality** — repo files, configs, runtime state, inboxes, calendars, and other sources that must be checked when freshness matters.
+3. **Recent front-door history** — compact recovery when the foreground was just overwritten.
+4. **Reset handoff** — the exact next move after reset or long idle.
+5. **Durable memory** — stable knowledge, decisions, and synthesized context.
+6. **Live reality** — repo files, configs, runtime state, inboxes, calendars, and other sources that must be checked when freshness matters.
+
+DAOS treats short-term context as controlled volatility, not durable truth:
+
+- overwrite volatile front-door context when the foreground changes
+- log recent foreground churn only when it helps another agent recover
+- promote decisions, corrections, and findings that would create ambiguity if lost
+- verify live facts against files, runtime state, inboxes, calendars, or other source systems
+- ignore transient chatter, obsolete details, and facts easy to re-derive
+- resolve conflict by source authority: live reality > durable docs > active cache > continuity > private/session memory
 
 ## Manual path
 

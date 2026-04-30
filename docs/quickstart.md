@@ -37,7 +37,7 @@ DAOS On
 - Agent Continuity: ...
 ```
 
-That is enough for a first pass. You do not need to understand every file before using it.
+That is enough for a first pass. You do not need to understand every layer before using DAOS as a context-continuity harness.
 
 ## If DAOS finds existing agent instructions
 
@@ -81,7 +81,7 @@ Use this when the existing home already has `wiki/cache/hot-cache.md`, `wiki/cac
 ## What each first-run file does
 
 - `assistant-charter.md` defines what the assistant is for, how it behaves under uncertainty, and what requires approval.
-- `operating-profile.md` defines the working context, lanes, memory defaults, and trust posture.
+- `operating-profile.md` defines the working context, lanes, context/memory defaults, and trust posture.
 - `wiki/cache/hot-cache.md` is the compact current front door.
 - `wiki/cache/hot-cache-log.md` is recent front-door transition history.
 - `wiki/cache/reset-handoff.md` is the exact next move after reset or long idle.
@@ -99,7 +99,7 @@ A first pass is good enough when:
 - any existing instruction files are reviewed or explicitly left alone
 - live files/runtime are treated as higher authority than remembered notes
 
-Do not try to model your entire life or organization before first use.
+Do not try to model your entire life or organization before first use. DAOS should make day-one continuity easier, not turn setup into a taxonomy project.
 
 ## Manual path
 

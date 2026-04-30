@@ -1,13 +1,13 @@
-# DAOS Memory Model
+# DAOS Memory and Context Model
 
 <!-- DAOS baseline note: Current public framework baseline is v0.1.6; this file remains part of the current release surface even if its original feature landed in an earlier patch. -->
 
 ## Goal
 
-Use memory to make the assistant more useful over time without turning the system into a cluttered archive of everything it has ever seen.
+Use memory as part of a larger context-continuity system: enough durable knowledge to keep the assistant useful over time, without turning the system into a cluttered archive of everything it has ever seen.
 
-DAOS does not treat memory as a prestige feature.
-It treats memory as core infrastructure inside an agent-agnostic operating harness: the shared continuity layer that lets durable collaboration survive across sessions, tools, and even agent swaps.
+DAOS does not treat memory as a prestige feature or the product category.
+It treats memory as one mechanism inside an agent-agnostic operating harness: the shared continuity layer that lets durable collaboration survive across sessions, tools, and even agent swaps.
 
 ## Core stance
 
@@ -20,15 +20,31 @@ The default failure modes are:
 
 DAOS tries to avoid all three.
 
-## Memory model at a glance
+## Context model at a glance
 
 For public packaging, the simplest useful summary is:
+- **local thread context** captures what is being asked right now
+- **active/front-door context** tracks what matters right now across work
 - **shared durable memory** holds the important long-lived facts and decisions
 - **private agent memory** is optional and stays tiny
-- **current working context** tracks what matters right now
 - **source-of-truth reality** is what the assistant verifies before acting
 
-That is enough to explain the model without dragging readers through internal implementation detail.
+That is enough to explain the model without dragging readers through internal implementation detail: memory can orient the assistant, but current reality wins when action depends on freshness.
+
+## DAOS context rules
+
+DAOS keeps short-term context intentionally volatile instead of pretending it is durable truth.
+
+Use these rules to decide what belongs where:
+- overwrite volatile front-door context when the foreground changes
+- log recent foreground churn only when it helps another agent recover
+- promote decisions, corrections, and findings that would create ambiguity if lost
+- verify live facts against files, runtime state, inboxes, calendars, or other source systems
+- ignore transient chatter, obsolete details, and facts easy to re-derive
+
+When layers disagree, resolve by source authority:
+
+> live reality > durable docs > active cache > continuity > private/session memory
 
 ## What memory is for
 

@@ -1,21 +1,24 @@
-# DAOS Public Memory Model
+# DAOS Public Context Model
 
 <!-- DAOS baseline note: Current public framework baseline is v0.1.6; this file remains part of the current release surface even if its original feature landed in an earlier patch. -->
 
 ## The shortest explanation
 
-DAOS tries to stop assistant memory from collapsing into one blurry pile.
+DAOS tries to stop assistant context from collapsing into one blurry pile.
 
-It keeps five things distinct:
+Memory is one mechanism in that model. The larger job is continuity: giving the assistant the right context at the right moment without pretending old notes are always current.
+
+It keeps six things distinct:
 - **local thread** — what is being asked right now
 - **hot cache / active front door** — what matters now across active work
 - **reset handoff** — the exact next move after reset or long idle
+- **agent continuity** — optional per-agent resume help when the shared front door is not enough
 - **durable wiki/docs memory** — what should survive and be shared
 - **live reality** — files, systems, and runtime state that must be checked before acting
 
-![DAOS memory model](assets/daos-memory-model.svg)
+![DAOS context model](assets/daos-memory-model.svg)
 
-If you only need the public framing, this page is enough.
+If you only need the public context-continuity framing, this page is enough.
 If you want the deeper doctrine, then read `memory.md`.
 If you want the exact reset/wake-up artifact, read `reset-handoff.md`.
 
@@ -30,7 +33,7 @@ When recovering context, DAOS prefers:
 6. **deeper durable memory after that**
 7. **live verification whenever current reality matters**
 
-This keeps the assistant responsive to the exact conversation without pretending old notes are always current.
+This keeps the assistant responsive to the exact conversation without pretending remembered notes are automatically current.
 
 These are operating layers, not mandatory built-in DAOS runtime components.
 
@@ -115,14 +118,19 @@ Use this whenever correctness depends on what is true now:
 Remembered context can be useful and still be wrong.
 That is why DAOS makes a hard distinction between memory and source-of-truth reality.
 
-## The behavioral rule underneath it
+## The context rules underneath it
 
-The point is not to remember everything.
-The point is to:
+The point is not to remember everything. DAOS keeps the rules small:
 - keep the right foreground live
-- preserve the right durable truths
+- preserve durable truths that would be costly or ambiguous to reconstruct
+- overwrite volatile front-door context when the foreground changes
+- log recent foreground churn only when it helps another agent recover
 - verify reality before acting when stakes depend on freshness
-- compress memory before it turns into clutter
+- ignore transient chatter, obsolete details, and facts easy to re-derive
+
+When layers disagree, resolve by source authority:
+
+> live reality > durable docs > active cache > continuity > private/session memory
 
 One practical project checkpoint rule: if active project work changes future assumptions about infrastructure, data ownership, providers, auth, deployment mode, live-vs-dry-run posture, risk, money, customer impact, or operator setup, capture a durable checkpoint immediately. Do not leave that decision only in chat, hot cache, or a short transition log.
 

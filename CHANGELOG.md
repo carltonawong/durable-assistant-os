@@ -14,7 +14,13 @@ Do not add entries for every typo fix or private WIP note.
 
 ## Unreleased
 
-No unreleased framework-facing changes are staged after `v0.2.0` yet.
+### Changed
+- Clarified the public DAOS framing from memory-first language toward context continuity: DAOS helps agents keep the right context visible across resets, gaps, tool changes, and live verification.
+- Reframed `docs/public-memory-page.md` as the public context model while preserving the existing packaged file path.
+- Updated `docs/memory.md`, `docs/quickstart.md`, and `starter-pack/README.md` to make memory one mechanism inside the broader continuity model.
+
+### Hardened
+- Made the source-authority rule more visible in public docs: live reality outranks durable docs, active cache, continuity notes, and private/session memory when freshness matters.
 
 ## v0.2.0 - 2026-04-29
 
