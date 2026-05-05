@@ -87,6 +87,8 @@ A hardened starter pack also includes a locked baseline doctrine spine:
 - `wiki/raw/README.md`
 - `wiki/sources/README.md`
 
+`AGENTS.md` should stay compact because it is the default agent startup contract. Fuller memory and maintenance doctrine belongs in targeted reference surfaces such as `wiki/cache/MEMORY-OPERATING-MODEL.md`.
+
 The manifest currently includes:
 - `schema_version`
 - `framework_version` (the current framework release baseline, for example `v0.2.0`)

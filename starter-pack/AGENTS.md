@@ -2,14 +2,17 @@
 
 This install uses the DAOS mandatory baseline.
 
-Before acting on current operational context:
-1. read the current message / reply target / recent thread flow first
-2. read `wiki/cache/hot-cache.md`
-3. if the front door feels incongruent, read `wiki/cache/hot-cache-log.md`
-4. if resuming after reset or long idle, read `wiki/cache/reset-handoff.md`
-5. if still unsure what you were last doing, read `wiki/cache/agent-continuity.md`
-6. for durable shared knowledge, use the wiki
-7. for live operational truth, verify against files/runtime/state
+## Default read path
+
+Before acting on current operational context, use the cheapest sufficient surface:
+
+1. current message / reply target / recent thread flow
+2. `wiki/cache/hot-cache.md`
+3. `wiki/cache/hot-cache-log.md` only when local context is thin or recent front-door prune/rescope history is genuinely needed
+4. `wiki/cache/reset-handoff.md` only after reset or long idle
+5. `wiki/cache/agent-continuity.md` only if the above is not enough
+6. durable wiki pages only when shared long-term knowledge is needed
+7. live files/runtime/state when current operational truth matters
 
 ## Hard rules
 
@@ -22,7 +25,8 @@ Before acting on current operational context:
 - Keep `hot-cache.md` compact and front-door only.
 - Use `hot-cache-log.md` as near-term transition recovery when the front door was recently overwritten, not as primary working memory or durable history.
 - Use `reset-handoff.md` for exact post-reset/wake-up recovery, not as a running log.
-- Use `agent-continuity.md` only after hot cache and hot-cache log are not enough.
+- Use `agent-continuity.md` only after local context, hot cache, and any genuinely needed hot-cache log context are not enough; mark/prune entries after roughly 7 days without a concrete next action.
+- If the current thread fits an existing `Current Focus` entry in `hot-cache.md`, continue from local context and the durable record; do not rewrite the hot cache just to claim foreground.
 
 ## Reset / wake-up rule
 
@@ -33,74 +37,15 @@ After reset or long idle wake-up:
 - load `wiki/cache/reset-handoff.md`
 - follow the DAOS lookup order above before acting
 
-## Manual maintenance protocol
+## Maintenance
 
-Automation is optional. If no maintenance automation exists, use this manual loop:
+Normal loop:
 
-- After meaningful work-context changes, update `wiki/cache/hot-cache.md`.
-- When the hot cache is overwritten or meaningfully re-scoped, add a short entry to `wiki/cache/hot-cache-log.md`.
-- Before reset or long idle, refresh `wiki/cache/reset-handoff.md` with the exact next move and first thing to verify.
-- When a fact should survive temporary context, write it to `wiki/raw/` or the appropriate durable wiki page.
-- During cadence review, compress stale hot-cache/continuity notes after durable facts have been captured.
-- When current facts matter, verify files/runtime/state before trusting memory.
+- update `wiki/cache/hot-cache.md` after meaningful work-context changes
+- add a short `wiki/cache/hot-cache-log.md` entry when the front door is overwritten or re-scoped
+- prune stale `Current Focus` entries after roughly 24 hours with no material movement or expected next action, after durable state has been captured
+- refresh `wiki/cache/reset-handoff.md` before reset or long idle
+- write durable facts to `wiki/raw/` or durable wiki pages
+- compress stale temporary notes after durable facts have been captured
 
-## Automated maintenance protocol
-
-Automation is optional. Add it only after the manual loop is understandable.
-
-Good automation supports the manual loop; it should not become hidden memory truth.
-
-### What to automate first
-
-Start with read-only checks:
-1. hot-cache shape check: verify `hot-cache.md` stays compact and has the required sections
-2. raw-note ingest reminder: report unprocessed notes in `wiki/raw/`
-3. reset-handoff freshness check: warn if reset/idle recovery notes are stale or missing when the workflow depends on them
-4. hot-cache-log hygiene: flag oversized logs, repeated no-op entries, and detail-heavy entries that should be promoted before pruning
-5. memory drift check: compare durable claims against live files/runtime when freshness matters
-
-### How to set it up
-
-Use whatever scheduler your environment already trusts: cron, GitHub Actions, an assistant heartbeat, a local reminder, or a calendar task.
-
-For each automated check, document three things in the operator's durable notes:
-- schedule: when it runs
-- command or prompt: exactly what it does
-- delivery: where the report goes
-
-Keep the first version report-only. It should say what needs attention, not silently rewrite the system.
-
-### Recommended automation shape
-
-Pick one scheduler and record the same fields for every check:
-- scheduler
-- frequency
-- exact command or prompt
-- output destination
-- owner or maintainer
-
-Minimum useful cadence:
-- daily or weekly: report raw-note backlog and oversized hot-cache logs
-- before reset or long idle: refresh `reset-handoff.md`
-- weekly: review stale continuity, memory drift, and durable claims that may need live verification
-
-Example cron-style setup:
-- daily 09:00: report raw notes and oversized cache/log files
-- weekly Friday: review memory drift and stale continuity
-- before planned reset: refresh `wiki/cache/reset-handoff.md`
-
-Example assistant-heartbeat setup:
-- after meaningful work: ask whether `hot-cache.md` needs a compact update
-- weekly: prompt for cadence review and raw-note ingest
-- after long idle: check `reset-handoff.md` before resuming
-
-### Safe automation rules
-
-- prefer read-only checks first
-- make every write or prune recoverable
-- report what changed or needs attention
-- do not silently delete detail-heavy recovery logs unless durable facts have been captured elsewhere
-- keep schedules and delivery channels explicit for the operator
-- document any cron/job/agent hook outside this file so a new maintainer can find it
-
-If automated checks are missing, the install can still work; it just depends on manual cadence reviews until automation is added.
+Read `wiki/cache/MEMORY-OPERATING-MODEL.md` only when you need the fuller memory, maintenance, or automation reference. Do not make every startup pay for that doctrine.

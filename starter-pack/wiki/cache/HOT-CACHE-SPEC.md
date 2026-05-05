@@ -9,7 +9,7 @@ The hot cache is the shared front door for what matters now.
 It should feel tip-of-tongue, but it is not durable truth and not an exact handoff transcript.
 
 No single agent owns it.
-It is shared volatile front-door context and may be overwritten as the active lane shifts.
+It is shared volatile front-door context and may be rewritten as Current Focus changes.
 
 ## Core rule
 
@@ -17,7 +17,7 @@ Use local thread context first.
 
 If the thread is not enough:
 1. read `hot-cache.md`
-2. if the front door feels incongruent, read `hot-cache-log.md`
+2. if local context is thin or a recent prune/rescope likely matters, read `hot-cache-log.md`
 3. if resuming after reset or long idle, read `reset-handoff.md`
 4. if still unsure of your own prior lane, read `agent-continuity.md`
 5. verify important assumptions against wiki/files/runtime before acting
@@ -30,6 +30,16 @@ The hot cache may contain only:
 3. Current State
 4. Open Problems
 5. System Priorities
+
+Use `Current Focus` for compact active context, not a single agent-owned foreground. Use this format:
+
+```md
+- [Name] - [short current operational scope]. Record: [durable page/task/source]. Verify: [optional live/source check].
+```
+
+A `Current Focus` entry should name one bounded ongoing unit needing continuity: a project, task, incident, client workflow, research thread, or operational cleanup.
+If the current thread fits an existing `Current Focus` entry, do not rewrite the hot cache merely to claim foreground.
+Prune a `Current Focus` entry after roughly 24 hours with no material movement or expected next action, after ensuring durable state exists.
 
 ## Size limits
 
@@ -46,9 +56,9 @@ Keep `hot-cache.md`:
 It is not durable memory, project history, or primary working memory.
 
 Use it to answer:
-- what foreground was recently displaced
+- what Current Focus entry was recently pruned or displaced
 - what changed recently enough to confuse another agent
-- which search key can recover a lane without reading long history
+- which search key can recover Current Focus context without reading long history
 
 If a log fact should still matter after the near term, promote it to `wiki/raw/`, `wiki/sources/`, a durable wiki page, a maintained skill, repo docs, or canonical runtime/config state.
 
@@ -63,7 +73,8 @@ Keep it:
 
 `agent-continuity.md` is fallback per-agent resume context.
 
-Use it only after hot cache and, when needed, hot-cache log are not enough.
+Use it only after local context, hot cache, and any genuinely needed hot-cache log transition context are not enough.
+Mark or prune entries after roughly 7 days without a concrete next action.
 
 ## Reset handoff rule
 

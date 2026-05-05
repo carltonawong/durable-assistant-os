@@ -54,6 +54,8 @@ These are the locked baseline spine:
 
 You do not need to write these from scratch. They are installed so the assistant has a consistent memory/read-order baseline.
 
+Keep default-read files small. `AGENTS.md` is the startup contract; deeper wiki/cache doctrine is reference material for maintenance, migration, or recovery work.
+
 ## Minimum first pass
 
 A first pass is good enough when:

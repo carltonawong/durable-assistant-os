@@ -4,12 +4,12 @@
 
 **Updated:** YYYY-MM-DD HH:MM TZ  
 **Updated by:** Installer / Agent  
-**Scope:** active foreground lane
+**Scope:** Current Focus
 
 ## Current Focus
-- Fill with the current shared foreground lane.
-- Keep this as the front door only.
-- If it feels incongruent, check `hot-cache-log.md`.
+- Fill with compact Current Focus entries only.
+- Format: `[Name] - [short current operational scope]. Record: [durable page/task/source]. Verify: [optional live/source check].`
+- Prune stale entries after durable state exists; use `hot-cache-log.md` only when recent prune/rescope history is genuinely needed.
 
 ## Current Corrections
 - Record only important current corrections.

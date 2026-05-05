@@ -45,6 +45,7 @@ class DaosNpmPackagePayloadTests(unittest.TestCase):
             "docs/memory-parity-auditor.md",
             "docs/releases/v0.2.0.md",
             "docs/releases/v0.2.1.md",
+            "docs/releases/v0.2.2.md",
             "docs/script-safety.md",
             "docs/wiki-governance.md",
             "examples/creative-studio-operating-profile-example.md",

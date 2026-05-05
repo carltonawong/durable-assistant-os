@@ -10,12 +10,14 @@ This file defines the DAOS memory operating model for a hardened install.
 
 Use the cheapest sufficient memory layer first.
 
+Keep default-read surfaces small. Move detailed doctrine, schemas, historical material, and maintenance recipes into targeted reference pages instead of making every startup read them.
+
 ## Required handoff order
 
 1. current message + reply target / quoted message
 2. current session local flow
 3. hot cache
-4. if front-door context feels incongruent, hot-cache log
+4. hot-cache log only when local context is thin or recent front-door prune/rescope history is genuinely needed
 5. if resuming after reset or long idle, reset handoff
 6. agent continuity
 7. wiki and durable reconstruction
@@ -26,6 +28,7 @@ Use the cheapest sufficient memory layer first.
 - Shared memory recovers the lane; local context recovers the exact handoff point.
 - Do not resume from summaries first when the answer is already in the immediate conversation.
 - Hot cache, hot-cache log, and continuity are orientation aids, not automatic truth.
+- A different or mismatched hot cache is normal in multi-focus systems; it does not automatically mean the agent lost its place.
 - For live operational facts, verify against actual files/runtime/state.
 - Recover the last sentence, not just the chapter.
 
@@ -52,6 +55,7 @@ Highest authority for current operational truth.
 
 Shared short-horizon operational context.
 This is shared volatile front-door context, not private agent memory.
+`hot-cache.md` should list compact active context inside `Current Focus`, not a single agent-owned foreground.
 `hot-cache-log.md` is near-term transition recovery, not durable history; facts that should matter later belong in the wiki/raw/source/doc layers.
 
 ### 4. Reset handoff
@@ -88,14 +92,56 @@ When sources disagree, prefer:
 
 A useful project checkpoint records what changed, why it matters, the source of truth or verification target, what not to assume next time, and the next blocker or step.
 
-If hot cache feels mismatched, use near-term front-door transition recovery before deeper private continuity:
-- local thread
-- hot cache
-- hot-cache log
-- reset handoff / agent continuity as needed
+If hot cache feels mismatched, do not automatically fall deeper.
+Use this recovery shape:
+- local thread owns exact resume when it is sufficient
+- hot cache orients Current Focus context
+- hot-cache log is only for recent prune/rescope/transition recovery
+- reset handoff / agent continuity are fallback layers as needed
+
+Mark or prune agent-continuity entries after roughly 7 days without a concrete next action.
 
 ## Reset continuity rule
 
 A hardened DAOS install should preserve `wiki/cache/reset-handoff.md` before reset when possible.
 
 After reset, the next session should load that artifact plus this lookup order before acting.
+
+## Maintenance reference
+
+Automation is optional. If no maintenance automation exists, use this manual loop:
+- after meaningful work-context changes, update `wiki/cache/hot-cache.md`
+- when the hot cache is overwritten or meaningfully re-scoped, add a short entry to `wiki/cache/hot-cache-log.md`
+- prune stale `Current Focus` entries after roughly 24 hours with no material movement or expected next action, after durable state has been captured
+- before reset or long idle, refresh `wiki/cache/reset-handoff.md` with the exact next move and first thing to verify
+- when a fact should survive temporary context, write it to `wiki/raw/` or the appropriate durable wiki page
+- during cadence review, compress stale hot-cache/continuity notes after durable facts have been captured
+- when current facts matter, verify files/runtime/state before trusting memory
+
+Add automation only after the manual loop is understandable. Good automation supports the loop; it should not become hidden memory truth.
+
+Start with read-only checks:
+1. hot-cache shape check
+2. raw-note ingest reminder
+3. reset-handoff freshness check
+4. hot-cache-log hygiene
+5. memory drift check against live files/runtime when freshness matters
+
+For each automated check, document:
+- scheduler
+- frequency
+- exact command or prompt
+- output destination
+- owner or maintainer
+
+Keep the first version report-only. It should say what needs attention, not silently rewrite the system.
+
+Safe automation rules:
+- prefer read-only checks first
+- make every write or prune recoverable
+- report what changed or needs attention
+- do not silently delete detail-heavy recovery logs unless durable facts have been captured elsewhere
+- keep schedules and delivery channels explicit for the operator
+- document any cron/job/agent hook outside this file so a new maintainer can find it
+
+If automated checks are missing, the install can still work; it just depends on manual cadence reviews until automation is added.

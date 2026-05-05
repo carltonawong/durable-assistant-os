@@ -54,6 +54,8 @@ The mandatory baseline should install these exact files:
 ### Local bootstrap
 - `AGENTS.md`
 
+`AGENTS.md` should stay compact because it is the default startup contract. Detailed maintenance doctrine belongs in targeted reference files so every startup does not pay the full token cost.
+
 ### Durable wiki doctrine
 - `wiki/WIKI.md`
 - `wiki/cache/MEMORY-OPERATING-MODEL.md`

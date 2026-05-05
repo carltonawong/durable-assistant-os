@@ -29,7 +29,7 @@ If the current thread is still available and sufficient, use that first.
 On wake-up/resume, DAOS prefers:
 1. local thread / reply target / immediate recent turns
 2. `wiki/cache/hot-cache.md`
-3. `wiki/cache/hot-cache-log.md` if the front door feels incongruent
+3. `wiki/cache/hot-cache-log.md` only when local context is thin or recent front-door prune/rescope history is genuinely needed
 4. `wiki/cache/reset-handoff.md` when the resume follows reset or long idle
 5. `wiki/cache/agent-continuity.md` if broader lane recovery is still needed
 6. deeper wiki reconstruction and verified runtime/files
@@ -57,7 +57,7 @@ Use this as the named DAOS reset/wake-up continuity artifact.
 
 - **Last updated** — freshness marker for the current handoff
 - **Updated by** — agent/runtime that wrote it
-- **Lane** — the lane or workstream this handoff belongs to
+- **Lane** — the lane or focus item this handoff belongs to
 - **Status**
   - `empty` = no meaningful handoff currently needed
   - `fresh` = safe to use as the narrow wake-up point

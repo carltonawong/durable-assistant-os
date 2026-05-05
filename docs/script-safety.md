@@ -1,6 +1,6 @@
 # Script Safety
 
-<!-- DAOS baseline note: Current public framework baseline is v0.1.6; this file remains part of the current release surface even if its original feature landed in an earlier patch. -->
+<!-- DAOS baseline note: Current public framework baseline is v0.2.2; this file remains part of the current release surface even if its original feature landed in an earlier patch. -->
 
 DAOS is designed around the copyable `starter-pack/` first.
 
@@ -13,16 +13,16 @@ Scripts are optional helpers. They exist to reduce setup mistakes, but they shou
 
 ## Trust posture
 
-All DAOS scripts are local Python scripts using the standard library.
+Packaged DAOS scripts are local Python scripts using the standard library.
 
 Current safety commitments:
 - no network access
 - no intentional reads from credential files or credential locations
-- no shell command execution from DAOS scripts
+- no shell command execution from packaged DAOS scripts
 - no background services
 - no hidden telemetry
 
-If a future script needs network access, credentials, shell execution, credential-location reads, or background behavior, it should be documented explicitly before release.
+If a future packaged script needs network access, credentials, shell execution, credential-location reads, or background behavior, it should be documented explicitly before release.
 
 ## Recommended first commands
 
