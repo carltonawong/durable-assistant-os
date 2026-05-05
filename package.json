@@ -1,6 +1,6 @@
 {
   "name": "use-daos",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "Durable Assistant OS local continuity harness.",
   "bin": {
     "use-daos": "bin/use-daos.js"
@@ -28,6 +28,7 @@
     "docs/memory-parity-auditor.md",
     "docs/releases/v0.2.0.md",
     "docs/releases/v0.2.1.md",
+    "docs/releases/v0.2.2.md",
     "docs/script-safety.md",
     "docs/wiki-governance.md",
     "docs/setup.md",

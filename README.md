@@ -145,15 +145,15 @@ It keeps six things separate:
 
 1. **Local thread** — what is being asked right now.
 2. **Hot front door** — the shortest current orientation note.
-3. **Recent front-door history** — compact recovery when the foreground was just overwritten.
+3. **Recent front-door history** — compact recovery when Current Focus context was just pruned, displaced, or re-scoped.
 4. **Reset handoff** — the exact next move after reset or long idle.
 5. **Durable memory** — stable knowledge, decisions, and synthesized context.
 6. **Live reality** — repo files, configs, runtime state, inboxes, calendars, and other sources that must be checked when freshness matters.
 
 DAOS treats short-term context as controlled volatility, not durable truth:
 
-- overwrite volatile front-door context when the foreground changes
-- log recent foreground churn only when it helps another agent recover
+- rewrite volatile front-door context as Current Focus changes
+- log recent front-door churn only when it helps another agent recover from a prune, displacement, or re-scope
 - promote decisions, corrections, and findings that would create ambiguity if lost
 - verify live facts against files, runtime state, inboxes, calendars, or other source systems
 - ignore transient chatter, obsolete details, and facts easy to re-derive

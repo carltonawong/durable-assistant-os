@@ -1,6 +1,6 @@
 # DAOS Memory and Context Model
 
-<!-- DAOS baseline note: Current public framework baseline is v0.1.6; this file remains part of the current release surface even if its original feature landed in an earlier patch. -->
+<!-- DAOS baseline note: Current public framework baseline is v0.2.2; this file remains part of the current release surface even if its original feature landed in an earlier patch. -->
 
 ## Goal
 
@@ -24,7 +24,7 @@ DAOS tries to avoid all three.
 
 For public packaging, the simplest useful summary is:
 - **local thread context** captures what is being asked right now
-- **active/front-door context** tracks what matters right now across work
+- **Current Focus** tracks the small set of work that matters right now across sessions
 - **shared durable memory** holds the important long-lived facts and decisions
 - **private agent memory** is optional and stays tiny
 - **source-of-truth reality** is what the assistant verifies before acting
@@ -36,8 +36,9 @@ That is enough to explain the model without dragging readers through internal im
 DAOS keeps short-term context intentionally volatile instead of pretending it is durable truth.
 
 Use these rules to decide what belongs where:
-- overwrite volatile front-door context when the foreground changes
-- log recent foreground churn only when it helps another agent recover
+- keep volatile front-door context focused on `Current Focus`, not a single foreground owner
+- prune stale `Current Focus` entries after roughly 24 hours with no material movement or expected next action, once durable state is captured
+- log recent front-door pruning or rescoping only when it helps another agent recover
 - promote decisions, corrections, and findings that would create ambiguity if lost
 - verify live facts against files, runtime state, inboxes, calendars, or other source systems
 - ignore transient chatter, obsolete details, and facts easy to re-derive
@@ -141,12 +142,22 @@ an optional per-agent support layer for small durable facts, with implementation
 This is the active-now layer.
 
 Examples:
-- current priorities
-- the small set of active projects
-- what is stuck, next, or under discussion
+- `Current Focus` entries with a compact current scope
+- the durable record for each `Current Focus` entry
+- optional verification targets for focus items whose live state may drift
 - short-lived operational facts that matter right now
 
 This layer should be compressed and rewritten as reality changes.
+A `Current Focus` entry is any bounded unit of ongoing work that needs continuity across sessions: a project, task, incident, client workflow, research thread, or operational cleanup.
+
+A useful `Current Focus` entry is compact:
+
+```md
+- [Name] - [short current operational scope]. Record: [durable page/task/source]. Verify: [optional live/source check].
+```
+
+Do not rewrite the front door just to claim a foreground.
+If the current thread already fits an existing `Current Focus` entry, continue from the local thread and durable record.
 
 ### Project checkpoints inside active work
 Active work sometimes changes future assumptions before the project is finished.
@@ -235,18 +246,20 @@ This keeps the system faster, cleaner, and less likely to confuse stale notes fo
 
 A durable memory model also needs to explain why active memory is not enough.
 
-In practice, shared front-door memory is volatile because multiple lanes may all be real at once.
-As the foreground shifts between them, the active-memory surface may be rewritten, compressed, or re-scoped.
+In practice, shared front-door memory is volatile because multiple focus items may all be real at once.
+As active work changes, the active-memory surface may be rewritten, compressed, pruned, or re-scoped.
 That can happen with one agent or many.
-Multiple agents may intensify the churn, but lane competition is the deeper source of the problem.
+Multiple agents may intensify the churn, but focus competition is the deeper source of the problem.
 
 No single agent should treat that front-door surface as "theirs."
 It is shared orientation context, not private scratch memory, and overwrite/re-scope is normal rather than suspicious by default.
 
-When the front door feels mismatched, the recovery order matters:
+When the front door feels mismatched, treat that as normal before treating it as failure.
+The recovery order matters:
 - inspect the local thread first
 - then read the current front door
-- then check recent front-door history before falling back to deeper per-agent continuity
+- check recent front-door history only when local context is thin, a recent prune/rescope likely matters, or displaced Current Focus context must be recovered
+- use reset handoff or deeper per-agent continuity only when the shallow layers are insufficient
 
 This is why DAOS separates:
 - durable facts

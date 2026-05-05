@@ -34,6 +34,9 @@ Current verified reality outranks all memory.
 
 PLACEHOLDER_MARKERS = (
     "Fill with the current shared foreground lane.",
+    "Fill with compact Current Focus entries only.",
+    "Format: `[Name] -",
+    "Prune stale entries after durable state exists",
     "Keep this as the front door only.",
     "If it feels incongruent, check `hot-cache-log.md`.",
     "Record only important current corrections.",
@@ -47,6 +50,7 @@ PLACEHOLDER_MARKERS = (
     "empty | fresh | stale | blocked",
     "uncertain | resumable | blocked",
     "Last meaningful lane:",
+    "Last meaningful focus item:",
     "Current verified takeaway:",
     "Next resumable move and what to verify first:",
 )

@@ -1,6 +1,6 @@
 # DAOS Public Context Model
 
-<!-- DAOS baseline note: Current public framework baseline is v0.1.6; this file remains part of the current release surface even if its original feature landed in an earlier patch. -->
+<!-- DAOS baseline note: Current public framework baseline is v0.2.2; this file remains part of the current release surface even if its original feature landed in an earlier patch. -->
 
 ## The shortest explanation
 
@@ -10,7 +10,7 @@ Memory is one mechanism in that model. The larger job is continuity: giving the 
 
 It keeps six things distinct:
 - **local thread** — what is being asked right now
-- **hot cache / active front door** — what matters now across active work
+- **hot cache / active front door** — compact Current Focus entries and current operational corrections
 - **reset handoff** — the exact next move after reset or long idle
 - **agent continuity** — optional per-agent resume help when the shared front door is not enough
 - **durable wiki/docs memory** — what should survive and be shared
@@ -27,7 +27,7 @@ If you want the exact reset/wake-up artifact, read `reset-handoff.md`.
 When recovering context, DAOS prefers:
 1. **local thread first**
 2. **hot cache second**
-3. **hot-cache log next when the front door feels incongruent**
+3. **hot-cache log next only when local context is thin or recent front-door prune/rescope history is genuinely needed**
 4. **reset handoff after that when resuming after reset or long idle**
 5. **agent continuity after that if still needed**
 6. **deeper durable memory after that**
@@ -49,7 +49,7 @@ This usually wins when active-memory surfaces disagree.
 
 ### 2) Hot cache / active front door
 Use this as the shared quick-orientation layer:
-- current focus
+- Current Focus entries
 - important corrections
 - active risks
 - the smallest useful summary of what matters now
@@ -57,7 +57,7 @@ Use this as the shared quick-orientation layer:
 This should stay short.
 It is not meant to become a second wiki.
 It is also not private memory for one agent.
-It is a shared volatile front door and may be overwritten as the active lane shifts.
+It is a shared volatile front door and may be rewritten as Current Focus changes.
 
 ### 3) Reset handoff
 Use this for the exact post-reset resume point:
@@ -121,10 +121,10 @@ That is why DAOS makes a hard distinction between memory and source-of-truth rea
 ## The context rules underneath it
 
 The point is not to remember everything. DAOS keeps the rules small:
-- keep the right foreground live
+- keep the right Current Focus visible
 - preserve durable truths that would be costly or ambiguous to reconstruct
-- overwrite volatile front-door context when the foreground changes
-- log recent foreground churn only when it helps another agent recover
+- rewrite volatile front-door context as Current Focus changes
+- log recent front-door churn only when it helps another agent recover from a prune, displacement, or re-scope
 - verify reality before acting when stakes depend on freshness
 - ignore transient chatter, obsolete details, and facts easy to re-derive
 
@@ -139,9 +139,9 @@ One practical project checkpoint rule: if active project work changes future ass
 Shared front-door memory is useful, but it is intentionally volatile.
 
 The main reason is not only multiple agents.
-It is that multiple lanes can compete for the foreground.
-As the active lane changes, the shared front door may be rewritten or re-scoped even if only one agent is operating.
-Multiple agents can intensify that churn, but lane pressure is the deeper cause.
+It is that multiple focus items can compete for the shared front door.
+As Current Focus changes, the shared front door may be rewritten or re-scoped even if only one agent is operating.
+Multiple agents can intensify that churn, but focus pressure is the deeper cause.
 
 That means "someone overwrote the front door" is often normal operating behavior, not necessarily memory corruption or bad intent.
 
@@ -160,9 +160,9 @@ DAOS strongly fits a markdown-wiki workflow.
 ## How these layers usually map in practice
 
 - local thread → the current chat/session context
-- hot front door → a short active summary or current-state note
+- hot front door → compact Current Focus entries or current-state notes
 - reset handoff → a named post-reset wake-up note such as `wiki/cache/reset-handoff.md`
-- agent continuity → an optional resumable note for one agent or one lane
+- agent continuity → an optional resumable note for one agent or one focus item
 - durable wiki/docs memory → markdown pages in a repo, wiki, or vault
 - live reality → files, tools, systems, and logs checked at action time
 

@@ -247,10 +247,13 @@ SETUP_MANAGED_FILES = (
 
 
 SETUP_STARTER_MARKERS = {
-    Path("assistant-charter.md"): ("Starter-pack working copy", "- Primary outcome:", "- Actions that always require approval:"),
-    Path("operating-profile.md"): ("Starter-pack working copy", "- Primary outcome:", "- Durable capture rule:"),
-    Path("wiki/cache/hot-cache.md"): ("**Updated:** YYYY-MM-DD HH:MM TZ", "Fill with the current shared foreground lane."),
-    Path("wiki/cache/reset-handoff.md"): ("**Status:** empty | fresh | stale | blocked", "- Exact next move:"),
+    Path("assistant-charter.md"): (("Starter-pack working copy", "- Primary outcome:", "- Actions that always require approval:"),),
+    Path("operating-profile.md"): (("Starter-pack working copy", "- Primary outcome:", "- Durable capture rule:"),),
+    Path("wiki/cache/hot-cache.md"): (
+        ("**Updated:** YYYY-MM-DD HH:MM TZ", "Fill with compact Current Focus entries only."),
+        ("**Updated:** YYYY-MM-DD HH:MM TZ", "Fill with the current shared foreground lane."),
+    ),
+    Path("wiki/cache/reset-handoff.md"): (("**Status:** empty | fresh | stale | blocked", "- Exact next move:"),),
 }
 
 
@@ -261,7 +264,7 @@ def _is_setup_starter_file(path: Path, relative_path: Path) -> bool:
         text = path.read_text(encoding="utf-8")
     except UnicodeDecodeError:
         return False
-    return all(marker in text for marker in SETUP_STARTER_MARKERS[relative_path])
+    return any(all(marker in text for marker in markers) for markers in SETUP_STARTER_MARKERS[relative_path])
 
 
 def _setup_dirty_files(pack_dir: Path) -> list[Path]:

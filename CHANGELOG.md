@@ -22,6 +22,17 @@ Do not add entries for every typo fix or private WIP note.
 ### Hardened
 - Made the source-authority rule more visible in public docs: live reality outranks durable docs, active cache, continuity notes, and private/session memory when freshness matters.
 
+## v0.2.2 - 2026-05-05
+
+### Changed
+- Compressed the installed `starter-pack/AGENTS.md` startup surface so agents read the short operating contract by default instead of the full maintenance and automation doctrine.
+- Moved detailed maintenance/automation guidance into `starter-pack/wiki/cache/MEMORY-OPERATING-MODEL.md` as conditional reference material.
+- Added the explicit baseline rule that default-read memory surfaces should stay small and detailed doctrine should live behind targeted references.
+- Clarified hot-cache doctrine around compact `Current Focus` entries, fallback-only hot-cache-log reads, and pruning stale temporary context after durable state exists while preserving the existing `Current Focus` section contract.
+
+### Hardened
+- Reduced the default token cost of DAOS-enabled agent startup while preserving the reset, hot-cache, raw-note, project-checkpoint, and live-verification rules.
+
 ## v0.2.1 - 2026-05-05
 
 ### Changed
