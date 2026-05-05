@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import json
 import re
+import shutil
 import subprocess
 import unittest
 from pathlib import Path
@@ -9,10 +10,17 @@ from pathlib import Path
 REPO_ROOT = Path(__file__).resolve().parents[1]
 
 
+def npm_command() -> str:
+    executable = shutil.which("npm.cmd") or shutil.which("npm")
+    if executable is None:
+        raise unittest.SkipTest("npm executable not found")
+    return executable
+
+
 class DaosNpmPackagePayloadTests(unittest.TestCase):
     def npm_pack_dry_run(self) -> dict:
         result = subprocess.run(
-            ["npm", "pack", "--dry-run", "--json"],
+            [npm_command(), "pack", "--dry-run", "--json"],
             cwd=REPO_ROOT,
             text=True,
             capture_output=True,
@@ -31,10 +39,12 @@ class DaosNpmPackagePayloadTests(unittest.TestCase):
             "package.json",
             "README.md",
             "LICENSE",
+            "NOTICE",
             "CHANGELOG.md",
             "bin/use-daos.js",
             "docs/memory-parity-auditor.md",
             "docs/releases/v0.2.0.md",
+            "docs/releases/v0.2.1.md",
             "docs/script-safety.md",
             "docs/wiki-governance.md",
             "examples/creative-studio-operating-profile-example.md",
@@ -42,6 +52,11 @@ class DaosNpmPackagePayloadTests(unittest.TestCase):
             "harness/first-week.md",
             "scripts/daos.py",
             "scripts/daos_bootstrap.py",
+            "scripts/daos_memory_parity.py",
+            "scripts/daos_portability.py",
+            "scripts/daos_update.py",
+            "scripts/daos_validate.py",
+            "scripts/daos_wizard.py",
             "scripts/daos_core/__init__.py",
             "scripts/daos_core/harness.py",
             "scripts/daos_core/render.py",
@@ -56,14 +71,28 @@ class DaosNpmPackagePayloadTests(unittest.TestCase):
         missing = sorted(required_paths - paths)
         self.assertEqual(missing, [], "npm package is missing runtime payload files")
 
-        forbidden_prefixes = ("tests/", "docs/assets/")
-        forbidden_fragments = ("__pycache__", ".pyc")
+        forbidden_prefixes = ("tests/", "docs/assets/", "examples/evals/")
+        forbidden_paths = {
+            "docs/evals.md",
+            "docs/eval-metric-stack.md",
+            "docs/eval-results.md",
+            "docs/eval-validity.md",
+        }
+        forbidden_fragments = (
+            "__pycache__",
+            ".pyc",
+            "daos_adversarial_eval.py",
+            "daos_eval.py",
+            "daos_continuity_",
+        )
         offenders = sorted(
             path
             for path in paths
-            if path.startswith(forbidden_prefixes) or any(fragment in path for fragment in forbidden_fragments)
+            if path.startswith(forbidden_prefixes)
+            or path in forbidden_paths
+            or any(fragment in path for fragment in forbidden_fragments)
         )
-        self.assertEqual(offenders, [], "npm package includes test/cache/asset bloat")
+        self.assertEqual(offenders, [], "npm package includes test/cache/asset/private eval bloat")
 
 
     def test_packaged_markdown_references_only_packaged_repo_files(self) -> None:
@@ -73,11 +102,15 @@ class DaosNpmPackagePayloadTests(unittest.TestCase):
             path for path in paths if path.endswith(".md") and path != "CHANGELOG.md"
         )
         repo_prefixes = ("docs/", "examples/", "harness/", "scripts/", "starter-pack/", "templates/")
-        repo_files = {
-            str(path.relative_to(REPO_ROOT)).replace("\\", "/")
-            for path in REPO_ROOT.rglob("*")
-            if path.is_file()
-        }
+        tracked = subprocess.run(
+            ["git", "ls-files"],
+            cwd=REPO_ROOT,
+            text=True,
+            capture_output=True,
+            check=False,
+        )
+        self.assertEqual(tracked.returncode, 0, msg=tracked.stderr)
+        repo_files = set(tracked.stdout.splitlines())
 
         offenders: list[str] = []
         reference_pattern = re.compile(r"(?:\[[^\]]*\]\(([^)]+)\))|`([^`]+)`")
@@ -105,8 +138,8 @@ class DaosNpmPackagePayloadTests(unittest.TestCase):
     def test_npm_package_stays_small_enough_for_release_distribution(self) -> None:
         package = self.npm_pack_dry_run()
 
-        self.assertLessEqual(package["entryCount"], 70)
-        self.assertLessEqual(package["size"], 100_000)
+        self.assertLessEqual(package["entryCount"], 63)
+        self.assertLessEqual(package["size"], 92_000)
 
 
 if __name__ == "__main__":

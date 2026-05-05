@@ -10,6 +10,22 @@ from pathlib import Path
 REPO_ROOT = Path(__file__).resolve().parents[1]
 
 
+def npm_command() -> str:
+    executable = shutil.which("npm.cmd") or shutil.which("npm")
+    if executable is None:
+        raise unittest.SkipTest("npm executable not found")
+    return executable
+
+
+def fake_home_env(home: Path) -> dict[str, str]:
+    env = {"HOME": str(home), "USERPROFILE": str(home)}
+    drive = home.drive
+    if drive:
+        env["HOMEDRIVE"] = drive
+        env["HOMEPATH"] = str(home).removeprefix(drive)
+    return env
+
+
 class DaosNpmPackInstallSmokeTests(unittest.TestCase):
     def run_cmd(
         self,
@@ -33,7 +49,7 @@ class DaosNpmPackInstallSmokeTests(unittest.TestCase):
         )
 
     def pack_tarball(self, tmpdir: Path) -> Path:
-        result = self.run_cmd(["npm", "pack", "--pack-destination", str(tmpdir)], cwd=REPO_ROOT)
+        result = self.run_cmd([npm_command(), "pack", "--pack-destination", str(tmpdir)], cwd=REPO_ROOT)
         self.assertEqual(result.returncode, 0, msg=result.stderr)
         filename = result.stdout.strip().splitlines()[-1]
         tarball = tmpdir / filename
@@ -42,11 +58,12 @@ class DaosNpmPackInstallSmokeTests(unittest.TestCase):
 
     def install_package_in_consumer(self, tarball: Path, consumer: Path) -> Path:
         consumer.mkdir(parents=True)
-        init = self.run_cmd(["npm", "init", "-y"], cwd=consumer)
+        init = self.run_cmd([npm_command(), "init", "-y"], cwd=consumer)
         self.assertEqual(init.returncode, 0, msg=init.stderr)
-        install = self.run_cmd(["npm", "install", str(tarball)], cwd=consumer)
+        install = self.run_cmd([npm_command(), "install", str(tarball)], cwd=consumer)
         self.assertEqual(install.returncode, 0, msg=install.stderr)
-        binary = consumer / "node_modules" / ".bin" / "use-daos"
+        bin_dir = consumer / "node_modules" / ".bin"
+        binary = bin_dir / ("use-daos.cmd" if (bin_dir / "use-daos.cmd").exists() else "use-daos")
         self.assertTrue(binary.exists(), f"installed package did not expose {binary}")
         return binary
 
@@ -86,7 +103,12 @@ class DaosNpmPackInstallSmokeTests(unittest.TestCase):
             init = self.run_cmd([str(daos), "init"], cwd=workspace, env=env)
             self.assertEqual(init.returncode, 0, msg=init.stderr)
             self.assertIn(f"DAOS initialized: {pack_home}", init.stdout)
-            self.assertIn("instruction scan: wrote review report inside DAOS home: .daos/import-stage/instruction-scan.md", init.stdout)
+            self.assertIn(
+                "instruction scan: wrote review report inside DAOS home: .daos",
+                init.stdout,
+            )
+            self.assertIn("import-stage", init.stdout)
+            self.assertIn("instruction-scan.md", init.stdout)
             self.assertNotIn(".daos/.daos/import-stage", init.stdout)
             self.assertIn("instruction edits: none applied", init.stdout)
             self.assertTrue((pack_home / "wiki" / "cache" / "hot-cache.md").is_file())
@@ -111,7 +133,8 @@ class DaosNpmPackInstallSmokeTests(unittest.TestCase):
             fake_home.mkdir()
             workspace = root / "workspace"
             workspace.mkdir()
-            env = {"HOME": str(fake_home), "DAOS_HOME": ""}
+            env = fake_home_env(fake_home)
+            env["DAOS_HOME"] = ""
             expected_home = fake_home / ".daos"
 
             init = self.run_cmd([str(daos), "init", "--blank"], cwd=workspace, env=env)
@@ -197,7 +220,7 @@ class DaosNpmPackInstallSmokeTests(unittest.TestCase):
             result = self.run_cmd(
                 [str(daos), "on", str(existing_home)],
                 cwd=root,
-                env={"HOME": str(fake_home), "DAOS_HOME": ""},
+                env={**fake_home_env(fake_home), "DAOS_HOME": ""},
             )
 
             self.assertEqual(result.returncode, 0, msg=result.stderr)
@@ -218,7 +241,12 @@ class DaosNpmPackInstallSmokeTests(unittest.TestCase):
 
             init = self.run_cmd([str(daos), "init", str(pack_home), "--scan", str(workspace)], cwd=root / "consumer")
             self.assertEqual(init.returncode, 0, msg=init.stderr)
-            self.assertIn("instruction scan: wrote review report inside DAOS home: .daos/import-stage/instruction-scan.md", init.stdout)
+            self.assertIn(
+                "instruction scan: wrote review report inside DAOS home: .daos",
+                init.stdout,
+            )
+            self.assertIn("import-stage", init.stdout)
+            self.assertIn("instruction-scan.md", init.stdout)
             self.assertNotIn(".daos/.daos/import-stage", init.stdout)
             self.assertIn("instruction edits: none applied", init.stdout)
             self.assertNotIn("DAOS coexistence rule", (workspace / "AGENTS.md").read_text(encoding="utf-8"))

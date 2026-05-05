@@ -22,6 +22,16 @@ Do not add entries for every typo fix or private WIP note.
 ### Hardened
 - Made the source-authority rule more visible in public docs: live reality outranks durable docs, active cache, continuity notes, and private/session memory when freshness matters.
 
+## v0.2.1 - 2026-05-05
+
+### Changed
+- Added `docs/releases/v0.2.1.md` as a post-release trust patch note for the v0.2 line.
+- Updated `docs/releases/v0.2.0.md` verification details to match the final test and package dry-run results.
+- Removed public eval documentation that referenced untracked continuity-debt runner scripts.
+
+### Hardened
+- Clarified package verification around the npm tarball contents, including that eval/proof docs, eval examples, the adversarial eval runner, and `daos_continuity_*` experimental scripts are not included in the package.
+
 ## v0.2.0 - 2026-04-29
 
 ### Added
