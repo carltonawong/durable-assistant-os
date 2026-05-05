@@ -51,6 +51,7 @@ class DaosReleaseFrontDoorTests(unittest.TestCase):
             "docs/quickstart.md",
             "CHANGELOG.md",
             "docs/releases/v0.2.0.md",
+            "docs/releases/v0.2.1.md",
         ]
         forbidden_terms = [
             "private draft",
@@ -74,12 +75,13 @@ class DaosReleaseFrontDoorTests(unittest.TestCase):
         package = json.loads(self.read("package.json"))
 
         self.assertEqual(package["name"], "use-daos")
-        self.assertEqual(package["version"], "0.2.0")
+        self.assertEqual(package["version"], "0.2.1")
         self.assertEqual(package["bin"], {"use-daos": "bin/use-daos.js"})
+        self.assertEqual(package["license"], "Apache-2.0")
         self.assertNotIn("private", package)
 
     def test_changelog_and_release_note_cover_v02_safety_contract(self) -> None:
-        combined = self.read("CHANGELOG.md") + "\n" + self.read("docs/releases/v0.2.0.md")
+        combined = self.read("CHANGELOG.md") + "\n" + self.read("docs/releases/v0.2.0.md") + "\n" + self.read("docs/releases/v0.2.1.md")
         required_phrases = [
             "npx use-daos init",
             "npx use-daos setup",
