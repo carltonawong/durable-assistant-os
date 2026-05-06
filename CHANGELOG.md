@@ -15,6 +15,9 @@ Do not add entries for every typo fix or private WIP note.
 ## Unreleased
 
 ### Changed
+- Fixed the instruction bridge review path so scan reports live at `import-stage/instruction-scan.md` inside the DAOS home instead of under a nested `.daos/import-stage/` directory.
+- Clarified that `use-daos setup` expects an interactive terminal and that non-interactive smoke tests should use `use-daos setup --accept-defaults`.
+- Softened README proof-material wording so public docs point to tests and selected verification material without implying the npm package includes internal eval artifacts.
 - Clarified the public DAOS framing from memory-first language toward context continuity: DAOS helps agents keep the right context visible across resets, gaps, tool changes, and live verification.
 - Reframed `docs/public-memory-page.md` as the public context model while preserving the existing packaged file path.
 - Updated `docs/memory.md`, `docs/quickstart.md`, and `starter-pack/README.md` to make memory one mechanism inside the broader continuity model.

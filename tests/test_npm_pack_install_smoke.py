@@ -104,17 +104,17 @@ class DaosNpmPackInstallSmokeTests(unittest.TestCase):
             self.assertEqual(init.returncode, 0, msg=init.stderr)
             self.assertIn(f"DAOS initialized: {pack_home}", init.stdout)
             self.assertIn(
-                "instruction scan: wrote review report inside DAOS home: .daos",
+                "instruction scan: wrote review report inside DAOS home: import-stage/instruction-scan.md",
                 init.stdout,
             )
-            self.assertIn("import-stage", init.stdout)
-            self.assertIn("instruction-scan.md", init.stdout)
+            self.assertNotIn(".daos/import-stage", init.stdout)
             self.assertNotIn(".daos/.daos/import-stage", init.stdout)
             self.assertIn("instruction edits: none applied", init.stdout)
             self.assertTrue((pack_home / "wiki" / "cache" / "hot-cache.md").is_file())
             self.assertNotIn("DAOS coexistence rule", agents.read_text(encoding="utf-8"))
-            report = pack_home / ".daos" / "import-stage" / "instruction-scan.md"
+            report = pack_home / "import-stage" / "instruction-scan.md"
             self.assertTrue(report.is_file())
+            self.assertFalse((pack_home / ".daos" / "import-stage" / "instruction-scan.md").exists())
             self.assertIn("AGENTS.md", report.read_text(encoding="utf-8"))
 
             status = self.run_cmd([str(daos)], cwd=workspace, env=env)
@@ -242,18 +242,18 @@ class DaosNpmPackInstallSmokeTests(unittest.TestCase):
             init = self.run_cmd([str(daos), "init", str(pack_home), "--scan", str(workspace)], cwd=root / "consumer")
             self.assertEqual(init.returncode, 0, msg=init.stderr)
             self.assertIn(
-                "instruction scan: wrote review report inside DAOS home: .daos",
+                "instruction scan: wrote review report inside DAOS home: import-stage/instruction-scan.md",
                 init.stdout,
             )
-            self.assertIn("import-stage", init.stdout)
-            self.assertIn("instruction-scan.md", init.stdout)
+            self.assertNotIn(".daos/import-stage", init.stdout)
             self.assertNotIn(".daos/.daos/import-stage", init.stdout)
             self.assertIn("instruction edits: none applied", init.stdout)
             self.assertNotIn("DAOS coexistence rule", (workspace / "AGENTS.md").read_text(encoding="utf-8"))
             self.assertEqual(list(pack_home.rglob("MEMORY.md")), [])
 
-            report = pack_home / ".daos" / "import-stage" / "instruction-scan.md"
+            report = pack_home / "import-stage" / "instruction-scan.md"
             self.assertTrue(report.is_file())
+            self.assertFalse((pack_home / ".daos" / "import-stage" / "instruction-scan.md").exists())
             report_text = report.read_text(encoding="utf-8")
             self.assertIn("AGENTS.md", report_text)
             self.assertNotIn("MEMORY.md", report_text)

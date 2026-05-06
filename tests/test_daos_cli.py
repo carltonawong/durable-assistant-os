@@ -80,7 +80,7 @@ class DaosCliTests(unittest.TestCase):
 
             result = self.run_cli("init", str(destination), "--scan", str(workspace))
 
-            report = destination / ".daos" / "import-stage" / "instruction-scan.md"
+            report = destination / "import-stage" / "instruction-scan.md"
             self.assertEqual(result.returncode, 0, msg=result.stderr)
             self.assertTrue(report.is_file())
             report_text = report.read_text(encoding="utf-8")
@@ -109,7 +109,7 @@ class DaosCliTests(unittest.TestCase):
             backups = list((destination / ".daos" / "backups" / "instructions").rglob("*.bak"))
             self.assertEqual(len(backups), 1)
             self.assertEqual(backups[0].read_text(encoding="utf-8"), "# Existing agent rules\nUse local memory.\n")
-            report = destination / ".daos" / "import-stage" / "instruction-scan.md"
+            report = destination / "import-stage" / "instruction-scan.md"
             report_text = report.read_text(encoding="utf-8")
             self.assertIn("Edits applied", report_text)
             self.assertIn("backup:", report_text)
@@ -173,7 +173,7 @@ class DaosCliTests(unittest.TestCase):
                     result = self.run_cli("init", str(destination), "--scan", str(workspace))
                     self.assertEqual(result.returncode, 0, msg=result.stderr)
 
-                    report = destination / ".daos" / "import-stage" / "instruction-scan.md"
+                    report = destination / "import-stage" / "instruction-scan.md"
                     report_text = report.read_text(encoding="utf-8")
                     self.assertTrue((destination / "wiki" / "cache" / "hot-cache.md").is_file())
                     self.assertNotIn(str(memory_file), report_text)
@@ -219,7 +219,7 @@ class DaosCliTests(unittest.TestCase):
             destination = root / "daos-home"
             result = self.run_cli("init", str(destination), "--scan", str(workspace))
 
-            report = destination / ".daos" / "import-stage" / "instruction-scan.md"
+            report = destination / "import-stage" / "instruction-scan.md"
             self.assertEqual(result.returncode, 0, msg=result.stderr)
             report_text = report.read_text(encoding="utf-8")
             for path in carrier_paths:
@@ -257,7 +257,7 @@ class DaosCliTests(unittest.TestCase):
             self.assertEqual(len(backups), 1)
             self.assertEqual(backups[0].read_text(encoding="utf-8"), "# Existing agent rules\nUse local memory.\n")
 
-            scan_report = destination / ".daos" / "import-stage" / "instruction-scan.md"
+            scan_report = destination / "import-stage" / "instruction-scan.md"
             scan_text = scan_report.read_text(encoding="utf-8")
             self.assertIn("Edits applied", scan_text)
             self.assertIn("backup:", scan_text)

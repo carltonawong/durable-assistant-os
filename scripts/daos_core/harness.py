@@ -183,7 +183,7 @@ def write_instruction_scan_report(
     backup_paths: dict[Path, Path] | None = None,
 ) -> Path:
     root = Path(pack_dir).expanduser().resolve()
-    report_dir = root / ".daos" / "import-stage"
+    report_dir = root / "import-stage"
     report_dir.mkdir(parents=True, exist_ok=True)
     report_path = report_dir / "instruction-scan.md"
 
@@ -309,7 +309,7 @@ def build_state_report(pack_dir: str | Path, *, heading: str = "DAOS Status") ->
     agent_continuity = root / "wiki" / "cache" / "agent-continuity.md"
     raw_dir = root / "wiki" / "raw"
     source_dir = root / "wiki" / "sources"
-    instruction_scan = root / ".daos" / "import-stage" / "instruction-scan.md"
+    instruction_scan = root / "import-stage" / "instruction-scan.md"
 
     current: list[str] = []
     corrections: list[str] = []
@@ -367,7 +367,7 @@ def build_state_report(pack_dir: str | Path, *, heading: str = "DAOS Status") ->
         "- DAOS baseline present.",
     ]
     if instruction_scan.is_file():
-        lines.append("- instruction bridge review present inside DAOS home: .daos/import-stage/instruction-scan.md")
+        lines.append("- instruction bridge review present inside DAOS home: import-stage/instruction-scan.md")
     else:
         lines.append("- no instruction bridge review present")
     hot_cache_summary = _first_bullet_summary(current, "No current focus set yet.")
@@ -403,12 +403,12 @@ def build_state_report(pack_dir: str | Path, *, heading: str = "DAOS Status") ->
                 f"- instruction carriers found: {instruction_count}",
                 f"- instruction edits applied: {instruction_applied_count}",
                 f"- instruction edits needing approval: {instruction_pending_count}",
-                "- review inside DAOS home: .daos/import-stage/instruction-scan.md",
+                "- review inside DAOS home: import-stage/instruction-scan.md",
             ]
         )
     bridge_review: list[str] = []
     if instruction_scan.is_file() and instruction_pending_count:
-        bridge_review.append(f"{instruction_pending_count} instruction edits need approval; review `.daos/import-stage/instruction-scan.md` inside DAOS home")
+        bridge_review.append(f"{instruction_pending_count} instruction edits need approval; review `import-stage/instruction-scan.md` inside DAOS home")
     elif instruction_scan.is_file():
         bridge_review.append("None")
     else:
