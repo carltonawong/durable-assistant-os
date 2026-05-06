@@ -2,6 +2,22 @@
   "name": "use-daos",
   "version": "0.2.2",
   "description": "Durable Assistant OS local continuity harness.",
+  "keywords": [
+    "ai-agents",
+    "agent-memory",
+    "context-engineering",
+    "assistant",
+    "local-first",
+    "markdown"
+  ],
+  "homepage": "https://github.com/carltonawong/durable-assistant-os#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/carltonawong/durable-assistant-os.git"
+  },
+  "bugs": {
+    "url": "https://github.com/carltonawong/durable-assistant-os/issues"
+  },
   "bin": {
     "use-daos": "bin/use-daos.js"
   },
