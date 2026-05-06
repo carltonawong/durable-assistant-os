@@ -46,7 +46,7 @@ npx use-daos on
 npx use-daos reset-test
 ```
 
-That creates a local DAOS home, installs the mandatory wiki/cache baseline, scans nearby agent instruction files, guides the minimum setup, checks the pack, shows what DAOS is on, and verifies reset recovery.
+That creates a local DAOS home, installs the mandatory wiki/cache baseline, scans nearby agent instruction files, guides setup, checks the pack, shows what DAOS is on, and verifies reset recovery. Run `setup` interactively; for non-interactive smoke tests, use `npx use-daos setup --accept-defaults`.
 
 When the first-run sequence passes, DAOS ends with:
 
@@ -183,7 +183,7 @@ The CLI is the easier first path, but the pack remains plain markdown by design.
 - `examples/starter-pack-example/` — filled user-owned files for a realistic pack.
 - `tests/` — regression tests for scripts, package behavior, and safety posture.
 
-The GitHub source tree also carries evaluation methodology and proof materials. Those are kept out of the npm runtime package so `use-daos` installs as focused local tooling, not a benchmark archive.
+The GitHub source tree also carries tests and selected verification material. Heavier internal eval artifacts stay out of the npm runtime package so `use-daos` installs as focused local tooling, not a benchmark archive.
 
 ## What is already proven
 

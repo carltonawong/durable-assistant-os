@@ -48,10 +48,11 @@ class DaosInitCommandTests(unittest.TestCase):
             existing_agents.write_text("# Existing Agent Rules\n\nUse local memory.\n", encoding="utf-8")
 
             result = self.run_cli("init", str(target), "--scan", str(project))
-            report = target / ".daos" / "import-stage" / "instruction-scan.md"
+            report = target / "import-stage" / "instruction-scan.md"
 
             self.assertEqual(result.returncode, 0, msg=result.stderr)
             self.assertTrue(report.is_file())
+            self.assertFalse((target / ".daos" / "import-stage" / "instruction-scan.md").exists())
             report_text = report.read_text(encoding="utf-8")
             self.assertIn("AGENTS.md", report_text)
             self.assertIn("DAOS coexistence rule should be placed at the top/front", report_text)

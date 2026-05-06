@@ -14,7 +14,7 @@ npx use-daos reset-test
 
 `use-daos init` installs the DAOS baseline into your DAOS home, scans the current working directory for existing agent instruction files, and stages a bridge review when needed.
 
-`use-daos setup` is the guided activation step. It explains and fills the minimum assistant charter, operating profile, current focus, and reset handoff.
+`use-daos setup` is the guided activation step. It explains and fills the minimum assistant charter, operating profile, current focus, and reset handoff. Run it in an interactive terminal; for non-interactive smoke tests, use `use-daos setup --accept-defaults`.
 
 `use-daos check`, `use-daos on`, and `use-daos reset-test` should all default to the active DAOS home. When the sequence passes, DAOS ends with:
 
@@ -59,8 +59,10 @@ In interactive mode, DAOS asks before editing those files. If you approve, it pr
 If you do not approve, or if the command is non-interactive, DAOS writes a review report instead:
 
 ```text
-.daos/import-stage/instruction-scan.md
+import-stage/instruction-scan.md
 ```
+
+The path is relative to your DAOS home. If your DAOS home is `~/.daos`, the report is `~/.daos/import-stage/instruction-scan.md`.
 
 DAOS does not import arbitrary old memory files like `MEMORY.md` by default.
 

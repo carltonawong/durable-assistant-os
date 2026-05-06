@@ -130,7 +130,7 @@ class DaosStateReportTests(unittest.TestCase):
     def test_state_report_surfaces_instruction_bridge_review_when_present(self) -> None:
         with tempfile.TemporaryDirectory() as tmpdir:
             pack = self.make_state_pack(tmpdir)
-            report = pack / ".daos" / "import-stage" / "instruction-scan.md"
+            report = pack / "import-stage" / "instruction-scan.md"
             report.parent.mkdir(parents=True, exist_ok=True)
             report.write_text(
                 """# DAOS Instruction Scan
@@ -149,7 +149,8 @@ class DaosStateReportTests(unittest.TestCase):
         self.assertIn("Bridge Review", result.stdout)
         self.assertIn("instruction carriers found: 2", result.stdout)
         self.assertIn("instruction edits needing approval: 0", result.stdout)
-        self.assertIn(".daos/import-stage/instruction-scan.md", result.stdout)
+        self.assertIn("import-stage/instruction-scan.md", result.stdout)
+        self.assertNotIn(".daos/import-stage", result.stdout)
 
     def test_no_args_uses_daos_home_environment_as_state_report(self) -> None:
         with tempfile.TemporaryDirectory() as tmpdir:
