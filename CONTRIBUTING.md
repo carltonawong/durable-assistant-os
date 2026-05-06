@@ -30,6 +30,25 @@ Do not let example-instance content quietly become framework canon.
 - when refining doctrine, make sure the public page, deeper reference docs, and install flow do not drift apart
 - avoid adding files that do not clearly improve explanation, installability, reuse, or demonstration
 
+## Public/private work boundary
+
+Treat `main` as the public product surface. Public changes should be shipped code, tests, docs, release notes, or clear examples that make DAOS easier to install, understand, verify, or trust.
+
+Keep exploratory work private until it has a selected release shape. That includes:
+- internal benchmark/eval artifacts
+- speculative roadmap or implementation plans
+- private release-prep transcripts and scratch harnesses
+- instance-specific notes from a real assistant installation
+- local machine paths, credentials, runtime logs, or operator-only context
+
+Good promotion path:
+1. explore locally, in a private branch, or in private notes
+2. extract the portable lesson or product slice
+3. add only the public-safe artifact that helps an outside user
+4. verify tests/docs/package surfaces before opening a PR
+
+Do not publish private artifacts just to show the work happened. DAOS should model its own rule: durable context is useful, but public authority should come from clear shipped surfaces and current verification.
+
 ## Good contribution shapes
 
 Examples of good contributions:
