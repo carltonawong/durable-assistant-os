@@ -15,6 +15,7 @@ Do not add entries for every typo fix or private WIP note.
 ## Unreleased
 
 ### Changed
+- Added npm/GitHub metadata keywords, repository, homepage, and issue links so public package surfaces point back to the repo clearly.
 - Fixed the instruction bridge review path so scan reports live at `import-stage/instruction-scan.md` inside the DAOS home instead of under a nested `.daos/import-stage/` directory.
 - Clarified that `use-daos setup` expects an interactive terminal and that non-interactive smoke tests should use `use-daos setup --accept-defaults`.
 - Softened README proof-material wording so public docs point to tests and selected verification material without implying the npm package includes internal eval artifacts.

@@ -79,6 +79,14 @@ class DaosReleaseFrontDoorTests(unittest.TestCase):
         self.assertEqual(package["version"], "0.2.2")
         self.assertEqual(package["bin"], {"use-daos": "bin/use-daos.js"})
         self.assertEqual(package["license"], "Apache-2.0")
+        self.assertEqual(package["homepage"], "https://github.com/carltonawong/durable-assistant-os#readme")
+        self.assertEqual(
+            package["repository"],
+            {"type": "git", "url": "git+https://github.com/carltonawong/durable-assistant-os.git"},
+        )
+        self.assertEqual(package["bugs"], {"url": "https://github.com/carltonawong/durable-assistant-os/issues"})
+        for keyword in ["ai-agents", "agent-memory", "context-engineering", "local-first", "markdown"]:
+            self.assertIn(keyword, package["keywords"])
         self.assertNotIn("private", package)
 
     def test_changelog_and_release_note_cover_v02_safety_contract(self) -> None:
