@@ -129,6 +129,25 @@ class DaosReleaseFrontDoorTests(unittest.TestCase):
         missing = [phrase for phrase in required_phrases if phrase not in combined]
         self.assertEqual(missing, [])
 
+    def test_reset_current_state_receipt_stays_small_and_actionable(self) -> None:
+        receipt = self.read("docs/reset-current-state-receipt.md")
+        readme = self.read("README.md")
+
+        required_phrases = [
+            "Objective:",
+            "Last verified result:",
+            "Approval boundary:",
+            "Stale risk:",
+            "Next action:",
+            "Treat remembered status as orientation, not proof.",
+            "Recheck freshness-sensitive facts against live authority.",
+        ]
+        missing = [phrase for phrase in required_phrases if phrase not in receipt]
+        self.assertEqual(missing, [])
+        self.assertIn("docs/reset-current-state-receipt.md", readme)
+        for private_term in ["/mnt/c/Users", "C:\\Users"]:
+            self.assertNotIn(private_term, receipt)
+
 
 if __name__ == "__main__":
     unittest.main()

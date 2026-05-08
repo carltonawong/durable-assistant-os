@@ -48,6 +48,7 @@ class DaosNpmPackagePayloadTests(unittest.TestCase):
             "docs/releases/v0.2.2.md",
             "docs/script-safety.md",
             "docs/wiki-governance.md",
+            "docs/reset-current-state-receipt.md",
             "examples/creative-studio-operating-profile-example.md",
             "harness/core-setup.md",
             "harness/first-week.md",
@@ -139,8 +140,8 @@ class DaosNpmPackagePayloadTests(unittest.TestCase):
     def test_npm_package_stays_small_enough_for_release_distribution(self) -> None:
         package = self.npm_pack_dry_run()
 
-        self.assertLessEqual(package["entryCount"], 63)
-        self.assertLessEqual(package["size"], 92_000)
+        self.assertLessEqual(package["entryCount"], 64)
+        self.assertLessEqual(package["size"], 94_000)
 
 
 if __name__ == "__main__":
