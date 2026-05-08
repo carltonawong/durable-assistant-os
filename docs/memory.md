@@ -240,6 +240,8 @@ A better pattern is:
 - retrieve deeper memory only when it is actually relevant
 - verify against live sources when correctness depends on current reality
 
+Treat current-state claims as freshness-sensitive by default when they involve release versions, publish status, branch/tag state, runtime health, deployment state, security scans, or test results. Memory may explain what to check, but it should not certify those facts without the live authority.
+
 This keeps the system faster, cleaner, and less likely to confuse stale notes for truth.
 
 ## Volatility in multi-lane systems

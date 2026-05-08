@@ -25,6 +25,7 @@ Do not add entries for every typo fix or private WIP note.
 
 ### Hardened
 - Made the source-authority rule more visible in public docs: live reality outranks durable docs, active cache, continuity notes, and private/session memory when freshness matters.
+- Added a compact freshness-sensitive claim rule so current release/version, publish, branch/tag, runtime health, scan, and test-result claims require live authority instead of cached memory alone.
 
 ## v0.2.2 - 2026-05-05
 

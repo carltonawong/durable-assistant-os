@@ -156,6 +156,7 @@ DAOS treats short-term context as controlled volatility, not durable truth:
 - log recent front-door churn only when it helps another agent recover from a prune, displacement, or re-scope
 - promote decisions, corrections, and findings that would create ambiguity if lost
 - verify live facts against files, runtime state, inboxes, calendars, or other source systems
+- treat current-state claims like release versions, publish status, branch/tag state, runtime health, and test results as freshness-sensitive
 - ignore transient chatter, obsolete details, and facts easy to re-derive
 - resolve conflict by source authority: live reality > durable docs > active cache > continuity > private/session memory
 

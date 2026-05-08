@@ -114,6 +114,21 @@ class DaosReleaseFrontDoorTests(unittest.TestCase):
         missing = [phrase for phrase in required_phrases if phrase not in combined]
         self.assertEqual(missing, [])
 
+    def test_memory_docs_define_freshness_sensitive_claims(self) -> None:
+        combined = self.read("README.md") + "\n" + self.read("docs/memory.md")
+
+        required_phrases = [
+            "freshness-sensitive",
+            "release versions",
+            "publish status",
+            "branch/tag state",
+            "runtime health",
+            "test results",
+            "live authority",
+        ]
+        missing = [phrase for phrase in required_phrases if phrase not in combined]
+        self.assertEqual(missing, [])
+
 
 if __name__ == "__main__":
     unittest.main()
