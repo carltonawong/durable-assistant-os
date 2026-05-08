@@ -80,6 +80,22 @@ use-daos on /path/to/existing-assistant-home
 
 Use this when the existing home already has `wiki/cache/hot-cache.md`, `wiki/cache/hot-cache-log.md`, `wiki/cache/reset-handoff.md`, and related DAOS surfaces. This avoids creating a second `~/.daos` home when your current assistant home already acts as the DAOS home.
 
+## Boot/runtime doctor
+
+`use-daos check` tells you whether the pack itself is minimally operable. If you also want to check whether a runtime is likely to start DAOS-first, run:
+
+```bash
+use-daos boot-check /path/to/existing-assistant-home
+```
+
+That read-only command reports structure plus an explicit warning when runtime boot order is not verified. Adapter-specific exports can pass a JSON fixture:
+
+```bash
+use-daos boot-check /path/to/existing-assistant-home --runtime-config runtime.json
+```
+
+The fixture can describe `startup_root`, `daos_home`, `prompt_precedence`, `session_topology`, and `reset_handoff` wiring so DAOS can catch cases where files are installed but private memory or split sessions still win at runtime.
+
 ## What each first-run file does
 
 - `assistant-charter.md` defines what the assistant is for, how it behaves under uncertainty, and what requires approval.

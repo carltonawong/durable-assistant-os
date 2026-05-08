@@ -12,7 +12,7 @@ from pathlib import Path
 from textwrap import dedent
 
 from daos_bootstrap import bootstrap
-from daos_core import audit_memory_surfaces, build_state_report, build_orientation_bundle, find_instruction_carriers, prepend_daos_coexistence_rule, run_reset_recovery_test, validate_pack_dir, write_instruction_scan_report, write_reset_handoff
+from daos_core import audit_memory_surfaces, build_state_report, build_orientation_bundle, find_instruction_carriers, prepend_daos_coexistence_rule, run_boot_check, run_reset_recovery_test, validate_pack_dir, write_instruction_scan_report, write_reset_handoff
 
 
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
@@ -76,6 +76,15 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         description="Run a read-only DAOS pack health check. No files are modified.",
     )
     check.add_argument("pack_dir", nargs="?", help="Path to a DAOS pack directory to check. Defaults to DAOS_HOME or ~/.daos.")
+
+    boot_check = subparsers.add_parser(
+        "boot-check",
+        aliases=["doctor"],
+        help="read-only boot-order/runtime hierarchy check",
+        description="Verify whether an assistant runtime is likely to operate DAOS-first. No files are modified.",
+    )
+    boot_check.add_argument("pack_dir", nargs="?", help="Path to a DAOS pack directory. Defaults to DAOS_HOME or ~/.daos.")
+    boot_check.add_argument("--runtime-config", help="Optional JSON fixture/export with startup_root, prompt_precedence, session_topology, and reset_handoff facts")
 
     orient = subparsers.add_parser(
         "orient",
@@ -593,6 +602,16 @@ def run_check(pack_dir_arg: str | None) -> int:
     return 0
 
 
+def run_boot_check_command(pack_dir_arg: str | None, runtime_config: str | None) -> int:
+    pack_dir = resolve_default_pack_dir(pack_dir_arg)
+    exit_code, stdout, stderr = run_boot_check(str(pack_dir), runtime_config=runtime_config)
+    if stdout:
+        print(stdout, end="")
+    if stderr:
+        print(stderr, end="", file=sys.stderr)
+    return exit_code
+
+
 def run_orient(pack_dir_arg: str | None, task: str | None) -> int:
     pack_dir = resolve_default_pack_dir(pack_dir_arg)
     exit_code, stdout, stderr = build_orientation_bundle(str(pack_dir), task=task)
@@ -653,6 +672,8 @@ def main(argv: list[str] | None = None) -> int:
         return run_setup(args)
     if args.command == "check":
         return run_check(args.pack_dir)
+    if args.command in {"boot-check", "doctor"}:
+        return run_boot_check_command(args.pack_dir, args.runtime_config)
     if args.command == "orient":
         return run_orient(args.pack_dir, args.task)
     if args.command == "reset-test":

@@ -60,6 +60,7 @@ class DaosNpmPackagePayloadTests(unittest.TestCase):
             "scripts/daos_validate.py",
             "scripts/daos_wizard.py",
             "scripts/daos_core/__init__.py",
+            "scripts/daos_core/boot_check.py",
             "scripts/daos_core/harness.py",
             "scripts/daos_core/render.py",
             "scripts/daos_core/schema.py",
@@ -140,8 +141,8 @@ class DaosNpmPackagePayloadTests(unittest.TestCase):
     def test_npm_package_stays_small_enough_for_release_distribution(self) -> None:
         package = self.npm_pack_dry_run()
 
-        self.assertLessEqual(package["entryCount"], 64)
-        self.assertLessEqual(package["size"], 94_000)
+        self.assertLessEqual(package["entryCount"], 65)
+        self.assertLessEqual(package["size"], 96_000)
 
 
 if __name__ == "__main__":

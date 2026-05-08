@@ -103,6 +103,17 @@ use-daos on /path/to/existing-assistant-home
 
 The important part is that agents can find and read the shared `wiki/cache/` surfaces. The home can be `~/.daos` or another explicit assistant-home path.
 
+## Optional boot/runtime check
+
+`use-daos check` proves the pack structure is readable. `use-daos boot-check` goes one layer deeper: it is a read-only doctor for whether the runtime is likely to boot DAOS-first instead of private-memory-first.
+
+```bash
+use-daos boot-check /path/to/existing-assistant-home
+use-daos boot-check /path/to/existing-assistant-home --runtime-config runtime.json
+```
+
+Without a runtime config, it reports installed structure and warns that boot order is unverified. With a runtime config exported by an adapter, it checks startup root, prompt/context precedence, shared-session topology, reset/handoff wiring, and hot-cache freshness.
+
 ## Existing agent instructions
 
 DAOS is designed to coexist with agent-specific memory and instruction systems.
