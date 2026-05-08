@@ -180,6 +180,7 @@ The CLI is the easier first path, but the pack remains plain markdown by design.
 - `docs/memory.md` — deeper memory doctrine.
 - `docs/agent-integrations.md` — notes for wiring DAOS beside assistants.
 - `docs/portability.md` — durable wiki portability model.
+- `docs/reset-current-state-receipt.md` — small proof shape for reset recovery without stale-memory trust.
 - `harness/mandatory-baseline.md` — locked baseline install contract.
 - `examples/starter-pack-example/` — filled user-owned files for a realistic pack.
 - `tests/` — regression tests for scripts, package behavior, and safety posture.
