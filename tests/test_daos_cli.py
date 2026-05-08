@@ -37,6 +37,8 @@ class DaosCliTests(unittest.TestCase):
         self.assertIn("status", result.stdout)
         self.assertNotIn("state", result.stdout)
         self.assertIn("check", result.stdout)
+        self.assertIn("boot-check", result.stdout)
+        self.assertIn("doctor", result.stdout)
         self.assertIn("orient", result.stdout)
         self.assertIn("reset-test", result.stdout)
         self.assertIn("handoff", result.stdout)

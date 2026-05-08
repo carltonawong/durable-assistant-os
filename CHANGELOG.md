@@ -27,6 +27,7 @@ Do not add entries for every typo fix or private WIP note.
 - Made the source-authority rule more visible in public docs: live reality outranks durable docs, active cache, continuity notes, and private/session memory when freshness matters.
 - Added a compact freshness-sensitive claim rule so current release/version, publish, branch/tag, runtime health, scan, and test-result claims require live authority instead of cached memory alone.
 - Added a small reset-current-state receipt proof shape so reset recovery preserves objective, last verified result, approval boundary, stale risk, and the first live fact to recheck without importing the heavier eval corpus.
+- Added `use-daos boot-check` / `use-daos doctor`, a read-only runtime hierarchy check that distinguishes installed structure from startup root, prompt/context precedence, shared-session topology, reset/handoff wiring, and cache freshness.
 
 ## v0.2.2 - 2026-05-05
 
