@@ -14,6 +14,9 @@ Do not add entries for every typo fix or private WIP note.
 
 ## Unreleased
 
+### Added
+- Added `use-daos doctor`, a read-only proof-ladder receipt that distinguishes installed, bridged, activated, and proven DAOS states, with optional runtime fixture evidence for source precedence and reset/wake one-shot proof.
+
 ### Changed
 - Added npm/GitHub metadata keywords, repository, homepage, and issue links so public package surfaces point back to the repo clearly.
 - Fixed the instruction bridge review path so scan reports live at `import-stage/instruction-scan.md` inside the DAOS home instead of under a nested `.daos/import-stage/` directory.

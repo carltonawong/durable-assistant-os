@@ -44,9 +44,10 @@ npx use-daos setup
 npx use-daos check
 npx use-daos on
 npx use-daos reset-test
+npx use-daos doctor
 ```
 
-That creates a local DAOS home, installs the mandatory wiki/cache baseline, scans nearby agent instruction files, guides setup, checks the pack, shows what DAOS is on, and verifies reset recovery. Run `setup` interactively; for non-interactive smoke tests, use `npx use-daos setup --accept-defaults`.
+That creates a local DAOS home, installs the mandatory wiki/cache baseline, scans nearby agent instruction files, guides setup, checks the pack, shows `DAOS Status` / `DAOS On`, verifies reset recovery, and prints a read-only doctor receipt distinguishing installed / bridged / activated / proven. Run `setup` interactively; for non-interactive smoke tests, use `npx use-daos setup --accept-defaults`.
 
 When the first-run sequence passes, DAOS ends with:
 
@@ -83,6 +84,7 @@ You should have:
 - a local DAOS pack with the locked baseline files installed
 - a visible `DAOS Status` report
 - a `DAOS On` section showing current active-memory surfaces
+- a `DAOS Doctor` receipt showing what is installed, bridged, activated, and proven
 - explicit continuity files for hot cache, hot-cache log, reset handoff, and agent continuity
 - a staged bridge report if DAOS found existing agent instructions
 - no silent import of arbitrary old memory content

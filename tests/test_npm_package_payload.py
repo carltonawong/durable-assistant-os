@@ -142,7 +142,7 @@ class DaosNpmPackagePayloadTests(unittest.TestCase):
         package = self.npm_pack_dry_run()
 
         self.assertLessEqual(package["entryCount"], 65)
-        self.assertLessEqual(package["size"], 96_000)
+        self.assertLessEqual(package["size"], 102_000)
 
 
 if __name__ == "__main__":

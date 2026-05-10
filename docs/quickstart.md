@@ -10,13 +10,14 @@ npx use-daos setup
 npx use-daos check
 npx use-daos on
 npx use-daos reset-test
+npx use-daos doctor
 ```
 
 `use-daos init` installs the DAOS baseline into your DAOS home, scans the current working directory for existing agent instruction files, and stages a bridge review when needed.
 
 `use-daos setup` is the guided activation step. It explains and fills the minimum assistant charter, operating profile, current focus, and reset handoff. Run it in an interactive terminal; for non-interactive smoke tests, use `use-daos setup --accept-defaults`.
 
-`use-daos check`, `use-daos on`, and `use-daos reset-test` should all default to the active DAOS home. When the sequence passes, DAOS ends with:
+`use-daos check`, `use-daos on`, `use-daos reset-test`, and `use-daos doctor` should all default to the active DAOS home. `doctor` is read-only and separates installed / bridged / activated / proven instead of treating file presence as runtime proof. When the reset-test sequence passes, DAOS ends with:
 
 ```text
 You're complete!

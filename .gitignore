@@ -22,8 +22,9 @@ venv/
 .env
 .env.*
 
-# Local agent artifacts
+# Local agent / preview artifacts
 .hermes/
+.herenow/
 
 # Build / packaging artifacts
 build/

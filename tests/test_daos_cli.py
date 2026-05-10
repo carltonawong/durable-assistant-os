@@ -44,6 +44,91 @@ class DaosCliTests(unittest.TestCase):
         self.assertIn("handoff", result.stdout)
         self.assertIn("memory-audit", result.stdout)
 
+    def test_doctor_reports_installed_not_proven_for_blank_pack(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            destination = Path(tmpdir) / "blank-pack"
+            init = self.run_cli("init", str(destination), "--blank")
+            self.assertEqual(init.returncode, 0, msg=init.stderr)
+
+            result = self.run_cli("doctor", str(destination))
+
+        self.assertEqual(result.returncode, 0, msg=result.stderr)
+        self.assertIn("DAOS Doctor", result.stdout)
+        self.assertIn("Pack structure", result.stdout)
+        self.assertIn("Instruction bridge", result.stdout)
+        self.assertIn("Runtime anchor", result.stdout)
+        self.assertIn("Source precedence", result.stdout)
+        self.assertIn("Reset/wake signal", result.stdout)
+        self.assertIn("One-shot reset proof", result.stdout)
+        self.assertIn("Unexpected writes", result.stdout)
+        self.assertIn("Verdict: installed, not proven", result.stdout)
+        self.assertIn("Read-only: no files modified", result.stdout)
+
+    def test_doctor_uses_runtime_fixture_to_report_daos_obeyed(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            destination = root / "filled-pack"
+            bootstrap = self.run_bootstrap("--filled-example", str(destination))
+            self.assertEqual(bootstrap.returncode, 0, msg=bootstrap.stderr)
+            runtime = root / "runtime.json"
+            runtime.write_text(
+                """
+                {
+                  "startup_root": "FILLED_PACK",
+                  "daos_home": "FILLED_PACK",
+                  "prompt_precedence": ["project/current context", "DAOS hot-cache", "private memory"],
+                  "reset_wake": {
+                    "signal_wired": true,
+                    "one_shot_proven": true
+                  },
+                  "unexpected_writes": false
+                }
+                """.replace("FILLED_PACK", str(destination)),
+                encoding="utf-8",
+            )
+
+            result = self.run_cli("doctor", str(destination), "--runtime-file", str(runtime))
+
+        self.assertEqual(result.returncode, 0, msg=result.stderr)
+        self.assertIn("Pack structure          PASS", result.stdout)
+        self.assertIn("Runtime anchor          PASS", result.stdout)
+        self.assertIn("Source precedence       PASS", result.stdout)
+        self.assertIn("Reset/wake signal       PASS", result.stdout)
+        self.assertIn("One-shot reset proof    PASS", result.stdout)
+        self.assertIn("Unexpected writes       PASS", result.stdout)
+        self.assertIn("Verdict: DAOS obeyed", result.stdout)
+
+    def test_doctor_normalizes_discord_wrapped_proof_messages(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            destination = root / "filled-pack"
+            bootstrap = self.run_bootstrap("--filled-example", str(destination))
+            self.assertEqual(bootstrap.returncode, 0, msg=bootstrap.stderr)
+            runtime = root / "runtime.json"
+            runtime.write_text(
+                """
+                {
+                  "startup_root": "FILLED_PACK",
+                  "daos_home": "FILLED_PACK",
+                  "prompt_precedence": ["project/current context", "DAOS hot-cache", "private memory"],
+                  "session_proof": {
+                    "first_user_message": "[Replying to: \\\"✨ Session reset! Starting fresh...\\\"] [crltn] proof one after reset",
+                    "second_user_message": "[Replying to: \\\"Proof received\\\"] [crltn] proof two normal followup",
+                    "first_orientation_present": true,
+                    "second_orientation_present": false
+                  },
+                  "unexpected_writes": false
+                }
+                """.replace("FILLED_PACK", str(destination)),
+                encoding="utf-8",
+            )
+
+            result = self.run_cli("doctor", str(destination), "--runtime-file", str(runtime))
+
+        self.assertEqual(result.returncode, 0, msg=result.stderr)
+        self.assertIn("One-shot reset proof    PASS", result.stdout)
+        self.assertIn("platform wrappers normalized", result.stdout)
+
     def test_check_passes_on_filled_example_pack(self) -> None:
         with tempfile.TemporaryDirectory() as tmpdir:
             destination = Path(tmpdir) / "filled-pack"

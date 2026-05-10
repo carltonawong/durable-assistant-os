@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from datetime import datetime
 import hashlib
+import json
 from pathlib import Path
 
 from .validate import validate_pack_dir
@@ -425,6 +426,173 @@ def build_state_report(pack_dir: str | Path, *, heading: str = "DAOS Status") ->
     lines.extend(["", "Bridge Review"])
     lines.extend([f"- {item}" for item in bridge_review])
     lines.extend(["", "Next", f"- {next_move}"])
+    return 0, "\n".join(lines) + "\n", ""
+
+
+def _status_line(label: str, status: str) -> str:
+    return f"{label:<24}{status}"
+
+
+def _load_runtime_fixture(runtime_file: str | Path | None) -> tuple[dict, list[str]]:
+    if not runtime_file:
+        return {}, []
+    path = Path(runtime_file).expanduser().resolve()
+    try:
+        return json.loads(path.read_text(encoding="utf-8")), []
+    except (OSError, json.JSONDecodeError) as exc:
+        return {}, [f"runtime fixture unreadable: {path}: {exc}"]
+
+
+def _normalise_platform_message(text: str) -> str:
+    """Return user content with common chat wrappers removed.
+
+    Discord gateway session logs often store user messages as:
+    `[Replying to: "..."] [crltn] proof text`. Doctor proofs should
+    validate the human content, not fail because transport metadata is present.
+    """
+    cleaned = text.strip()
+    if cleaned.startswith("[Replying to:"):
+        closing = cleaned.find("]")
+        if closing != -1:
+            cleaned = cleaned[closing + 1 :].strip()
+    if cleaned.startswith("["):
+        closing = cleaned.find("]")
+        if closing != -1:
+            cleaned = cleaned[closing + 1 :].strip()
+    return cleaned
+
+
+def _runtime_anchor_status(root: Path, runtime: dict) -> tuple[str, str]:
+    if not runtime:
+        return "UNPROVEN", "no runtime fixture provided"
+    expected = str(root)
+    startup_root = str(runtime.get("startup_root", ""))
+    daos_home = str(runtime.get("daos_home", ""))
+    if startup_root == expected or daos_home == expected:
+        return "PASS", "runtime fixture points at DAOS home/project root"
+    return "WARN", "runtime fixture root does not match DAOS home"
+
+
+def _source_precedence_status(runtime: dict) -> tuple[str, str]:
+    if not runtime:
+        return "UNPROVEN", "no prompt precedence evidence provided"
+    precedence = [str(item).lower() for item in runtime.get("prompt_precedence", [])]
+    if not precedence:
+        return "UNPROVEN", "runtime fixture has no prompt_precedence list"
+    private_index = next((i for i, item in enumerate(precedence) if "private" in item or "memory" in item), None)
+    daos_index = next((i for i, item in enumerate(precedence) if "daos" in item or "hot-cache" in item or "project" in item), None)
+    if daos_index is not None and (private_index is None or daos_index < private_index):
+        return "PASS", "DAOS/project context precedes private memory"
+    return "WARN", "private memory may outrank DAOS current truth"
+
+
+def _reset_signal_status(runtime: dict) -> tuple[str, str]:
+    if not runtime:
+        return "UNPROVEN", "no reset/wake runtime evidence provided"
+    reset_wake = runtime.get("reset_wake", {}) if isinstance(runtime.get("reset_wake", {}), dict) else {}
+    session_proof = runtime.get("session_proof", {}) if isinstance(runtime.get("session_proof", {}), dict) else {}
+    if reset_wake.get("signal_wired") is True or session_proof:
+        return "PASS", "reset/wake evidence present"
+    return "UNPROVEN", "runtime fixture does not prove reset/wake signal wiring"
+
+
+def _one_shot_status(runtime: dict) -> tuple[str, str]:
+    if not runtime:
+        return "UNPROVEN", "no one-shot proof evidence provided"
+    reset_wake = runtime.get("reset_wake", {}) if isinstance(runtime.get("reset_wake", {}), dict) else {}
+    if reset_wake.get("one_shot_proven") is True:
+        return "PASS", "runtime fixture reports one-shot reset/wake proof"
+    session_proof = runtime.get("session_proof", {}) if isinstance(runtime.get("session_proof", {}), dict) else {}
+    if session_proof:
+        first = _normalise_platform_message(str(session_proof.get("first_user_message", "")))
+        second = _normalise_platform_message(str(session_proof.get("second_user_message", "")))
+        first_ok = "proof one after reset" in first and session_proof.get("first_orientation_present") is True
+        second_ok = "proof two normal followup" in second and session_proof.get("second_orientation_present") is False
+        if first_ok and second_ok:
+            return "PASS", "platform wrappers normalized; reset orientation was one-shot"
+        return "WARN", "session proof did not show first-turn orientation and second-turn absence"
+    return "UNPROVEN", "no one-shot reset/wake proof provided"
+
+
+def build_doctor_report(pack_dir: str | Path, runtime_file: str | Path | None = None) -> tuple[int, str, str]:
+    """Build a read-only DAOS proof-ladder receipt."""
+    root = Path(pack_dir).expanduser().resolve()
+    validation = validate_pack_dir(root)
+    runtime, runtime_errors = _load_runtime_fixture(runtime_file)
+
+    if any(error.startswith("Pack directory does not exist") or error.startswith("Pack path is not a directory") for error in validation.errors):
+        return 1, "", f"DAOS Doctor unavailable: {root}\n- run `use-daos init` to create a DAOS home, or set DAOS_HOME to an existing pack\n"
+
+    baseline_files = [
+        root / "assistant-charter.md",
+        root / "operating-profile.md",
+        root / "wiki" / "cache" / "hot-cache.md",
+        root / "wiki" / "cache" / "reset-handoff.md",
+    ]
+    pack_status = "PASS" if all(path.is_file() for path in baseline_files) else "FAIL"
+    instruction_scan = root / "import-stage" / "instruction-scan.md"
+    pending = _count_report_section_items(instruction_scan, "## Edits needing approval")
+    applied = _count_report_section_items(instruction_scan, "## Edits applied")
+    if instruction_scan.is_file() and pending == 0:
+        bridge_status = "PASS"
+        bridge_detail = f"instruction bridge review present; applied={applied}, pending=0"
+    elif instruction_scan.is_file():
+        bridge_status = "WARN"
+        bridge_detail = f"instruction bridge review present; pending edits={pending}"
+    else:
+        bridge_status = "PASS"
+        bridge_detail = "no instruction bridge review present; treating as greenfield/unscanned for read-only v0"
+
+    runtime_status, runtime_detail = _runtime_anchor_status(root, runtime)
+    precedence_status, precedence_detail = _source_precedence_status(runtime)
+    reset_status, reset_detail = _reset_signal_status(runtime)
+    one_shot_status, one_shot_detail = _one_shot_status(runtime)
+    writes_status = "WARN" if runtime.get("unexpected_writes") is True else "PASS"
+    writes_detail = "runtime fixture reported unexpected writes" if writes_status == "WARN" else "no unexpected writes reported by doctor inputs"
+
+    statuses = [pack_status, bridge_status, runtime_status, precedence_status, reset_status, one_shot_status, writes_status]
+    if all(status == "PASS" for status in statuses):
+        verdict = "DAOS obeyed"
+    elif "FAIL" in statuses or "WARN" in (runtime_status, precedence_status, writes_status):
+        verdict = "conflict detected"
+    else:
+        verdict = "installed, not proven"
+
+    lines = [
+        "DAOS Doctor",
+        f"Pack: {root}",
+        "Read-only: no files modified",
+        "",
+        "Proof ladder",
+        _status_line("Pack structure", pack_status),
+        _status_line("Instruction bridge", bridge_status),
+        _status_line("Runtime anchor", runtime_status),
+        _status_line("Source precedence", precedence_status),
+        _status_line("Reset/wake signal", reset_status),
+        _status_line("One-shot reset proof", one_shot_status),
+        _status_line("Unexpected writes", writes_status),
+        "",
+        f"Verdict: {verdict}",
+        "",
+        "Evidence",
+        f"- pack structure: {'baseline files present' if pack_status == 'PASS' else 'baseline files missing'}",
+        f"- instruction bridge: {bridge_detail}",
+        f"- runtime anchor: {runtime_detail}",
+        f"- source precedence: {precedence_detail}",
+        f"- reset/wake signal: {reset_detail}",
+        f"- one-shot reset proof: {one_shot_detail}",
+        f"- unexpected writes: {writes_detail}",
+    ]
+    if runtime_errors:
+        lines.extend(["", "Runtime fixture warnings"])
+        lines.extend(f"- {error}" for error in runtime_errors)
+    if verdict != "DAOS obeyed":
+        lines.extend([
+            "",
+            "Next",
+            "- Review bridge warnings before claiming overlay obedience.",
+            "- Provide runtime evidence to prove anchor, source precedence, and reset/wake one-shot behavior.",
+        ])
     return 0, "\n".join(lines) + "\n", ""
 
 

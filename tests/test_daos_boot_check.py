@@ -98,7 +98,7 @@ class DaosBootCheckTests(unittest.TestCase):
             bootstrap = self.run_bootstrap("--filled-example", str(pack))
             self.assertEqual(bootstrap.returncode, 0, msg=bootstrap.stderr)
 
-            result = self.run_cli("doctor", str(pack))
+            result = self.run_cli("boot-check", str(pack))
 
         self.assertEqual(result.returncode, 0, msg=result.stderr + result.stdout)
         self.assertIn("DAOS boot check passed", result.stdout)
