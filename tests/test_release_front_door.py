@@ -53,6 +53,7 @@ class DaosReleaseFrontDoorTests(unittest.TestCase):
             "docs/releases/v0.2.0.md",
             "docs/releases/v0.2.1.md",
             "docs/releases/v0.2.2.md",
+            "docs/releases/v0.2.3.md",
         ]
         forbidden_terms = [
             "private draft",
@@ -76,7 +77,7 @@ class DaosReleaseFrontDoorTests(unittest.TestCase):
         package = json.loads(self.read("package.json"))
 
         self.assertEqual(package["name"], "use-daos")
-        self.assertEqual(package["version"], "0.2.2")
+        self.assertEqual(package["version"], "0.2.3")
         self.assertEqual(package["bin"], {"use-daos": "bin/use-daos.js"})
         self.assertEqual(package["license"], "Apache-2.0")
         self.assertEqual(package["homepage"], "https://github.com/carltonawong/durable-assistant-os#readme")
@@ -98,6 +99,8 @@ class DaosReleaseFrontDoorTests(unittest.TestCase):
             + self.read("docs/releases/v0.2.1.md")
             + "\n"
             + self.read("docs/releases/v0.2.2.md")
+            + "\n"
+            + self.read("docs/releases/v0.2.3.md")
         )
         required_phrases = [
             "npx use-daos init",

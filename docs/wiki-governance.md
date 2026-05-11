@@ -1,6 +1,6 @@
 # DAOS Wiki Governance
 
-<!-- DAOS baseline note: Current public framework baseline is v0.2.2; this file remains part of the current release surface even if its original feature landed in an earlier patch. -->
+<!-- DAOS baseline note: Current public framework baseline is v0.2.3; this file remains part of the current release surface even if its original feature landed in an earlier patch. -->
 
 ## Why this page exists
 

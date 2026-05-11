@@ -14,6 +14,10 @@ Do not add entries for every typo fix or private WIP note.
 
 ## Unreleased
 
+No unreleased framework-facing changes are staged after v0.2.3.
+
+## v0.2.3 - 2026-05-10
+
 ### Added
 - Added `use-daos doctor`, a read-only proof-ladder receipt that distinguishes installed, bridged, activated, and proven DAOS states, with optional runtime fixture evidence for source precedence and reset/wake one-shot proof.
 
@@ -25,6 +29,7 @@ Do not add entries for every typo fix or private WIP note.
 - Clarified the public DAOS framing from memory-first language toward context continuity: DAOS helps agents keep the right context visible across resets, gaps, tool changes, and live verification.
 - Reframed `docs/public-memory-page.md` as the public context model while preserving the existing packaged file path.
 - Updated `docs/memory.md`, `docs/quickstart.md`, and `starter-pack/README.md` to make memory one mechanism inside the broader continuity model.
+- Bumped package metadata to `0.2.3` and generated framework manifests to `v0.2.3`.
 
 ### Hardened
 - Made the source-authority rule more visible in public docs: live reality outranks durable docs, active cache, continuity notes, and private/session memory when freshness matters.
