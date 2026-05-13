@@ -47,6 +47,7 @@ class DaosNpmPackagePayloadTests(unittest.TestCase):
             "docs/releases/v0.2.1.md",
             "docs/releases/v0.2.2.md",
             "docs/releases/v0.2.3.md",
+            "docs/releases/v0.2.4.md",
             "docs/script-safety.md",
             "docs/wiki-governance.md",
             "docs/reset-current-state-receipt.md",

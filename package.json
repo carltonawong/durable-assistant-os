@@ -1,6 +1,6 @@
 {
   "name": "use-daos",
-  "version": "0.2.3",
+  "version": "0.2.4",
   "description": "Durable Assistant OS local continuity harness.",
   "keywords": [
     "ai-agents",
@@ -46,6 +46,7 @@
     "docs/releases/v0.2.1.md",
     "docs/releases/v0.2.2.md",
     "docs/releases/v0.2.3.md",
+    "docs/releases/v0.2.4.md",
     "docs/script-safety.md",
     "docs/wiki-governance.md",
     "docs/setup.md",

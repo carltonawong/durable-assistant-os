@@ -53,7 +53,7 @@ class DaosBootstrapScriptTests(unittest.TestCase):
             self.assertEqual(manifest["schema_version"], "1")
             self.assertEqual(manifest["pack_kind"], "starter-pack")
             self.assertEqual(manifest["generator"], "scripts/daos_bootstrap.py")
-            self.assertEqual(manifest["framework_version"], "v0.2.3")
+            self.assertEqual(manifest["framework_version"], "v0.2.4")
             self.assertTrue(manifest["pack_id"])
 
     def test_non_empty_destination_fails_without_force(self) -> None:

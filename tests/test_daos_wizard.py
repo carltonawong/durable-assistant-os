@@ -84,7 +84,7 @@ class DaosWizardScriptTests(unittest.TestCase):
             manifest = json.loads((destination / "daos-pack.json").read_text(encoding="utf-8"))
             self.assertEqual(manifest["schema_version"], "1")
             self.assertEqual(manifest["generator"], "scripts/daos_wizard.py")
-            self.assertEqual(manifest["framework_version"], "v0.2.3")
+            self.assertEqual(manifest["framework_version"], "v0.2.4")
             self.assertTrue(manifest["pack_id"])
             self.assertEqual(manifest["assistant_charter"]["primary_outcome"], self.BASE_ANSWERS[0])
 

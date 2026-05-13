@@ -92,6 +92,8 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     )
     doctor.add_argument("pack_dir", nargs="?", help="Path to a DAOS pack directory. Defaults to DAOS_HOME or ~/.daos.")
     doctor.add_argument("--runtime-file", default=None, help="Optional JSON runtime evidence fixture for anchor/source-order/reset proof")
+    doctor.add_argument("--runtime", default=None, help="Optional runtime detector name (currently: hermes) or path to a JSON evidence fixture")
+    doctor.add_argument("--detect-runtime", action="store_true", help="Read-only best-effort runtime evidence detection")
 
     orient = subparsers.add_parser(
         "orient",
@@ -629,9 +631,14 @@ def run_orient(pack_dir_arg: str | None, task: str | None) -> int:
     return exit_code
 
 
-def run_doctor(pack_dir_arg: str | None, runtime_file: str | None) -> int:
+def run_doctor(pack_dir_arg: str | None, runtime_file: str | None, runtime: str | None, detect_runtime: bool) -> int:
     pack_dir = resolve_default_pack_dir(pack_dir_arg)
-    exit_code, stdout, stderr = build_doctor_report(str(pack_dir), runtime_file=runtime_file)
+    exit_code, stdout, stderr = build_doctor_report(
+        str(pack_dir),
+        runtime_file=runtime_file,
+        runtime=runtime,
+        detect_runtime=detect_runtime,
+    )
     if stdout:
         print(stdout, end="")
     if stderr:
@@ -692,7 +699,7 @@ def main(argv: list[str] | None = None) -> int:
     if args.command == "boot-check":
         return run_boot_check_command(args.pack_dir, args.runtime_config)
     if args.command == "doctor":
-        return run_doctor(args.pack_dir, args.runtime_file)
+        return run_doctor(args.pack_dir, args.runtime_file, args.runtime, args.detect_runtime)
     if args.command == "orient":
         return run_orient(args.pack_dir, args.task)
     if args.command == "reset-test":

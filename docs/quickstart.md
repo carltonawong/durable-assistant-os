@@ -97,6 +97,14 @@ use-daos boot-check /path/to/existing-assistant-home --runtime-config runtime.js
 
 The fixture can describe `startup_root`, `daos_home`, `prompt_precedence`, `session_topology`, and `reset_handoff` wiring so DAOS can catch cases where files are installed but private memory or split sessions still win at runtime.
 
+`use-daos doctor` accepts the same fixture through `--runtime-file`. It can also collect conservative read-only runtime evidence for supported adapters:
+
+```bash
+use-daos doctor /path/to/existing-assistant-home --runtime hermes --detect-runtime
+```
+
+The Hermes detector reports the runtime shape that `doctor` already understands: `runtime`, `startup_root`, `daos_home`, `prompt_precedence`, `reset_wake`, and `unexpected_writes`. It can prove detected wiring, but it intentionally does not claim `one_shot_proven` without an actual reset/session proof.
+
 ## What each first-run file does
 
 - `assistant-charter.md` defines what the assistant is for, how it behaves under uncertainty, and what requires approval.

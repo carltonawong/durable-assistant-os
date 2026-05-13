@@ -14,7 +14,17 @@ Do not add entries for every typo fix or private WIP note.
 
 ## Unreleased
 
-No unreleased framework-facing changes are staged after v0.2.3.
+No unreleased framework-facing changes are staged after v0.2.4.
+
+## v0.2.4 - 2026-05-13
+
+### Added
+- Added `use-daos doctor --runtime hermes --detect-runtime`, a conservative read-only Hermes detector that returns the same runtime-evidence shape as JSON fixtures without claiming one-shot proof.
+- Added `collect_runtime_evidence(pack_dir, runtime=None, detect=False)` as the adapter-facing runtime evidence collection seam.
+- Added `docs/releases/v0.2.4.md` as the release note for the doctor-adapter patch.
+
+### Changed
+- Bumped package metadata and generated framework manifests to `0.2.4` / `v0.2.4`.
 
 ## v0.2.3 - 2026-05-10
 

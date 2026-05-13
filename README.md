@@ -112,9 +112,11 @@ The important part is that agents can find and read the shared `wiki/cache/` sur
 ```bash
 use-daos boot-check /path/to/existing-assistant-home
 use-daos boot-check /path/to/existing-assistant-home --runtime-config runtime.json
+use-daos doctor /path/to/existing-assistant-home --runtime-file runtime.json
+use-daos doctor /path/to/existing-assistant-home --runtime hermes --detect-runtime
 ```
 
-Without a runtime config, it reports installed structure and warns that boot order is unverified. With a runtime config exported by an adapter, it checks startup root, prompt/context precedence, shared-session topology, reset/handoff wiring, and hot-cache freshness.
+Without a runtime config, `boot-check` reports installed structure and warns that boot order is unverified. With a runtime config exported by an adapter, it checks startup root, prompt/context precedence, shared-session topology, reset/handoff wiring, and hot-cache freshness. `doctor` can consume a fixture or collect conservative Hermes runtime wiring evidence; it does not claim one-shot reset proof without a real reset/session proof.
 
 ## Existing agent instructions
 

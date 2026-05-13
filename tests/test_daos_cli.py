@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import os
 import subprocess
 import tempfile
 import unittest
@@ -11,7 +12,16 @@ BOOTSTRAP_SCRIPT = REPO_ROOT / "scripts" / "daos_bootstrap.py"
 
 
 class DaosCliTests(unittest.TestCase):
-    def run_cli(self, *args: str, input_text: str | None = None, cwd: Path | None = None) -> subprocess.CompletedProcess[str]:
+    def run_cli(
+        self,
+        *args: str,
+        input_text: str | None = None,
+        cwd: Path | None = None,
+        env: dict[str, str] | None = None,
+    ) -> subprocess.CompletedProcess[str]:
+        run_env = os.environ.copy()
+        if env:
+            run_env.update(env)
         return subprocess.run(
             ["python", str(CLI_SCRIPT), *args],
             cwd=cwd or REPO_ROOT,
@@ -19,6 +29,7 @@ class DaosCliTests(unittest.TestCase):
             input=input_text,
             capture_output=True,
             check=False,
+            env=run_env,
         )
 
     def run_bootstrap(self, *args: str) -> subprocess.CompletedProcess[str]:
@@ -97,6 +108,75 @@ class DaosCliTests(unittest.TestCase):
         self.assertIn("One-shot reset proof    PASS", result.stdout)
         self.assertIn("Unexpected writes       PASS", result.stdout)
         self.assertIn("Verdict: DAOS obeyed", result.stdout)
+
+    def test_doctor_accepts_runtime_argument_as_fixture_path(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            destination = root / "filled-pack"
+            bootstrap = self.run_bootstrap("--filled-example", str(destination))
+            self.assertEqual(bootstrap.returncode, 0, msg=bootstrap.stderr)
+            runtime = root / "runtime.json"
+            runtime.write_text(
+                """
+                {
+                  "startup_root": "FILLED_PACK",
+                  "daos_home": "FILLED_PACK",
+                  "prompt_precedence": ["project/current context", "DAOS hot-cache", "private memory"],
+                  "reset_wake": {
+                    "signal_wired": true,
+                    "one_shot_proven": true
+                  },
+                  "unexpected_writes": false
+                }
+                """.replace("FILLED_PACK", str(destination)),
+                encoding="utf-8",
+            )
+
+            result = self.run_cli("doctor", str(destination), "--runtime", str(runtime))
+
+        self.assertEqual(result.returncode, 0, msg=result.stderr)
+        self.assertIn("Runtime anchor          PASS", result.stdout)
+        self.assertIn("Verdict: DAOS obeyed", result.stdout)
+
+    def test_doctor_detects_hermes_runtime_wiring_without_claiming_one_shot_proof(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            destination = root / "filled-pack"
+            bootstrap = self.run_bootstrap("--filled-example", str(destination))
+            self.assertEqual(bootstrap.returncode, 0, msg=bootstrap.stderr)
+            plugin = root / "hermes" / "plugins" / "daos-session-handoff" / "__init__.py"
+            plugin.parent.mkdir(parents=True)
+            plugin.write_text(
+                """
+                def pre_llm_call(is_first_turn=False):
+                    # current user message, hot-cache, reset-handoff, agent-continuity, private
+                    return {"context": "DAOS hot-cache before private memory"} if is_first_turn else None
+
+                def on_session_finalize():
+                    path = "reset-handoff.md"
+                """,
+                encoding="utf-8",
+            )
+
+            result = self.run_cli(
+                "doctor",
+                str(destination),
+                "--runtime",
+                "hermes",
+                "--detect-runtime",
+                env={
+                    "HERMES_HOME": str(root / "hermes"),
+                    "HERMES_STARTUP_ROOT": str(destination),
+                    "DAOS_HOME": str(destination),
+                },
+            )
+
+        self.assertEqual(result.returncode, 0, msg=result.stderr)
+        self.assertIn("Runtime anchor          PASS", result.stdout)
+        self.assertIn("Source precedence       PASS", result.stdout)
+        self.assertIn("Reset/wake signal       PASS", result.stdout)
+        self.assertIn("One-shot reset proof    UNPROVEN", result.stdout)
+        self.assertIn("no one-shot reset/wake proof provided", result.stdout)
 
     def test_doctor_normalizes_discord_wrapped_proof_messages(self) -> None:
         with tempfile.TemporaryDirectory() as tmpdir:

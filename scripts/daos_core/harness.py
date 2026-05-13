@@ -3,6 +3,7 @@ from __future__ import annotations
 from datetime import datetime
 import hashlib
 import json
+import os
 from pathlib import Path
 
 from .validate import validate_pack_dir
@@ -443,6 +444,100 @@ def _load_runtime_fixture(runtime_file: str | Path | None) -> tuple[dict, list[s
         return {}, [f"runtime fixture unreadable: {path}: {exc}"]
 
 
+def _path_from_env(name: str) -> str:
+    return str(Path(os.environ[name]).expanduser().resolve()) if os.environ.get(name) else ""
+
+
+def _hermes_home() -> Path:
+    return Path(os.environ.get("HERMES_HOME", "~/.hermes")).expanduser()
+
+
+def _detect_hermes_runtime(pack_dir: Path) -> tuple[dict, list[str]]:
+    """Collect conservative, read-only Hermes evidence for `use-daos doctor`.
+
+    This does not claim a live one-shot proof. It only reports wiring that can be
+    checked from files/env without mutating the runtime.
+    """
+    warnings: list[str] = []
+    evidence: dict = {"runtime": "hermes", "unexpected_writes": False}
+
+    startup_root = _path_from_env("HERMES_STARTUP_ROOT") or _path_from_env("PWD") or str(Path.cwd().resolve())
+    daos_home = _path_from_env("DAOS_HOME")
+    evidence["startup_root"] = startup_root
+    evidence["daos_home"] = daos_home or str(pack_dir)
+    if not daos_home:
+        warnings.append("Hermes runtime detection used pack_dir as daos_home because DAOS_HOME is not set")
+
+    plugin_path = _hermes_home() / "plugins" / "daos-session-handoff" / "__init__.py"
+    plugin_text = ""
+    try:
+        plugin_text = plugin_path.read_text(encoding="utf-8")
+    except OSError as exc:
+        warnings.append(f"Hermes reset/wake plugin unreadable: {plugin_path}: {exc}")
+
+    prompt_markers = (
+        "current user message",
+        "hot-cache",
+        "reset-handoff",
+        "agent-continuity",
+        "private",
+    )
+    if plugin_text and all(marker in plugin_text.lower() for marker in prompt_markers):
+        evidence["prompt_precedence"] = [
+            "current user message / local thread",
+            "DAOS hot-cache / reset-handoff",
+            "DAOS agent-continuity fallback",
+            "private memory",
+        ]
+    else:
+        evidence["prompt_precedence"] = []
+        warnings.append("Hermes prompt precedence could not be proven from the DAOS session handoff plugin")
+
+    signal_wired = bool(
+        plugin_text
+        and "pre_llm_call" in plugin_text
+        and "is_first_turn" in plugin_text
+        and "on_session_finalize" in plugin_text
+        and "reset-handoff.md" in plugin_text
+    )
+    evidence["reset_wake"] = {
+        "signal_wired": signal_wired,
+        "one_shot_proven": False,
+    }
+    if not signal_wired:
+        warnings.append("Hermes reset/wake signal wiring was not detected")
+    return evidence, warnings
+
+
+def collect_runtime_evidence(
+    pack_dir: Path,
+    runtime: str | None = None,
+    detect: bool = False,
+) -> tuple[dict, list[str]]:
+    """Return runtime evidence in the shape `build_doctor_report` understands.
+
+    `runtime` can name a supported detector (currently `hermes`) or point to a
+    JSON fixture. `detect=True` enables automatic conservative detection.
+    """
+    warnings: list[str] = []
+    if runtime:
+        runtime_path = Path(runtime).expanduser()
+        if runtime_path.is_file():
+            return _load_runtime_fixture(runtime_path)
+
+    runtime_name = (runtime or "").strip().lower()
+    if detect and not runtime_name:
+        hermes_plugin = _hermes_home() / "plugins" / "daos-session-handoff" / "__init__.py"
+        if hermes_plugin.exists() or os.environ.get("HERMES_HOME"):
+            runtime_name = "hermes"
+
+    if runtime_name in {"", "none"}:
+        return {}, warnings
+    if runtime_name == "hermes":
+        return _detect_hermes_runtime(pack_dir)
+    return {}, [f"unsupported runtime detector: {runtime}"]
+
+
 def _normalise_platform_message(text: str) -> str:
     """Return user content with common chat wrappers removed.
 
@@ -514,11 +609,19 @@ def _one_shot_status(runtime: dict) -> tuple[str, str]:
     return "UNPROVEN", "no one-shot reset/wake proof provided"
 
 
-def build_doctor_report(pack_dir: str | Path, runtime_file: str | Path | None = None) -> tuple[int, str, str]:
+def build_doctor_report(
+    pack_dir: str | Path,
+    runtime_file: str | Path | None = None,
+    runtime: str | None = None,
+    detect_runtime: bool = False,
+) -> tuple[int, str, str]:
     """Build a read-only DAOS proof-ladder receipt."""
     root = Path(pack_dir).expanduser().resolve()
     validation = validate_pack_dir(root)
-    runtime, runtime_errors = _load_runtime_fixture(runtime_file)
+    if runtime_file:
+        runtime, runtime_errors = _load_runtime_fixture(runtime_file)
+    else:
+        runtime, runtime_errors = collect_runtime_evidence(root, runtime=runtime, detect=detect_runtime)
 
     if any(error.startswith("Pack directory does not exist") or error.startswith("Pack path is not a directory") for error in validation.errors):
         return 1, "", f"DAOS Doctor unavailable: {root}\n- run `use-daos init` to create a DAOS home, or set DAOS_HOME to an existing pack\n"
