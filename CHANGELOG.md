@@ -14,7 +14,8 @@ Do not add entries for every typo fix or private WIP note.
 
 ## Unreleased
 
-No unreleased framework-facing changes are staged after v0.2.4.
+### Added
+- Added `docs/maintenance.md`, a manual-first upkeep loop with optional automation guardrails so public DAOS users can run the same class of drift checks without Carlton's private crons or runtime.
 
 ## v0.2.4 - 2026-05-13
 

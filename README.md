@@ -193,6 +193,7 @@ The CLI is the easier first path, but the pack remains plain markdown by design.
 - `starter-pack/` — the default DAOS baseline installed by `use-daos init`.
 - `docs/quickstart.md` — short first-run procedure.
 - `docs/memory.md` — deeper memory doctrine.
+- `docs/maintenance.md` — manual-first upkeep loop and optional automation guardrails.
 - `docs/agent-integrations.md` — notes for wiring DAOS beside assistants.
 - `docs/portability.md` — durable wiki portability model.
 - `docs/reset-current-state-receipt.md` — small proof shape for reset recovery without stale-memory trust.
