@@ -144,7 +144,9 @@ class DaosNpmPackagePayloadTests(unittest.TestCase):
         package = self.npm_pack_dry_run()
 
         self.assertLessEqual(package["entryCount"], 70)
-        self.assertLessEqual(package["size"], 102_000)
+        # v0.2.4 plus the packaged maintenance protocol stays small while
+        # allowing one concise public upkeep reference in the npm payload.
+        self.assertLessEqual(package["size"], 103_000)
 
 
 if __name__ == "__main__":
