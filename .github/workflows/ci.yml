@@ -1,18 +1,19 @@
-name: CI
+name: DAOS enforcement gates
 
 on:
   pull_request:
   push:
-    branches:
-      - main
+    branches: [main]
 
 permissions:
   contents: read
 
 jobs:
-  test:
-    name: Python and npm-wrapper tests
+  verify:
+    name: Test, package, and trust gates
     runs-on: ubuntu-latest
+    timeout-minutes: 20
+
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
@@ -25,19 +26,22 @@ jobs:
       - name: Set up Node
         uses: actions/setup-node@v4
         with:
-          node-version: "22"
+          node-version: "20"
 
-      - name: Run full Python test suite
+      - name: Python unit tests
         run: python -m unittest discover -s tests -v
 
-      - name: Run npm wrapper tests
+      - name: npm wrapper gate
         run: npm run test:wrapper
 
-      - name: Run npm package payload gate
+      - name: npm package payload gate
         run: npm run test:package
 
-      - name: Run packed install smoke
+      - name: packed install smoke gate
         run: npm run test:pack-install
 
-      - name: Run release front-door gate
+      - name: release/front-door consistency gate
         run: npm run test:release-front-door
+
+      - name: npm package dry-run audit
+        run: npm pack --dry-run --json

@@ -14,7 +14,9 @@ Do not add entries for every typo fix or private WIP note.
 
 ## Unreleased
 
-No unreleased framework-facing changes are staged after v0.2.4.
+### Added
+- Added a read-only GitHub Actions enforcement workflow that runs the full Python suite, npm wrapper/package gates, packed-install smoke, release/front-door consistency gate, and npm pack dry-run on pull requests and pushes to `main`.
+- Added regression tests that keep the workflow read-only and prevent accidental publish/release/write-permission behavior.
 
 ## v0.2.4 - 2026-05-13
 
