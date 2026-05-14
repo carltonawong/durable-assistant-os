@@ -216,6 +216,12 @@ The current v0.2 line includes:
 - packed-tarball smoke testing from a fresh npm consumer project
 - regression tests covering generation, validation, wizard flow, portability, update safety, memory parity, and script trust posture
 
+## GitHub enforcement
+
+The public repo now treats those checks as PR gates instead of local folklore. The GitHub workflow runs the full Python suite, npm wrapper gate, package payload gate, packed-install smoke, release/front-door consistency gate, and npm pack dry-run on pull requests and pushes to `main`.
+
+The workflow is read-only: it does not publish npm packages, create releases, request write permissions, or mutate user packs. Release and npm publication remain explicit operator actions.
+
 ## Requirements
 
 - Node.js 18+
