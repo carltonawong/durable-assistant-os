@@ -48,6 +48,7 @@ class DaosNpmPackagePayloadTests(unittest.TestCase):
             "docs/releases/v0.2.2.md",
             "docs/releases/v0.2.3.md",
             "docs/releases/v0.2.4.md",
+            "docs/releases/v0.2.5.md",
             "docs/script-safety.md",
             "docs/wiki-governance.md",
             "docs/reset-current-state-receipt.md",
@@ -144,9 +145,9 @@ class DaosNpmPackagePayloadTests(unittest.TestCase):
         package = self.npm_pack_dry_run()
 
         self.assertLessEqual(package["entryCount"], 70)
-        # v0.2.4 plus the packaged maintenance protocol stays small while
-        # allowing one concise public upkeep reference in the npm payload.
-        self.assertLessEqual(package["size"], 103_000)
+        # v0.2.5 includes the packaged maintenance protocol and release note
+        # while keeping the npm payload comfortably under 105 KB.
+        self.assertLessEqual(package["size"], 104_000)
 
 
 if __name__ == "__main__":

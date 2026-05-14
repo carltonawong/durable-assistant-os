@@ -14,10 +14,18 @@ Do not add entries for every typo fix or private WIP note.
 
 ## Unreleased
 
+No unreleased framework-facing changes are staged after v0.2.5.
+
+## v0.2.5 - 2026-05-14
+
 ### Added
 - Added a read-only GitHub Actions enforcement workflow that runs the full Python suite, npm wrapper/package gates, packed-install smoke, release/front-door consistency gate, and npm pack dry-run on pull requests and pushes to `main`.
 - Added regression tests that keep the workflow read-only and prevent accidental publish/release/write-permission behavior.
 - Added `docs/maintenance.md`, a manual-first upkeep loop with optional automation guardrails so public DAOS users can run the same class of drift checks without Carlton's private crons or runtime.
+- Added `docs/releases/v0.2.5.md` as the release note for the enforcement hardening patch.
+
+### Changed
+- Bumped package metadata and generated framework manifests to `0.2.5` / `v0.2.5`.
 
 ## v0.2.4 - 2026-05-13
 
