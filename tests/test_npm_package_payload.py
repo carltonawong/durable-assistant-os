@@ -145,9 +145,9 @@ class DaosNpmPackagePayloadTests(unittest.TestCase):
         package = self.npm_pack_dry_run()
 
         self.assertLessEqual(package["entryCount"], 70)
-        # v0.2.5 includes the packaged maintenance protocol and release note
-        # while keeping the npm payload comfortably under 105 KB.
-        self.assertLessEqual(package["size"], 104_000)
+        # v0.2.5 plus the unreleased adapter-preflight helper still keeps
+        # the npm payload compact while adding one packaged stdlib-only module.
+        self.assertLessEqual(package["size"], 108_000)
 
 
 if __name__ == "__main__":

@@ -43,11 +43,84 @@ Do not move the baseline doctrine itself here.
 
 ## Current integrations
 
+- Adapter preflight contract - portable, read-only guidance below
 - Hermes - available below
 - Codex - brief adapter guidance available below
 - Claude Code - brief adapter guidance available below
 - OpenClaw / Quinn - brief adapter guidance available below
 - Other runtimes can be added later as separate sections when proven
+
+---
+
+## Adapter preflight contract
+
+### What this adds
+
+DAOS can support real runtime integrations without turning the public repo into one private assistant app. The portable adapter contract is a read-only preflight layer that runs before broad memory fallback or irreversible tool choice.
+
+It covers two durable continuity failures:
+
+1. **Reply-anchor recovery**: after reset, compression, idle expiry, or process restart, an explicit reply/thread/message anchor should beat generic hot memory for that turn.
+2. **Action-policy enforcement**: durable preferences that affect risky action classes should become a concrete preflight before a tool path is chosen.
+
+The helper module is:
+
+- `scripts.daos_core.context_preflight.recover_reply_anchor_context(...)`
+- `scripts.daos_core.context_preflight.evaluate_action_preflight_policy(...)`
+
+It is intentionally local and stdlib-only. It does not fetch messages, open browsers, access credentials, call the network, or mutate DAOS files. Runtime adapters collect their own evidence first, then pass that evidence into the preflight helper.
+
+### Reply-anchor recovery shape
+
+Adapters that receive a messaging event should preserve a compact anchor shape when the platform provides one:
+
+```text
+context_anchor:
+  platform
+  channel_id / thread_id
+  message_id
+  quoted_text or quoted_summary when available
+session_boundary:
+  none / compression / reset / idle-expiry / process-restart
+```
+
+Expected behavior:
+
+- local thread context still wins when it is sufficient
+- an explicit reply anchor wins over generic hot/shared memory for that turn
+- if the anchor resolves to a different lane, report a concise resume receipt instead of guessing
+- if the anchor is missing or inaccessible after a boundary, ask for the missing context once
+- do not expose transcript paths, local cache paths, or private storage details in receipts
+
+### Action-policy preflight shape
+
+Adapters that perform sensitive or public actions should convert durable preferences into an executable policy before tool selection:
+
+```text
+task_class: login-sensitive / public-posting / browser-login / other runtime-defined class
+preference: human-readable durable preference
+default_action: runtime-supported safe/default path
+exception_rule: when another path is allowed
+receipt: one short sentence when the policy changes or blocks tool selection
+```
+
+Expected behavior:
+
+- no one user's browser/profile preference is a universal DAOS default
+- the runtime supplies policy data from its own durable profile or configuration
+- sensitive mutations cannot silently violate the durable default
+- read-only exceptions and explicit overrides are recorded as such
+- receipts stay user-facing and compact, not memory dumps
+
+### Verification checklist
+
+A good adapter integration should prove:
+
+- reply-anchor recovery after simulated session rollover
+- anchor-lane conflict handling where the reply anchor wins for the current turn
+- low-confidence receipts when an anchor is present but cannot be resolved
+- durable action-policy enforcement after a simulated reset/compression boundary
+- no local/private path leakage in user-facing receipts
 
 ---
 
