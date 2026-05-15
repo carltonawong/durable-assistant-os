@@ -19,6 +19,7 @@ Do not add entries for every typo fix or private WIP note.
 
 ### Changed
 - Documented the adapter preflight contract in `docs/agent-integrations.md` without hardcoding any one private runtime or user preference as a universal DAOS default.
+- Updated the memory parity auditor and docs to treat `wiki/log.md` as newest-first, matching the current DAOS maintenance convention.
 
 ## v0.2.5 - 2026-05-14
 

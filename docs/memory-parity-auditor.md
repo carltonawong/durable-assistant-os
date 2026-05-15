@@ -21,7 +21,7 @@ python scripts/daos_memory_parity.py starter-pack
 The first version is intentionally small and read-only. It checks:
 
 - required baseline memory files exist
-- `wiki/log.md` keeps chronological append order, with newest activity at the bottom
+- `wiki/log.md` keeps newest-first order, with newest activity at the top
 - `wiki/cache/hot-cache-log.md` keeps reverse-chronological front-door transition order, with newest entries at the top
 - `wiki/cache/hot-cache.md` has the five required front-door sections
 - `AGENTS.md` / `wiki/WIKI.md` carry local-thread-first plus hot-cache orientation language
@@ -81,7 +81,7 @@ This first slice does not:
 
 Those are future layers. The goal here is to catch the highest-value install/parity mistakes first, especially the log-order distinction that real OPC/Jarvis testing surfaced:
 
-- `wiki/log.md` is the append-only chronological ledger
+- `wiki/log.md` is the newest-first durable ledger
 - `wiki/cache/hot-cache-log.md` is reverse-chronological front-door transition history
 
 ## Why this exists

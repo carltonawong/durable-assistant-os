@@ -90,8 +90,8 @@ def check_wiki_log_order(root: Path, result: ParityResult) -> None:
     if not path.is_file():
         return
     dates = dated_headings(path)
-    if len(dates) >= 2 and dates != sorted(dates):
-        result.warning("wiki/log.md dated entries are not chronological append-order; newest activity should be at the bottom")
+    if len(dates) >= 2 and dates != sorted(dates, reverse=True):
+        result.warning("wiki/log.md dated entries are not newest-first; newest activity should be at the top")
 
 
 def check_hot_cache_log_order(root: Path, result: ParityResult) -> None:

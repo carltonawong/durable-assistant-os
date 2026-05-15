@@ -55,12 +55,12 @@ class DaosMemoryParityTests(unittest.TestCase):
             self.assertEqual(result.status, "drift")
             self.assertTrue(any("missing baseline memory files" in finding.message for finding in result.findings))
 
-    def test_wiki_log_must_be_chronological_append_order(self) -> None:
+    def test_wiki_log_must_be_newest_first(self) -> None:
         with tempfile.TemporaryDirectory() as tmpdir:
             destination = Path(tmpdir) / "log-order-pack"
             self.bootstrap_filled_pack(destination)
             (destination / "wiki" / "log.md").write_text(
-                "# Log\n\n## 2026-04-23\n- newer\n\n## 2026-04-21\n- older\n",
+                "# Log\n\n## 2026-04-21\n- older\n\n## 2026-04-23\n- newer\n",
                 encoding="utf-8",
             )
 
