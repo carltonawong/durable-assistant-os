@@ -690,12 +690,14 @@ def build_doctor_report(
         lines.extend(["", "Runtime fixture warnings"])
         lines.extend(f"- {error}" for error in runtime_errors)
     if verdict != "DAOS obeyed":
-        lines.extend([
-            "",
-            "Next",
-            "- Review bridge warnings before claiming overlay obedience.",
-            "- Provide runtime evidence to prove anchor, source precedence, and reset/wake one-shot behavior.",
-        ])
+        next_steps = ["", "Next"]
+        if bridge_status == "WARN":
+            next_steps.append("- Review bridge warnings before claiming overlay obedience.")
+        next_steps.append(
+            "- Provide runtime evidence with `--runtime-file` or `--runtime hermes --detect-runtime` "
+            "to prove anchor, source precedence, and reset/wake one-shot behavior."
+        )
+        lines.extend(next_steps)
     return 0, "\n".join(lines) + "\n", ""
 
 

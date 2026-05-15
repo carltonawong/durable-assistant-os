@@ -74,6 +74,33 @@ class DaosCliTests(unittest.TestCase):
         self.assertIn("Unexpected writes", result.stdout)
         self.assertIn("Verdict: installed, not proven", result.stdout)
         self.assertIn("Read-only: no files modified", result.stdout)
+        self.assertNotIn("Review bridge warnings before claiming overlay obedience.", result.stdout)
+        self.assertIn("Provide runtime evidence", result.stdout)
+        self.assertIn("--runtime-file", result.stdout)
+        self.assertIn("--runtime hermes --detect-runtime", result.stdout)
+
+    def test_doctor_preserves_bridge_warning_next_step_when_bridge_has_pending_edits(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            destination = Path(tmpdir) / "blank-pack"
+            init = self.run_cli("init", str(destination), "--blank")
+            self.assertEqual(init.returncode, 0, msg=init.stderr)
+            scan = destination / "import-stage" / "instruction-scan.md"
+            scan.parent.mkdir(parents=True, exist_ok=True)
+            scan.write_text(
+                "# Instruction Scan\n\n"
+                "## Edits applied\n"
+                "- none\n\n"
+                "## Edits needing approval\n"
+                "- /tmp/example/AGENTS.md\n",
+                encoding="utf-8",
+            )
+
+            result = self.run_cli("doctor", str(destination))
+
+        self.assertEqual(result.returncode, 0, msg=result.stderr)
+        self.assertIn("Instruction bridge      WARN", result.stdout)
+        self.assertIn("Review bridge warnings before claiming overlay obedience.", result.stdout)
+        self.assertIn("Provide runtime evidence", result.stdout)
 
     def test_doctor_uses_runtime_fixture_to_report_daos_obeyed(self) -> None:
         with tempfile.TemporaryDirectory() as tmpdir:
