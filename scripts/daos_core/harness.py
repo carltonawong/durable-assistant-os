@@ -609,6 +609,90 @@ def _one_shot_status(runtime: dict) -> tuple[str, str]:
     return "UNPROVEN", "no one-shot reset/wake proof provided"
 
 
+def _continuity_ownership_status(runtime: dict) -> tuple[str, str]:
+    if not runtime:
+        return "UNPROVEN", "no continuity ownership evidence"
+    surfaces = runtime.get("continuity_surfaces")
+    if not isinstance(surfaces, dict):
+        return "UNPROVEN", "no continuity_surfaces object"
+
+    warnings: list[str] = []
+    agent_continuity = surfaces.get("agent_continuity", {}) if isinstance(surfaces.get("agent_continuity"), dict) else {}
+    lane_handoff = surfaces.get("lane_handoff", {}) if isinstance(surfaces.get("lane_handoff"), dict) else {}
+    reset_handoff = surfaces.get("reset_handoff", {}) if isinstance(surfaces.get("reset_handoff"), dict) else {}
+
+    if agent_continuity.get("routine_owner") is True or agent_continuity.get("current_state_owner") is True:
+        warnings.append("agent-continuity treated as routine owner")
+    if agent_continuity.get("role") and "fallback" not in str(agent_continuity.get("role", "")).lower():
+        warnings.append("agent-continuity role is not fallback-only")
+    if lane_handoff.get("fresh") is False or lane_handoff.get("stale_warning") is True:
+        age = lane_handoff.get("age_hours")
+        suffix = f" ({age}h old)" if age is not None else ""
+        warnings.append(f"lane handoff stale-risk{suffix}")
+    if reset_handoff.get("active_for_current_boot") is True and "reset" not in str(reset_handoff.get("role", "")).lower():
+        warnings.append("reset-handoff appears active outside reset/wake scope")
+
+    if warnings:
+        return "WARN", "; ".join(warnings) + "; shape-valid but lifecycle-wrong continuity"
+    return "PASS", "current thread/hot-cache outrank reset, lane, and fallback notes"
+
+
+def _phase_proven(value: object) -> bool:
+    if isinstance(value, bool):
+        return value
+    if isinstance(value, str):
+        return value.strip().lower() in {"pass", "proven", "true", "yes"}
+    return False
+
+
+def _handoff_lifecycle_status(runtime: dict) -> tuple[str, str]:
+    if not runtime:
+        return "UNPROVEN", "no handoff lifecycle evidence"
+    lifecycle = runtime.get("handoff_lifecycle")
+    if not isinstance(lifecycle, dict):
+        return "UNPROVEN", "no handoff_lifecycle object"
+
+    warnings: list[str] = []
+    for name, label in (("reset_handoff", "reset handoff"), ("lane_handoff", "lane handoff")):
+        data = lifecycle.get(name, {}) if isinstance(lifecycle.get(name), dict) else {}
+        missing = [phase for phase in ("write", "read_inject", "consume_adopt", "precedence_ok") if not _phase_proven(data.get(phase))]
+        if missing:
+            warnings.append(f"{label} partial/unproven: {', '.join(missing)}")
+        if name == "lane_handoff" and data.get("fresh") is False:
+            warnings.append("lane handoff stale-risk")
+
+    if warnings:
+        return "WARN", "; ".join(warnings)
+    return "PASS", "reset and lane handoff lifecycle phases are proven"
+
+
+def _surface_inventory_status(runtime: dict) -> tuple[str, str]:
+    if not runtime:
+        return "UNPROVEN", "no surface inventory evidence"
+    inventory = runtime.get("surface_inventory")
+    if not isinstance(inventory, list):
+        return "UNPROVEN", "no surface_inventory list"
+
+    review: list[str] = []
+    total = 0
+    for item in inventory:
+        if not isinstance(item, dict):
+            continue
+        total += 1
+        classification = str(item.get("classification", "")).lower()
+        path = str(item.get("path", "<unknown>"))
+        refs = item.get("referenced_by", [])
+        active_refs = bool(refs) and refs != ["docs"]
+        if any(term in classification for term in ("foreign", "unknown", "orphan", "stale")):
+            review.append(f"{path}: {classification or 'unclassified'}")
+        if active_refs and any(term in classification for term in ("foreign", "unknown", "orphan")):
+            review.append(f"{path}: active reference to noncanonical surface")
+
+    if review:
+        return "WARN", "foreign/stale surface review: " + "; ".join(review)
+    return "PASS", f"{total} classified surface(s); no foreign/stale active conflicts"
+
+
 def build_doctor_report(
     pack_dir: str | Path,
     runtime_file: str | Path | None = None,
@@ -650,13 +734,27 @@ def build_doctor_report(
     precedence_status, precedence_detail = _source_precedence_status(runtime)
     reset_status, reset_detail = _reset_signal_status(runtime)
     one_shot_status, one_shot_detail = _one_shot_status(runtime)
+    continuity_status, continuity_detail = _continuity_ownership_status(runtime)
+    lifecycle_status, lifecycle_detail = _handoff_lifecycle_status(runtime)
+    inventory_status, inventory_detail = _surface_inventory_status(runtime)
     writes_status = "WARN" if runtime.get("unexpected_writes") is True else "PASS"
     writes_detail = "runtime fixture reported unexpected writes" if writes_status == "WARN" else "no unexpected writes reported by doctor inputs"
 
-    statuses = [pack_status, bridge_status, runtime_status, precedence_status, reset_status, one_shot_status, writes_status]
+    statuses = [
+        pack_status,
+        bridge_status,
+        runtime_status,
+        precedence_status,
+        reset_status,
+        one_shot_status,
+        continuity_status,
+        lifecycle_status,
+        inventory_status,
+        writes_status,
+    ]
     if all(status == "PASS" for status in statuses):
         verdict = "DAOS obeyed"
-    elif "FAIL" in statuses or "WARN" in (runtime_status, precedence_status, writes_status):
+    elif "FAIL" in statuses or "WARN" in (runtime_status, precedence_status, continuity_status, lifecycle_status, inventory_status, writes_status):
         verdict = "conflict detected"
     else:
         verdict = "installed, not proven"
@@ -673,6 +771,9 @@ def build_doctor_report(
         _status_line("Source precedence", precedence_status),
         _status_line("Reset/wake signal", reset_status),
         _status_line("One-shot reset proof", one_shot_status),
+        _status_line("Continuity ownership", continuity_status),
+        _status_line("Handoff lifecycle", lifecycle_status),
+        _status_line("Surface inventory", inventory_status),
         _status_line("Unexpected writes", writes_status),
         "",
         f"Verdict: {verdict}",
@@ -684,6 +785,9 @@ def build_doctor_report(
         f"- source precedence: {precedence_detail}",
         f"- reset/wake signal: {reset_detail}",
         f"- one-shot reset proof: {one_shot_detail}",
+        f"- continuity ownership: {continuity_detail}",
+        f"- handoff lifecycle: {lifecycle_detail}",
+        f"- surface inventory: {inventory_detail}",
         f"- unexpected writes: {writes_detail}",
     ]
     if runtime_errors:
@@ -695,7 +799,8 @@ def build_doctor_report(
             next_steps.append("- Review bridge warnings before claiming overlay obedience.")
         next_steps.append(
             "- Provide runtime evidence with `--runtime-file` or `--runtime hermes --detect-runtime` "
-            "to prove anchor, source precedence, and reset/wake one-shot behavior."
+            "to prove anchor, source precedence, reset/wake one-shot behavior, continuity ownership, "
+            "handoff lifecycle, and surface inventory."
         )
         lines.extend(next_steps)
     return 0, "\n".join(lines) + "\n", ""
