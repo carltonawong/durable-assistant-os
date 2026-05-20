@@ -44,6 +44,7 @@ Do not move the baseline doctrine itself here.
 ## Current integrations
 
 - Adapter preflight contract - portable, read-only guidance below
+- Deterministic compaction fallback - portable continuity floor below
 - Hermes - available below
 - Codex - brief adapter guidance available below
 - Claude Code - brief adapter guidance available below
@@ -121,6 +122,45 @@ A good adapter integration should prove:
 - low-confidence receipts when an anchor is present but cannot be resolved
 - durable action-policy enforcement after a simulated reset/compression boundary
 - no local/private path leakage in user-facing receipts
+
+---
+
+## Deterministic compaction fallback
+
+### What this adds
+
+Any runtime that compresses, summarizes, prunes, or rolls session context needs a deterministic continuity floor. LLM-generated summaries can improve resume quality, but they cannot be the only mechanism preserving the window that is about to be dropped.
+
+The runtime invariant is:
+
+> before any context window is discarded, preserve a bounded and redacted deterministic handoff from that exact window.
+
+If the normal summary succeeds, use it. If summary generation fails, the fallback must not depend on a second LLM call. It should be generated from already-available session data and inserted where the runtime would otherwise insert a generic missing-summary marker.
+
+### Minimum fallback contents
+
+A useful fallback should preserve enough information to let the next turn recover the lane without replaying the whole transcript:
+
+- recent user asks from the dropped window
+- recent tool/action state, including job/process IDs, command outcomes, and external side effects when available
+- file/path mentions that anchor the work
+- last dropped turns or compact deterministic extracts from them
+
+Keep the fallback bounded and redacted. Do not dump full transcripts, secrets, credentials, private browser/session paths, or large tool outputs.
+
+### Failure receipt
+
+When the fallback is used, user-facing/runtime warnings should say continuity is degraded and a deterministic fallback handoff was inserted. Avoid saying only that a placeholder was inserted or that the window is unrecoverable when bounded recovery data exists.
+
+### Verification checklist
+
+A good adapter integration should prove:
+
+- simulated summary-generation failure inserts the deterministic fallback
+- the fallback includes recent user asks, recent tool/action state, file/path mentions, and last dropped turns
+- no second LLM call is required on the failure path
+- fallback output is bounded and redacted
+- warning text says continuity is degraded, not silently healthy
 
 ---
 
