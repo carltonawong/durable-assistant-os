@@ -119,6 +119,21 @@ class DaosCliTests(unittest.TestCase):
                     "signal_wired": true,
                     "one_shot_proven": true
                   },
+                  "continuity_surfaces": {
+                    "current_thread": {"authority": "exact_resume"},
+                    "hot_cache": {"role": "current_front_door", "fresh": true},
+                    "reset_handoff": {"role": "reset_only", "active_for_current_boot": false},
+                    "lane_handoff": {"role": "runtime_resume_aid", "fresh": true},
+                    "agent_continuity": {"role": "fallback_only", "fallback_needed": false, "routine_owner": false}
+                  },
+                  "handoff_lifecycle": {
+                    "reset_handoff": {"write": true, "read_inject": true, "consume_adopt": true, "precedence_ok": true},
+                    "lane_handoff": {"write": true, "read_inject": true, "consume_adopt": true, "precedence_ok": true, "fresh": true}
+                  },
+                  "surface_inventory": [
+                    {"path": "AGENTS.md", "classification": "active canonical", "referenced_by": ["startup"]},
+                    {"path": "wiki/cache/hot-cache.md", "classification": "active canonical", "referenced_by": ["startup"]}
+                  ],
                   "unexpected_writes": false
                 }
                 """.replace("FILLED_PACK", str(destination)),
@@ -133,6 +148,9 @@ class DaosCliTests(unittest.TestCase):
         self.assertIn("Source precedence       PASS", result.stdout)
         self.assertIn("Reset/wake signal       PASS", result.stdout)
         self.assertIn("One-shot reset proof    PASS", result.stdout)
+        self.assertIn("Continuity ownership    PASS", result.stdout)
+        self.assertIn("Handoff lifecycle       PASS", result.stdout)
+        self.assertIn("Surface inventory       PASS", result.stdout)
         self.assertIn("Unexpected writes       PASS", result.stdout)
         self.assertIn("Verdict: DAOS obeyed", result.stdout)
 
@@ -153,6 +171,19 @@ class DaosCliTests(unittest.TestCase):
                     "signal_wired": true,
                     "one_shot_proven": true
                   },
+                  "continuity_surfaces": {
+                    "hot_cache": {"role": "current_front_door", "fresh": true},
+                    "reset_handoff": {"role": "reset_only", "active_for_current_boot": false},
+                    "lane_handoff": {"role": "runtime_resume_aid", "fresh": true},
+                    "agent_continuity": {"role": "fallback_only", "fallback_needed": false, "routine_owner": false}
+                  },
+                  "handoff_lifecycle": {
+                    "reset_handoff": {"write": true, "read_inject": true, "consume_adopt": true, "precedence_ok": true},
+                    "lane_handoff": {"write": true, "read_inject": true, "consume_adopt": true, "precedence_ok": true, "fresh": true}
+                  },
+                  "surface_inventory": [
+                    {"path": "AGENTS.md", "classification": "active canonical", "referenced_by": ["startup"]}
+                  ],
                   "unexpected_writes": false
                 }
                 """.replace("FILLED_PACK", str(destination)),
@@ -204,6 +235,53 @@ class DaosCliTests(unittest.TestCase):
         self.assertIn("Reset/wake signal       PASS", result.stdout)
         self.assertIn("One-shot reset proof    UNPROVEN", result.stdout)
         self.assertIn("no one-shot reset/wake proof provided", result.stdout)
+
+    def test_doctor_flags_shape_valid_but_lifecycle_wrong_continuity(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            destination = root / "filled-pack"
+            bootstrap = self.run_bootstrap("--filled-example", str(destination))
+            self.assertEqual(bootstrap.returncode, 0, msg=bootstrap.stderr)
+            runtime = root / "runtime.json"
+            runtime.write_text(
+                """
+                {
+                  "startup_root": "FILLED_PACK",
+                  "daos_home": "FILLED_PACK",
+                  "prompt_precedence": ["project/current context", "DAOS hot-cache", "private memory"],
+                  "reset_wake": {"signal_wired": true, "one_shot_proven": true},
+                  "continuity_surfaces": {
+                    "hot_cache": {"role": "current_front_door", "fresh": true},
+                    "reset_handoff": {"role": "reset_only", "active_for_current_boot": false},
+                    "lane_handoff": {"role": "runtime_resume_aid", "fresh": false, "age_hours": 223, "stale_warning": true},
+                    "agent_continuity": {"role": "fallback_only", "fallback_needed": false, "routine_owner": true}
+                  },
+                  "handoff_lifecycle": {
+                    "reset_handoff": {"write": false, "read_inject": false, "consume_adopt": false, "precedence_ok": true},
+                    "lane_handoff": {"write": true, "read_inject": true, "consume_adopt": false, "precedence_ok": true, "fresh": false}
+                  },
+                  "surface_inventory": [
+                    {"path": "wiki/cache/MAINTENANCE-LOOPS.md", "classification": "passive stale doc", "referenced_by": ["docs"]},
+                    {"path": "~/.hermes/cron/jobs.json", "classification": "active canonical", "referenced_by": ["cron"]}
+                  ],
+                  "unexpected_writes": false
+                }
+                """.replace("FILLED_PACK", str(destination)),
+                encoding="utf-8",
+            )
+
+            result = self.run_cli("doctor", str(destination), "--runtime-file", str(runtime))
+
+        self.assertEqual(result.returncode, 0, msg=result.stderr)
+        self.assertIn("Continuity ownership    WARN", result.stdout)
+        self.assertIn("Handoff lifecycle       WARN", result.stdout)
+        self.assertIn("Surface inventory       WARN", result.stdout)
+        self.assertIn("shape-valid but lifecycle-wrong continuity", result.stdout)
+        self.assertIn("agent-continuity treated as routine owner", result.stdout)
+        self.assertIn("lane handoff stale-risk", result.stdout)
+        self.assertIn("reset handoff partial/unproven", result.stdout)
+        self.assertIn("foreign/stale surface review", result.stdout)
+        self.assertIn("Verdict: conflict detected", result.stdout)
 
     def test_doctor_normalizes_discord_wrapped_proof_messages(self) -> None:
         with tempfile.TemporaryDirectory() as tmpdir:

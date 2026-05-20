@@ -16,6 +16,7 @@ Do not add entries for every typo fix or private WIP note.
 
 ### Added
 - Added a portable, read-only adapter preflight helper for reply-anchor context recovery and durable action-policy enforcement, with regression tests for session rollover, anchor conflicts, sensitive-action blocking, and read-only exceptions.
+- Extended `use-daos doctor` with continuity ownership, handoff lifecycle, and surface-inventory proof sections.
 
 ### Changed
 - Documented the adapter preflight contract in `docs/agent-integrations.md` without hardcoding any one private runtime or user preference as a universal DAOS default.
