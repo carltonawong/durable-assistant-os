@@ -16,10 +16,10 @@ Do not add entries for every typo fix or private WIP note.
 
 ### Added
 - Added a portable, read-only adapter preflight helper for reply-anchor context recovery and durable action-policy enforcement, with regression tests for session rollover, anchor conflicts, sensitive-action blocking, and read-only exceptions.
-- Documented a Deterministic compaction fallback integration invariant so runtimes preserve a bounded and redacted pre-drop handoff when LLM summary generation fails.
 
 ### Changed
 - Documented the adapter preflight contract in `docs/agent-integrations.md` without hardcoding any one private runtime or user preference as a universal DAOS default.
+- Documented a Deterministic compaction fallback integration invariant so runtimes preserve a bounded and redacted pre-drop handoff when LLM summary generation fails.
 - Updated the memory parity auditor and docs to treat `wiki/log.md` as newest-first, matching the current DAOS maintenance convention.
 
 ## v0.2.5 - 2026-05-14
