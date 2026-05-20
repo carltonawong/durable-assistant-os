@@ -103,7 +103,7 @@ The fixture can describe `startup_root`, `daos_home`, `prompt_precedence`, `sess
 use-daos doctor /path/to/existing-assistant-home --runtime hermes --detect-runtime
 ```
 
-The Hermes detector reports the runtime shape that `doctor` already understands: `runtime`, `startup_root`, `daos_home`, `prompt_precedence`, `reset_wake`, and `unexpected_writes`. It can prove detected wiring, but it intentionally does not claim `one_shot_proven` without an actual reset/session proof.
+The Hermes detector reports `runtime`, `startup_root`, `daos_home`, `prompt_precedence`, `reset_wake`, and `unexpected_writes`. Runtime fixtures may also include `continuity_surfaces`, `handoff_lifecycle`, and `surface_inventory` for ownership/lifecycle proof beyond file presence. The detector can prove detected wiring, but not `one_shot_proven` without an actual reset/session proof.
 
 ## What each first-run file does
 

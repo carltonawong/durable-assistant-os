@@ -157,6 +157,38 @@ class DaosReleaseFrontDoorTests(unittest.TestCase):
         missing = [phrase for phrase in required_phrases if phrase not in combined]
         self.assertEqual(missing, [])
 
+    def test_release_surfaces_do_not_leak_local_paths_or_old_baseline_notes(self) -> None:
+        checked_files = [
+            "README.md",
+            "CHANGELOG.md",
+            "docs/agent-integrations.md",
+            "docs/maintenance.md",
+            "docs/quickstart.md",
+            "scripts/daos_core/__init__.py",
+            "scripts/daos_core/parity.py",
+            "scripts/daos_memory_parity.py",
+            "scripts/daos_portability.py",
+            "scripts/daos_update.py",
+            "scripts/daos_validate.py",
+            "tests/test_daos_memory_parity.py",
+            "tests/test_daos_portability.py",
+            "tests/test_script_safety.py",
+        ]
+        forbidden_patterns = [
+            "/mnt/c/Users/openq",
+            "C:\\Users\\openq",
+            "/home/openq",
+            "/home/carlton",
+            "current public framework baseline is v0.1.6",
+        ]
+        offenders: list[str] = []
+        for relative in checked_files:
+            text = self.read(relative)
+            for pattern in forbidden_patterns:
+                if pattern in text:
+                    offenders.append(f"{relative} contains {pattern!r}")
+        self.assertEqual(offenders, [])
+
     def test_reset_current_state_receipt_stays_small_and_actionable(self) -> None:
         receipt = self.read("docs/reset-current-state-receipt.md")
         readme = self.read("README.md")

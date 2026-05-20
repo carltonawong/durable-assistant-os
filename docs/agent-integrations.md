@@ -188,11 +188,11 @@ Current files:
 - `~/.hermes/plugins/daos-session-handoff/plugin.yaml`
 - `~/.hermes/plugins/daos-session-handoff/__init__.py`
 
-Current shared DAOS cache path used by the integration:
-- WSL: `/mnt/c/Users/openq/.openclaw/wiki/cache/`
-- Windows: `C:\Users\openq\.openclaw\wiki\cache\`
+Shared DAOS cache path examples:
+- WSL: `/mnt/c/Users/<user>/<assistant-home>/wiki/cache/`
+- Windows: `C:\Users\<user>\<assistant-home>\wiki\cache\`
 
-Treat those as the current local reference paths, not universal literals. Replace them with the actual DAOS wiki/cache path in your own environment.
+Replace these with the actual DAOS wiki/cache path in your environment.
 
 ### Expected Hermes behavior
 
@@ -244,9 +244,9 @@ A Hermes integration is only good enough when it can prove:
 
 ### Caveats
 
-- Hermes runtime topology may differ between environments.
-- In the current local environment, the gateway is running in manual WSL foreground mode rather than as a managed service.
-- Restart assumptions should therefore be verified instead of blindly reusing service-oriented instructions.
+- Runtime topology may differ by environment.
+- Gateway/service management may be foreground, user-service, container, or adapter-specific.
+- Verify restart assumptions instead of blindly reusing service-oriented instructions.
 - The public DAOS artifact may exist before all agents read/write it consistently; runtime proof matters more than doctrine alone.
 
 ### Recommendation

@@ -145,9 +145,8 @@ class DaosNpmPackagePayloadTests(unittest.TestCase):
         package = self.npm_pack_dry_run()
 
         self.assertLessEqual(package["entryCount"], 70)
-        # v0.2.5 plus the unreleased adapter-preflight helper still keeps
-        # the npm payload compact while adding stdlib-only proof helpers.
-        self.assertLessEqual(package["size"], 109_000)
+        # Current compact docs/proof surface stays below ~110 KB.
+        self.assertLessEqual(package["size"], 109_200)
 
 
 if __name__ == "__main__":

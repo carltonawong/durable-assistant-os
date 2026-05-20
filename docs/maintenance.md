@@ -31,7 +31,7 @@ Then review:
 3. Does `wiki/cache/reset-handoff.md` name one exact next move and one first verification?
 4. Did anything in cache/log/thread become stable enough to move into `wiki/sources/`, `wiki/raw/`, or a durable wiki page?
 5. Are freshness-sensitive claims such as release version, branch/tag state, runtime health, test results, provider status, inbox state, or calendar commitments checked against live sources?
-6. If `doctor` says installed but not proven, is that because runtime proof is missing, not because files are absent?
+6. If `doctor` reports missing proof, lifecycle warnings, or surface-inventory warnings, is the issue runtime behavior rather than missing files?
 
 ## After a major context change
 
