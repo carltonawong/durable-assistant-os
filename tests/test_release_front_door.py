@@ -138,6 +138,25 @@ class DaosReleaseFrontDoorTests(unittest.TestCase):
         missing = [phrase for phrase in required_phrases if phrase not in combined]
         self.assertEqual(missing, [])
 
+    def test_agent_integration_docs_define_deterministic_compaction_floor(self) -> None:
+        integrations = self.read("docs/agent-integrations.md")
+        changelog = self.read("CHANGELOG.md")
+        combined = integrations + "\n" + changelog
+
+        required_phrases = [
+            "Deterministic compaction fallback",
+            "before any context window is discarded",
+            "must not depend on a second LLM call",
+            "recent user asks",
+            "recent tool/action state",
+            "file/path mentions",
+            "last dropped turns",
+            "bounded and redacted",
+            "continuity is degraded",
+        ]
+        missing = [phrase for phrase in required_phrases if phrase not in combined]
+        self.assertEqual(missing, [])
+
     def test_reset_current_state_receipt_stays_small_and_actionable(self) -> None:
         receipt = self.read("docs/reset-current-state-receipt.md")
         readme = self.read("README.md")
