@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Validate whether a DAOS pack is minimally filled enough to operate."""
 
-# DAOS baseline note: current public framework baseline is v0.1.6; this module remains part of the current release surface.
+# DAOS baseline note: current public framework baseline is v0.2.5; this module remains part of the current release surface.
 
 from __future__ import annotations
 
