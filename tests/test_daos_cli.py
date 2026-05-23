@@ -283,6 +283,109 @@ class DaosCliTests(unittest.TestCase):
         self.assertIn("foreign/stale surface review", result.stdout)
         self.assertIn("Verdict: conflict detected", result.stdout)
 
+    def test_doctor_warns_on_lifecycle_valid_but_semantically_weak_handoff(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            destination = root / "filled-pack"
+            bootstrap = self.run_bootstrap("--filled-example", str(destination))
+            self.assertEqual(bootstrap.returncode, 0, msg=bootstrap.stderr)
+            runtime = root / "runtime.json"
+            runtime.write_text(
+                """
+                {
+                  "startup_root": "FILLED_PACK",
+                  "daos_home": "FILLED_PACK",
+                  "prompt_precedence": ["project/current context", "DAOS hot-cache", "private memory"],
+                  "reset_wake": {"signal_wired": true, "one_shot_proven": true},
+                  "continuity_surfaces": {
+                    "current_thread": {"authority": "exact_resume"},
+                    "hot_cache": {"role": "current_front_door", "fresh": true},
+                    "reset_handoff": {"role": "reset_only", "active_for_current_boot": false},
+                    "lane_handoff": {"role": "runtime_resume_aid", "fresh": true},
+                    "agent_continuity": {"role": "fallback_only", "fallback_needed": false, "routine_owner": false}
+                  },
+                  "handoff_lifecycle": {
+                    "reset_handoff": {"write": true, "read_inject": true, "consume_adopt": true, "precedence_ok": true},
+                    "lane_handoff": {"write": true, "read_inject": true, "consume_adopt": true, "precedence_ok": true, "fresh": true}
+                  },
+                  "semantic_handoff": {
+                    "status": "fresh",
+                    "work_object_identity": "",
+                    "active_source_of_truth": "",
+                    "last_verified_state": "",
+                    "current_user_ask": "continue current task",
+                    "nearby_confusion_set": ["deployment preview", "deployment production"],
+                    "required_reanchor_checks": []
+                  },
+                  "surface_inventory": [
+                    {"path": "AGENTS.md", "classification": "active canonical", "referenced_by": ["startup"]}
+                  ],
+                  "unexpected_writes": false
+                }
+                """.replace("FILLED_PACK", str(destination)),
+                encoding="utf-8",
+            )
+
+            result = self.run_cli("doctor", str(destination), "--runtime-file", str(runtime))
+
+        self.assertEqual(result.returncode, 0, msg=result.stderr)
+        self.assertIn("Semantic handoff        WARN", result.stdout)
+        self.assertIn("missing semantic anchors", result.stdout)
+        self.assertIn("work_object_identity", result.stdout)
+        self.assertIn("required_reanchor_checks", result.stdout)
+        self.assertIn("two-neighbor confusion risk", result.stdout)
+        self.assertIn("Verdict: conflict detected", result.stdout)
+
+    def test_doctor_passes_on_semantically_durable_handoff(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            destination = root / "filled-pack"
+            bootstrap = self.run_bootstrap("--filled-example", str(destination))
+            self.assertEqual(bootstrap.returncode, 0, msg=bootstrap.stderr)
+            runtime = root / "runtime.json"
+            runtime.write_text(
+                """
+                {
+                  "startup_root": "FILLED_PACK",
+                  "daos_home": "FILLED_PACK",
+                  "prompt_precedence": ["project/current context", "DAOS hot-cache", "private memory"],
+                  "reset_wake": {"signal_wired": true, "one_shot_proven": true},
+                  "continuity_surfaces": {
+                    "current_thread": {"authority": "exact_resume"},
+                    "hot_cache": {"role": "current_front_door", "fresh": true},
+                    "reset_handoff": {"role": "reset_only", "active_for_current_boot": false},
+                    "lane_handoff": {"role": "runtime_resume_aid", "fresh": true},
+                    "agent_continuity": {"role": "fallback_only", "fallback_needed": false, "routine_owner": false}
+                  },
+                  "handoff_lifecycle": {
+                    "reset_handoff": {"write": true, "read_inject": true, "consume_adopt": true, "precedence_ok": true},
+                    "lane_handoff": {"write": true, "read_inject": true, "consume_adopt": true, "precedence_ok": true, "fresh": true}
+                  },
+                  "semantic_handoff": {
+                    "status": "fresh",
+                    "work_object_identity": "deploy-target:production-rollout",
+                    "active_source_of_truth": "issues/42",
+                    "last_verified_state": "2026-05-23 CI green on production rollout branch",
+                    "current_user_ask": "decide whether to promote production after smoke test",
+                    "nearby_confusion_set": ["deploy-target:preview-rollout"],
+                    "required_reanchor_checks": ["verify issue 42", "verify production URL before answering"]
+                  },
+                  "surface_inventory": [
+                    {"path": "AGENTS.md", "classification": "active canonical", "referenced_by": ["startup"]}
+                  ],
+                  "unexpected_writes": false
+                }
+                """.replace("FILLED_PACK", str(destination)),
+                encoding="utf-8",
+            )
+
+            result = self.run_cli("doctor", str(destination), "--runtime-file", str(runtime))
+
+        self.assertEqual(result.returncode, 0, msg=result.stderr)
+        self.assertIn("Semantic handoff        PASS", result.stdout)
+        self.assertIn("semantic anchors present", result.stdout)
+        self.assertIn("Verdict: DAOS obeyed", result.stdout)
+
     def test_doctor_normalizes_discord_wrapped_proof_messages(self) -> None:
         with tempfile.TemporaryDirectory() as tmpdir:
             root = Path(tmpdir)
