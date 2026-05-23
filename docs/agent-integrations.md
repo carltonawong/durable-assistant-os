@@ -241,6 +241,7 @@ A Hermes integration is only good enough when it can prove:
 - `reset-handoff.md` is used after reset/long idle before broader agent continuity
 - the wake-up path preserves the exact next move, not just the broad lane
 - verified runtime/files still outrank remembered handoff state for live facts
+- lifecycle normalization runs before audit/reporting surfaces decide whether drift exists
 
 ### Caveats
 
