@@ -57,16 +57,20 @@ Use this as the named DAOS reset/wake-up continuity artifact.
 
 - **Last updated** — freshness marker for the current handoff
 - **Updated by** — agent/runtime that wrote it
-- **Lane** — the lane or focus item this handoff belongs to
+- **Lane** — the lane or workstream this handoff belongs to
 - **Status**
   - `empty` = no meaningful handoff currently needed
-  - `fresh` = safe to use as the narrow wake-up point
+  - `fresh` = current enough to review
   - `stale` = historical clue only; verify before trusting
   - `blocked` = the next session should expect a blocker rather than clean continuation
 - **Why this handoff exists** — short explanation of why a reset-gap handoff is needed
 - **Exact next move** — the one concrete next step, not a broad project summary
 - **First verification** — the first reality check before continuing
 - **If stale or contradicted** — what source should win or where to look next
+
+## Lifecycle, trust, and quality
+
+Keep stored state, effective trust, and quality separate. `fresh` means current enough to review, not automatically safe-to-adopt; `stale` remains a historical clue.
 
 ## Writing rules
 
@@ -75,6 +79,8 @@ Use this as the named DAOS reset/wake-up continuity artifact.
 - prefer one narrow next move over a broad summary
 - point to durable notes or files instead of duplicating their content
 - clear or rewrite when the exact handoff changes materially
+- label thin context as generated/partial
+- include concrete verify-first and known-gaps fields
 
 ## Runtime expectations
 
@@ -83,6 +89,8 @@ A runtime integration should, at minimum:
 - read it on the first turn after reset/long idle before broader continuity recovery
 - avoid treating it as higher authority than live files/runtime/wiki truth
 - avoid letting it silently replace hot-cache scope or durable memory
+- normalize lifecycle before audits report drift
+- warn on weak/generated fresh handoffs instead of hiding them
 
 ## Relationship to adjacent surfaces
 
