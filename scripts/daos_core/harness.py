@@ -666,6 +666,50 @@ def _handoff_lifecycle_status(runtime: dict) -> tuple[str, str]:
     return "PASS", "reset and lane handoff lifecycle phases are proven"
 
 
+def _has_semantic_value(value: object) -> bool:
+    if value is None:
+        return False
+    if isinstance(value, str):
+        return bool(value.strip()) and value.strip().lower() not in {"continue current task", "review session history"}
+    if isinstance(value, list):
+        return any(_has_semantic_value(item) for item in value)
+    return bool(value)
+
+
+def _semantic_handoff_status(runtime: dict) -> tuple[str, str]:
+    if not runtime:
+        return "UNPROVEN", "no semantic handoff evidence"
+    handoff = runtime.get("semantic_handoff")
+    if not isinstance(handoff, dict):
+        return "UNPROVEN", "no semantic_handoff object supplied"
+
+    required = (
+        "work_object_identity",
+        "active_source_of_truth",
+        "last_verified_state",
+        "current_user_ask",
+        "nearby_confusion_set",
+        "required_reanchor_checks",
+        "status",
+    )
+    missing = [field for field in required if not _has_semantic_value(handoff.get(field))]
+    warnings: list[str] = []
+    if missing:
+        warnings.append("missing semantic anchors: " + ", ".join(missing))
+
+    status = str(handoff.get("status", "")).strip().lower()
+    if status in {"partial", "generated", "generated fallback", "stale-risk", "stale", "blocked"}:
+        warnings.append(f"freshness/confidence requires re-anchor: {status}")
+
+    confusion_set = handoff.get("nearby_confusion_set")
+    if isinstance(confusion_set, list) and len([item for item in confusion_set if _has_semantic_value(item)]) >= 2 and missing:
+        warnings.append("two-neighbor confusion risk; ask for re-anchor or verify source before answering")
+
+    if warnings:
+        return "WARN", "; ".join(warnings)
+    return "PASS", "semantic anchors present: identity, source, verified state, ask, confusion set, and re-anchor checks"
+
+
 def _surface_inventory_status(runtime: dict) -> tuple[str, str]:
     if not runtime:
         return "UNPROVEN", "no surface inventory evidence"
@@ -736,6 +780,7 @@ def build_doctor_report(
     one_shot_status, one_shot_detail = _one_shot_status(runtime)
     continuity_status, continuity_detail = _continuity_ownership_status(runtime)
     lifecycle_status, lifecycle_detail = _handoff_lifecycle_status(runtime)
+    semantic_status, semantic_detail = _semantic_handoff_status(runtime)
     inventory_status, inventory_detail = _surface_inventory_status(runtime)
     writes_status = "WARN" if runtime.get("unexpected_writes") is True else "PASS"
     writes_detail = "runtime fixture reported unexpected writes" if writes_status == "WARN" else "no unexpected writes reported by doctor inputs"
@@ -752,9 +797,10 @@ def build_doctor_report(
         inventory_status,
         writes_status,
     ]
-    if all(status == "PASS" for status in statuses):
+    blocking_statuses = (runtime_status, precedence_status, continuity_status, lifecycle_status, semantic_status, inventory_status, writes_status)
+    if all(status == "PASS" for status in statuses) and semantic_status in {"PASS", "UNPROVEN"}:
         verdict = "DAOS obeyed"
-    elif "FAIL" in statuses or "WARN" in (runtime_status, precedence_status, continuity_status, lifecycle_status, inventory_status, writes_status):
+    elif "FAIL" in statuses or "WARN" in blocking_statuses:
         verdict = "conflict detected"
     else:
         verdict = "installed, not proven"
@@ -773,6 +819,7 @@ def build_doctor_report(
         _status_line("One-shot reset proof", one_shot_status),
         _status_line("Continuity ownership", continuity_status),
         _status_line("Handoff lifecycle", lifecycle_status),
+        _status_line("Semantic handoff", semantic_status),
         _status_line("Surface inventory", inventory_status),
         _status_line("Unexpected writes", writes_status),
         "",
@@ -787,6 +834,7 @@ def build_doctor_report(
         f"- one-shot reset proof: {one_shot_detail}",
         f"- continuity ownership: {continuity_detail}",
         f"- handoff lifecycle: {lifecycle_detail}",
+        f"- semantic handoff: {semantic_detail}",
         f"- surface inventory: {inventory_detail}",
         f"- unexpected writes: {writes_detail}",
     ]
@@ -800,7 +848,7 @@ def build_doctor_report(
         next_steps.append(
             "- Provide runtime evidence with `--runtime-file` or `--runtime hermes --detect-runtime` "
             "to prove anchor, source precedence, reset/wake one-shot behavior, continuity ownership, "
-            "handoff lifecycle, and surface inventory."
+            "handoff lifecycle, semantic handoff durability, and surface inventory."
         )
         lines.extend(next_steps)
     return 0, "\n".join(lines) + "\n", ""

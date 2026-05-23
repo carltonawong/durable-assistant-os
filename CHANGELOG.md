@@ -15,6 +15,7 @@ Do not add entries for every typo fix or private WIP note.
 ## Unreleased
 
 ### Added
+- Added a semantic-handoff doctor warning for lifecycle-valid handoffs missing identity/source anchors, re-anchor checks, or a confusion set.
 - Added a portable, read-only adapter preflight helper for reply-anchor context recovery and durable action-policy enforcement, with regression tests for session rollover, anchor conflicts, sensitive-action blocking, and read-only exceptions.
 - Extended `use-daos doctor` with continuity ownership, handoff lifecycle, and surface-inventory proof sections.
 

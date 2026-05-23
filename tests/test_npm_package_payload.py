@@ -146,7 +146,7 @@ class DaosNpmPackagePayloadTests(unittest.TestCase):
 
         self.assertLessEqual(package["entryCount"], 70)
         # Current compact docs/proof surface stays below ~110 KB.
-        self.assertLessEqual(package["size"], 109_200)
+        self.assertLessEqual(package["size"], 109_600)
 
 
 if __name__ == "__main__":
