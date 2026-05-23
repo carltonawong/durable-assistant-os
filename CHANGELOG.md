@@ -14,16 +14,22 @@ Do not add entries for every typo fix or private WIP note.
 
 ## Unreleased
 
+No unreleased framework-facing changes are staged after v0.2.6.
+
+## v0.2.6 - 2026-05-23
+
 ### Added
 - Added a semantic-handoff doctor warning for lifecycle-valid handoffs missing identity/source anchors, re-anchor checks, or a confusion set.
 - Added a portable, read-only adapter preflight helper for reply-anchor context recovery and durable action-policy enforcement, with regression tests for session rollover, anchor conflicts, sensitive-action blocking, and read-only exceptions.
 - Extended `use-daos doctor` with continuity ownership, handoff lifecycle, and surface-inventory proof sections.
+- Added `docs/releases/v0.2.6.md` as the release note for the handoff lifecycle and semantic doctor checkpoint.
 
 ### Changed
 - Documented the adapter preflight contract in `docs/agent-integrations.md` without hardcoding any one private runtime or user preference as a universal DAOS default.
 - Documented a Deterministic compaction fallback integration invariant so runtimes preserve a bounded and redacted pre-drop handoff when LLM summary generation fails.
-- Refreshed release-surface wording for the v0.2.5 baseline and unreleased doctor lifecycle proof fields.
+- Refreshed release-surface wording for the v0.2.6 checkpoint and doctor lifecycle proof fields.
 - Updated the memory parity auditor and docs to treat `wiki/log.md` as newest-first, matching the current DAOS maintenance convention.
+- Bumped package metadata and generated framework manifests to `0.2.6` / `v0.2.6`.
 
 ## v0.2.5 - 2026-05-14
 
