@@ -283,6 +283,69 @@ class DaosCliTests(unittest.TestCase):
         self.assertIn("foreign/stale surface review", result.stdout)
         self.assertIn("Verdict: conflict detected", result.stdout)
 
+    def test_doctor_warns_on_lane_handoff_identity_mismatch(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            destination = root / "filled-pack"
+            bootstrap = self.run_bootstrap("--filled-example", str(destination))
+            self.assertEqual(bootstrap.returncode, 0, msg=bootstrap.stderr)
+            runtime = root / "runtime.json"
+            runtime.write_text(
+                """
+                {
+                  "startup_root": "FILLED_PACK",
+                  "daos_home": "FILLED_PACK",
+                  "prompt_precedence": ["project/current context", "DAOS hot-cache", "private memory"],
+                  "reset_wake": {"signal_wired": true, "one_shot_proven": true},
+                  "continuity_surfaces": {
+                    "current_thread": {"authority": "exact_resume"},
+                    "hot_cache": {"role": "current_front_door", "fresh": true},
+                    "reset_handoff": {"role": "reset_only", "active_for_current_boot": false},
+                    "lane_handoff": {"role": "runtime_resume_aid", "fresh": true},
+                    "agent_continuity": {"role": "fallback_only", "fallback_needed": false, "routine_owner": false}
+                  },
+                  "handoff_lifecycle": {
+                    "reset_handoff": {"write": true, "read_inject": true, "consume_adopt": true, "precedence_ok": true},
+                    "lane_handoff": {
+                      "write": true,
+                      "read_inject": true,
+                      "consume_adopt": true,
+                      "precedence_ok": true,
+                      "fresh": true,
+                      "requested_session_key": "agent:main:discord:group:lane-b",
+                      "inspected_session_key": "agent:main:discord:group:lane-b",
+                      "written_session_key": "agent:main:discord:group:lane-a",
+                      "indexed_session_key": "agent:main:discord:group:lane-a",
+                      "content_context_key": "agent:main:discord:group:lane-b"
+                    }
+                  },
+                  "semantic_handoff": {
+                    "status": "fresh",
+                    "work_object_identity": "lane B handoff",
+                    "active_source_of_truth": "lane B transcript",
+                    "last_verified_state": "launcher wrote a handoff",
+                    "current_user_ask": "resume lane B",
+                    "nearby_confusion_set": ["lane A", "lane B"],
+                    "required_reanchor_checks": ["verify lane key"]
+                  },
+                  "surface_inventory": [
+                    {"path": "AGENTS.md", "classification": "active canonical", "referenced_by": ["startup"]}
+                  ],
+                  "unexpected_writes": false
+                }
+                """.replace("FILLED_PACK", str(destination)),
+                encoding="utf-8",
+            )
+
+            result = self.run_cli("doctor", str(destination), "--runtime-file", str(runtime))
+
+        self.assertEqual(result.returncode, 0, msg=result.stderr)
+        self.assertIn("Handoff lifecycle       WARN", result.stdout)
+        self.assertIn("lane handoff identity mismatch", result.stdout)
+        self.assertIn("written_session_key=agent:main:discord:group:lane-a", result.stdout)
+        self.assertIn("content_context_key=agent:main:discord:group:lane-b", result.stdout)
+        self.assertIn("Verdict: conflict detected", result.stdout)
+
     def test_doctor_warns_on_lifecycle_valid_but_semantically_weak_handoff(self) -> None:
         with tempfile.TemporaryDirectory() as tmpdir:
             root = Path(tmpdir)

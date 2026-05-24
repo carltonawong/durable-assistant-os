@@ -660,6 +660,19 @@ def _handoff_lifecycle_status(runtime: dict) -> tuple[str, str]:
             warnings.append(f"{label} partial/unproven: {', '.join(missing)}")
         if name == "lane_handoff" and data.get("fresh") is False:
             warnings.append("lane handoff stale-risk")
+        if name == "lane_handoff":
+            identity_values = {
+                "requested_session_key": data.get("requested_session_key"),
+                "inspected_session_key": data.get("inspected_session_key"),
+                "written_session_key": data.get("written_session_key"),
+                "indexed_session_key": data.get("indexed_session_key"),
+                "content_context_key": data.get("content_context_key") or data.get("context_key"),
+            }
+            provided = {key: str(value).strip() for key, value in identity_values.items() if str(value or "").strip()}
+            unique = set(provided.values())
+            if len(unique) > 1:
+                details = ", ".join(f"{key}={value}" for key, value in sorted(provided.items()))
+                warnings.append(f"lane handoff identity mismatch: {details}")
 
     if warnings:
         return "WARN", "; ".join(warnings)
