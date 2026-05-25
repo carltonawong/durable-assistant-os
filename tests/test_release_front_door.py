@@ -192,6 +192,26 @@ class DaosReleaseFrontDoorTests(unittest.TestCase):
                     offenders.append(f"{relative} contains {pattern!r}")
         self.assertEqual(offenders, [])
 
+    def test_repo_reconciliation_safety_doc_stays_read_only_and_general(self) -> None:
+        doc = self.read("docs/repo-reconciliation-safety.md")
+        maintenance = self.read("docs/maintenance.md")
+
+        required_phrases = [
+            "read-only",
+            "git status --short --branch",
+            "git rev-list --left-right --count HEAD...origin/main",
+            "git worktree list",
+            "duplicate checkout",
+            "inspect diffs",
+            "archive non-destructively",
+            "Do not run `git reset --hard`",
+        ]
+        missing = [phrase for phrase in required_phrases if phrase not in doc]
+        self.assertEqual(missing, [])
+        self.assertIn("docs/repo-reconciliation-safety.md", maintenance)
+        for private_term in ["/mnt/c/Users", "C:\\Users", "Hermes", "OpenClaw"]:
+            self.assertNotIn(private_term, doc)
+
     def test_semantic_handoff_receipt_template_documents_runtime_fields(self) -> None:
         receipt = self.read("docs/semantic-handoff-receipt.md")
         integrations = self.read("docs/agent-integrations.md")

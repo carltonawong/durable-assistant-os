@@ -10,6 +10,8 @@ Maintenance catches drift between:
 - live reality in repos, configs, runtime receipts, inboxes, calendars, or other sources
 - short-term context that should become durable wiki memory
 
+For stale or duplicate repo paths, use `docs/repo-reconciliation-safety.md` before trusting memory or deleting anything.
+
 It should not become a hidden daemon or another unreviewed memory layer.
 
 ## Weekly manual loop
