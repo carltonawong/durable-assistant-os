@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import json
 import os
 import subprocess
 import tempfile
@@ -79,6 +80,26 @@ class DaosCliTests(unittest.TestCase):
         self.assertIn("--runtime-file", result.stdout)
         self.assertIn("--runtime hermes --detect-runtime", result.stdout)
 
+    def test_doctor_json_reports_machine_readable_installed_not_proven_receipt(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            destination = Path(tmpdir) / "blank-pack"
+            init = self.run_cli("init", str(destination), "--blank")
+            self.assertEqual(init.returncode, 0, msg=init.stderr)
+
+            result = self.run_cli("doctor", str(destination), "--json")
+
+        self.assertEqual(result.returncode, 0, msg=result.stderr)
+        receipt = json.loads(result.stdout)
+        self.assertEqual(receipt["verdict"], "installed, not proven")
+        self.assertTrue(receipt["read_only"])
+        self.assertEqual(receipt["pack"], str(destination.resolve()))
+        self.assertIn("proof_ladder", receipt)
+        proof_by_name = {step["name"]: step for step in receipt["proof_ladder"]}
+        self.assertEqual(proof_by_name["Pack structure"]["status"], "PASS")
+        self.assertEqual(proof_by_name["Runtime anchor"]["status"], "UNPROVEN")
+        self.assertIn("Provide runtime evidence", "\n".join(receipt["next_steps"]))
+        self.assertEqual(result.stderr, "")
+
     def test_doctor_preserves_bridge_warning_next_step_when_bridge_has_pending_edits(self) -> None:
         with tempfile.TemporaryDirectory() as tmpdir:
             destination = Path(tmpdir) / "blank-pack"
@@ -153,6 +174,59 @@ class DaosCliTests(unittest.TestCase):
         self.assertIn("Surface inventory       PASS", result.stdout)
         self.assertIn("Unexpected writes       PASS", result.stdout)
         self.assertIn("Verdict: DAOS obeyed", result.stdout)
+
+    def test_doctor_json_reports_daos_obeyed_receipt_from_runtime_fixture(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            destination = root / "filled-pack"
+            bootstrap = self.run_bootstrap("--filled-example", str(destination))
+            self.assertEqual(bootstrap.returncode, 0, msg=bootstrap.stderr)
+            runtime = root / "runtime.json"
+            runtime.write_text(
+                """
+                {
+                  "startup_root": "FILLED_PACK",
+                  "daos_home": "FILLED_PACK",
+                  "prompt_precedence": ["project/current context", "DAOS hot-cache", "private memory"],
+                  "reset_wake": {"signal_wired": true, "one_shot_proven": true},
+                  "continuity_surfaces": {
+                    "hot_cache": {"role": "current_front_door", "fresh": true},
+                    "reset_handoff": {"role": "reset_only", "active_for_current_boot": false},
+                    "lane_handoff": {"role": "runtime_resume_aid", "fresh": true},
+                    "agent_continuity": {"role": "fallback_only", "fallback_needed": false, "routine_owner": false}
+                  },
+                  "handoff_lifecycle": {
+                    "reset_handoff": {"write": true, "read_inject": true, "consume_adopt": true, "precedence_ok": true},
+                    "lane_handoff": {"write": true, "read_inject": true, "consume_adopt": true, "precedence_ok": true, "fresh": true}
+                  },
+                  "semantic_handoff": {
+                    "work_object_identity": "deploy-target:production-rollout",
+                    "active_source_of_truth": "release issue",
+                    "last_verified_state": "checks passed",
+                    "current_user_ask": "ship the release",
+                    "nearby_confusion_set": ["staging rollout", "prod rollback"],
+                    "required_reanchor_checks": ["verify issue state"],
+                    "status": "verified"
+                  },
+                  "surface_inventory": [
+                    {"path": "AGENTS.md", "classification": "active canonical", "referenced_by": ["startup"]}
+                  ],
+                  "unexpected_writes": false
+                }
+                """.replace("FILLED_PACK", str(destination)),
+                encoding="utf-8",
+            )
+
+            result = self.run_cli("doctor", str(destination), "--runtime-file", str(runtime), "--json")
+
+        self.assertEqual(result.returncode, 0, msg=result.stderr)
+        receipt = json.loads(result.stdout)
+        self.assertEqual(receipt["verdict"], "DAOS obeyed")
+        proof_by_name = {step["name"]: step for step in receipt["proof_ladder"]}
+        self.assertEqual(proof_by_name["Runtime anchor"]["status"], "PASS")
+        self.assertEqual(proof_by_name["Semantic handoff"]["status"], "PASS")
+        self.assertEqual(proof_by_name["Unexpected writes"]["status"], "PASS")
+        self.assertEqual(receipt["next_steps"], [])
 
     def test_doctor_accepts_runtime_argument_as_fixture_path(self) -> None:
         with tempfile.TemporaryDirectory() as tmpdir:
