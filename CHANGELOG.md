@@ -14,7 +14,21 @@ Do not add entries for every typo fix or private WIP note.
 
 ## Unreleased
 
-No unreleased framework-facing changes are staged after v0.2.6.
+No unreleased framework-facing changes are staged after v0.2.7.
+
+## v0.2.7 - 2026-05-25
+
+### Added
+- Added a machine-readable `use-daos doctor --json` receipt so automation can consume doctor results without scraping terminal text.
+- Added a portable semantic handoff receipt template for exact resume proof, including work-object identity, active source of truth, last verified state, current ask, confusion set, and required re-anchor checks.
+- Added lightweight agent-readable front-door docs through `llms.txt` and `docs/for-agents.md` so assistants can quickly understand the DAOS boundary and operating posture.
+
+### Hardened
+- Added lane handoff identity-mismatch reporting so doctor output separates identity ambiguity from handoff freshness.
+- Added repo reconciliation safety guidance for stale or duplicate checkouts, emphasizing read-only inspection before destructive cleanup.
+
+### Changed
+- Bumped package metadata and generated framework manifests to `0.2.7` / `v0.2.7`.
 
 ## v0.2.6 - 2026-05-23
 
