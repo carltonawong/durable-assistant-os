@@ -1,0 +1,18 @@
+# Durable Assistant OS
+
+DAOS is a portable context-continuity / operating-truth layer for AI assistants.
+
+Start here:
+- README.md
+- docs/for-agents.md
+- docs/quickstart.md
+
+Core commands:
+- npx use-daos init
+- npx use-daos setup
+- use-daos check
+- use-daos doctor
+
+Boundary: DAOS is not a task manager, not a vector memory DB, not a full runtime, and not a supervisor brain.
+
+Rule: memory can orient, but current reality wins when freshness matters.
