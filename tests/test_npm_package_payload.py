@@ -52,6 +52,7 @@ class DaosNpmPackagePayloadTests(unittest.TestCase):
             "docs/releases/v0.2.6.md",
             "docs/script-safety.md",
             "docs/wiki-governance.md",
+            "docs/repo-reconciliation-safety.md",
             "docs/semantic-handoff-receipt.md",
             "docs/reset-current-state-receipt.md",
             "examples/creative-studio-operating-profile-example.md",
@@ -146,10 +147,10 @@ class DaosNpmPackagePayloadTests(unittest.TestCase):
     def test_npm_package_stays_small_enough_for_release_distribution(self) -> None:
         package = self.npm_pack_dry_run()
 
-        # v0.2.6 plus one compact semantic-handoff receipt template.
-        self.assertLessEqual(package["entryCount"], 72)
-        # Keep the payload below ~111 KB while including the adapter receipt template.
-        self.assertLessEqual(package["size"], 111_000)
+        # v0.2.6 plus compact semantic-handoff and repo-reconciliation templates.
+        self.assertLessEqual(package["entryCount"], 73)
+        # Keep the payload near 111 KB while including the two adapter safety docs.
+        self.assertLessEqual(package["size"], 111_300)
 
 
 if __name__ == "__main__":
