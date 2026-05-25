@@ -55,6 +55,7 @@
     "docs/setup.md",
     "docs/trust.md",
     "docs/reset-handoff.md",
+    "docs/semantic-handoff-receipt.md",
     "docs/reset-current-state-receipt.md",
     "docs/memory.md",
     "docs/agent-integrations.md",
