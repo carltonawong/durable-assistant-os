@@ -44,6 +44,7 @@ Do not move the baseline doctrine itself here.
 ## Current integrations
 
 - Adapter preflight contract - portable, read-only guidance below
+- Semantic handoff receipt - see `docs/semantic-handoff-receipt.md`
 - Deterministic compaction fallback - portable continuity floor below
 - Hermes - available below
 - Codex - brief adapter guidance available below

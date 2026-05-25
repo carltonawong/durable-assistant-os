@@ -192,6 +192,29 @@ class DaosReleaseFrontDoorTests(unittest.TestCase):
                     offenders.append(f"{relative} contains {pattern!r}")
         self.assertEqual(offenders, [])
 
+    def test_semantic_handoff_receipt_template_documents_runtime_fields(self) -> None:
+        receipt = self.read("docs/semantic-handoff-receipt.md")
+        integrations = self.read("docs/agent-integrations.md")
+
+        required_phrases = [
+            "work_object_identity",
+            "active_source_of_truth",
+            "last_verified_state",
+            "current_user_ask",
+            "nearby_confusion_set",
+            "required_reanchor_checks",
+            "status",
+            "verified",
+            "generated_fallback",
+            "use-daos doctor --json",
+        ]
+        missing = [phrase for phrase in required_phrases if phrase not in receipt]
+        self.assertEqual(missing, [])
+        self.assertIn("docs/semantic-handoff-receipt.md", integrations)
+        self.assertNotIn("/mnt/c/Users", receipt)
+        self.assertNotIn("Hermes", receipt)
+        self.assertNotIn("OpenClaw", receipt)
+
     def test_reset_current_state_receipt_stays_small_and_actionable(self) -> None:
         receipt = self.read("docs/reset-current-state-receipt.md")
         readme = self.read("README.md")
