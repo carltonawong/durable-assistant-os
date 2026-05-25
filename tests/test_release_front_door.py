@@ -192,6 +192,28 @@ class DaosReleaseFrontDoorTests(unittest.TestCase):
                     offenders.append(f"{relative} contains {pattern!r}")
         self.assertEqual(offenders, [])
 
+    def test_agent_readable_front_door_defines_daos_boundary(self) -> None:
+        llms = self.read("llms.txt")
+        agents = self.read("docs/for-agents.md")
+        readme = self.read("README.md")
+        combined = llms + "\n" + agents + "\n" + readme[:4000]
+
+        required_phrases = [
+            "portable context-continuity / operating-truth layer",
+            "not a task manager",
+            "not a vector memory DB",
+            "not a full runtime",
+            "not a supervisor brain",
+            "npx use-daos init",
+            "use-daos check",
+            "use-daos doctor",
+            "current reality wins",
+        ]
+        missing = [phrase for phrase in required_phrases if phrase not in combined]
+        self.assertEqual(missing, [])
+        self.assertIn("docs/for-agents.md", llms)
+        self.assertNotIn("cloud product", combined.lower())
+
     def test_repo_reconciliation_safety_doc_stays_read_only_and_general(self) -> None:
         doc = self.read("docs/repo-reconciliation-safety.md")
         maintenance = self.read("docs/maintenance.md")

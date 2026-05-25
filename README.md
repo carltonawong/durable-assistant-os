@@ -34,6 +34,8 @@ It gives a human and an assistant a small shared system for:
 
 DAOS is not a hosted app and not a full assistant runtime. It is the operating structure you can put beside a runtime.
 
+Agent-readable summary: DAOS is a portable context-continuity / operating-truth layer; not a task manager, not a vector memory DB, not a full runtime, and not a supervisor brain. See `docs/for-agents.md`.
+
 ## Try it first
 
 If you only try one thing, run:
