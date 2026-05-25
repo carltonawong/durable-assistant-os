@@ -755,6 +755,7 @@ def build_doctor_report(
     runtime_file: str | Path | None = None,
     runtime: str | None = None,
     detect_runtime: bool = False,
+    json_output: bool = False,
 ) -> tuple[int, str, str]:
     """Build a read-only DAOS proof-ladder receipt."""
     root = Path(pack_dir).expanduser().resolve()
@@ -818,52 +819,61 @@ def build_doctor_report(
     else:
         verdict = "installed, not proven"
 
+    proof_steps = [
+        ("Pack structure", pack_status, "baseline files present" if pack_status == "PASS" else "baseline files missing"),
+        ("Instruction bridge", bridge_status, bridge_detail),
+        ("Runtime anchor", runtime_status, runtime_detail),
+        ("Source precedence", precedence_status, precedence_detail),
+        ("Reset/wake signal", reset_status, reset_detail),
+        ("One-shot reset proof", one_shot_status, one_shot_detail),
+        ("Continuity ownership", continuity_status, continuity_detail),
+        ("Handoff lifecycle", lifecycle_status, lifecycle_detail),
+        ("Semantic handoff", semantic_status, semantic_detail),
+        ("Surface inventory", inventory_status, inventory_detail),
+        ("Unexpected writes", writes_status, writes_detail),
+    ]
+    next_steps: list[str] = []
+    if verdict != "DAOS obeyed":
+        if bridge_status == "WARN":
+            next_steps.append("Review bridge warnings before claiming overlay obedience.")
+        next_steps.append(
+            "Provide runtime evidence with `--runtime-file` or `--runtime hermes --detect-runtime` "
+            "to prove doctor runtime checks."
+        )
+
+    if json_output:
+        receipt = {
+            "pack": str(root),
+            "read_only": True,
+            "verdict": verdict,
+            "proof_ladder": [
+                {"name": name, "status": status, "detail": detail}
+                for name, status, detail in proof_steps
+            ],
+            "runtime_warnings": runtime_errors,
+            "next_steps": next_steps,
+        }
+        return 0, json.dumps(receipt) + "\n", ""
+
     lines = [
         "DAOS Doctor",
         f"Pack: {root}",
         "Read-only: no files modified",
         "",
         "Proof ladder",
-        _status_line("Pack structure", pack_status),
-        _status_line("Instruction bridge", bridge_status),
-        _status_line("Runtime anchor", runtime_status),
-        _status_line("Source precedence", precedence_status),
-        _status_line("Reset/wake signal", reset_status),
-        _status_line("One-shot reset proof", one_shot_status),
-        _status_line("Continuity ownership", continuity_status),
-        _status_line("Handoff lifecycle", lifecycle_status),
-        _status_line("Semantic handoff", semantic_status),
-        _status_line("Surface inventory", inventory_status),
-        _status_line("Unexpected writes", writes_status),
+        *(_status_line(name, status) for name, status, _detail in proof_steps),
         "",
         f"Verdict: {verdict}",
         "",
         "Evidence",
-        f"- pack structure: {'baseline files present' if pack_status == 'PASS' else 'baseline files missing'}",
-        f"- instruction bridge: {bridge_detail}",
-        f"- runtime anchor: {runtime_detail}",
-        f"- source precedence: {precedence_detail}",
-        f"- reset/wake signal: {reset_detail}",
-        f"- one-shot reset proof: {one_shot_detail}",
-        f"- continuity ownership: {continuity_detail}",
-        f"- handoff lifecycle: {lifecycle_detail}",
-        f"- semantic handoff: {semantic_detail}",
-        f"- surface inventory: {inventory_detail}",
-        f"- unexpected writes: {writes_detail}",
+        *(f"- {name.lower()}: {detail}" for name, _status, detail in proof_steps),
     ]
     if runtime_errors:
         lines.extend(["", "Runtime fixture warnings"])
         lines.extend(f"- {error}" for error in runtime_errors)
-    if verdict != "DAOS obeyed":
-        next_steps = ["", "Next"]
-        if bridge_status == "WARN":
-            next_steps.append("- Review bridge warnings before claiming overlay obedience.")
-        next_steps.append(
-            "- Provide runtime evidence with `--runtime-file` or `--runtime hermes --detect-runtime` "
-            "to prove anchor, source precedence, reset/wake one-shot behavior, continuity ownership, "
-            "handoff lifecycle, semantic handoff durability, and surface inventory."
-        )
-        lines.extend(next_steps)
+    if next_steps:
+        lines.extend(["", "Next"])
+        lines.extend(f"- {step}" for step in next_steps)
     return 0, "\n".join(lines) + "\n", ""
 
 
