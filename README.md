@@ -15,7 +15,7 @@
 </p>
 
 <p align="center">
-  <code>npx use-daos init → setup → check → on → reset-test → You're complete!</code>
+  <code>npx use-daos init → npx use-daos setup → npx use-daos check → npx use-daos on → npx use-daos reset-test → You're complete!</code>
 </p>
 
 <p align="center">
@@ -80,15 +80,25 @@ This is the core product loop:
 4. `use-daos` shows the current setup and continuity status.
 5. Your assistant uses the DAOS files to recover orientation without treating memory as live truth.
 
+## Where should DAOS install?
+
+Use `~/.daos` for a new assistant. For an existing assistant home, project runtime, or client VPS, install there:
+
+```bash
+DAOS_HOME=/path/to/assistant-home npx use-daos init
+npx use-daos init --use-detected-home --scan /path/to/assistant-home
+```
+
+Any folder name is fine if it contains `assistant-charter.md`, `operating-profile.md`, and `wiki/cache/` after install.
+
 ## What you should have after one sitting
 
 You should have:
-- a local DAOS pack with the locked baseline files installed
-- a visible `DAOS Status` report
-- a `DAOS On` section showing current active-memory surfaces
-- a `DAOS Doctor` receipt showing what is installed, bridged, activated, and proven
-- explicit continuity files for hot cache, hot-cache log, reset handoff, and agent continuity
-- a staged bridge report if DAOS found existing agent instructions
+- a local DAOS pack with locked baseline files
+- `DAOS Status` and `DAOS On` reports
+- a `DAOS Doctor` receipt for installed / bridged / activated / proven
+- hot cache, hot-cache log, reset handoff, and agent continuity files
+- a bridge report if DAOS found existing agent instructions
 - no silent import of arbitrary old memory content
 
 Do not model everything up front. Start small, use it, then tighten what real use proves is weak.
@@ -97,15 +107,14 @@ Do not model everything up front. Start small, use it, then tighten what real us
 
 The default new-user home is `~/.daos`, but the folder name is not the product. DAOS home is the folder with the DAOS pack/wiki: `assistant-charter.md`, `operating-profile.md`, and `wiki/cache/`.
 
-If you already have an existing assistant home with those surfaces, use it directly instead of creating a duplicate home:
+If you already have an existing assistant home, use it directly:
 
 ```bash
 DAOS_HOME=/path/to/existing-assistant-home use-daos
-
 use-daos on /path/to/existing-assistant-home
 ```
 
-The important part is that agents can find and read the shared `wiki/cache/` surfaces. The home can be `~/.daos` or another explicit assistant-home path.
+Agents just need one shared home they can read.
 
 ## Optional boot/runtime check
 

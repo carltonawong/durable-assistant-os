@@ -94,8 +94,15 @@ def render_pack_manifest(pack: DaosPack) -> str:
     return json.dumps(pack.manifest_dict(), indent=2) + "\n"
 
 
-def write_pack_core_files(destination: Path, pack: DaosPack) -> None:
+def write_pack_core_files(destination: Path, pack: DaosPack, *, overwrite: bool = True) -> None:
     destination.mkdir(parents=True, exist_ok=True)
-    (destination / "assistant-charter.md").write_text(render_assistant_charter(pack), encoding="utf-8")
-    (destination / "operating-profile.md").write_text(render_operating_profile(pack), encoding="utf-8")
-    (destination / "daos-pack.json").write_text(render_pack_manifest(pack), encoding="utf-8")
+    core_files = {
+        "assistant-charter.md": render_assistant_charter(pack),
+        "operating-profile.md": render_operating_profile(pack),
+        "daos-pack.json": render_pack_manifest(pack),
+    }
+    for name, content in core_files.items():
+        target = destination / name
+        if target.exists() and not overwrite:
+            continue
+        target.write_text(content, encoding="utf-8")

@@ -73,12 +73,16 @@ def clear_destination(destination: Path, force: bool) -> None:
         shutil.rmtree(destination)
 
 
-def copy_support_files(source: Path, destination: Path) -> None:
+def copy_support_files(source: Path, destination: Path, *, overwrite: bool = True) -> None:
     for item in source.iterdir():
         if item.name in CORE_GENERATED_FILES:
             continue
         target = destination / item.name
         if target.exists():
+            if not overwrite:
+                if item.is_dir() and target.is_dir():
+                    copy_support_files(item, target, overwrite=False)
+                continue
             if target.is_dir():
                 shutil.rmtree(target)
             else:
@@ -89,10 +93,14 @@ def copy_support_files(source: Path, destination: Path) -> None:
             shutil.copy2(item, target)
 
 
-def bootstrap(output_dir: str | Path, *, use_filled_example: bool = False, force: bool = False) -> Path:
+def bootstrap(output_dir: str | Path, *, use_filled_example: bool = False, force: bool = False, overlay: bool = False) -> Path:
     destination = Path(output_dir).expanduser().resolve()
     source = source_dir(use_filled_example)
-    clear_destination(destination, force)
+    if overlay:
+        if destination.exists() and destination.is_file():
+            raise ValueError(f"Destination exists as a file, not a directory: {destination}")
+    else:
+        clear_destination(destination, force)
     destination.parent.mkdir(parents=True, exist_ok=True)
     destination.mkdir(parents=True, exist_ok=True)
 
@@ -101,10 +109,10 @@ def bootstrap(output_dir: str | Path, *, use_filled_example: bool = False, force
         if use_filled_example
         else blank_starter_pack(generator="scripts/daos_bootstrap.py")
     )
-    write_pack_core_files(destination, pack)
-    copy_support_files(BLANK_SOURCE, destination)
+    write_pack_core_files(destination, pack, overwrite=not overlay)
+    copy_support_files(BLANK_SOURCE, destination, overwrite=not overlay)
     if use_filled_example:
-        copy_support_files(source, destination)
+        copy_support_files(source, destination, overwrite=not overlay)
     return destination
 
 
