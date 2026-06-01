@@ -34,6 +34,7 @@ Then review:
 4. Did anything in cache/log/thread become stable enough to move into `wiki/sources/`, `wiki/raw/`, or a durable wiki page?
 5. Are freshness-sensitive claims such as release version, branch/tag state, runtime health, test results, provider status, inbox state, or calendar commitments checked against live sources?
 6. If `doctor` reports missing proof, lifecycle warnings, or surface-inventory warnings, is the issue runtime behavior rather than missing files?
+7. For named returning workstreams, did the assistant run the artifact preflight from `docs/for-agents.md`?
 
 ## After a major context change
 
