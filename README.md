@@ -19,22 +19,24 @@
 </p>
 
 <p align="center">
-  <strong>AI assistants are amazing until you realize you’re becoming their memory system.</strong><br>
-  DAOS exists for everyone who has rebuilt context for the same assistant three times in one week — making AI work feel less like starting over, and more like continuing a real conversation.
+  <strong>AI assistants are amazing until every reset, new chat, or tool switch makes you rebuild the whole story.</strong><br>
+  DAOS exists so AI work feels less like starting over and more like continuing from the right place.
 </p>
 
-Durable Assistant OS (DAOS) is a local continuity layer for AI assistants that need to stay useful after resets, long gaps, model switches, and messy memory.
+Durable Assistant OS (DAOS) gives AI work a local continuity engine: a small system of plain markdown files and read-only checks that helps the next assistant recover what matters now, what was decided, what changed, what needs approval, and what must be verified before acting.
 
-It gives a human and an assistant a small shared system for:
-- knowing what the assistant is for
-- separating current context from durable memory
-- preserving trust boundaries
-- recovering after resets or long gaps
-- checking live reality before acting on stale notes
+It gives a human and an assistant a shared way to:
+- recover current state after resets, long gaps, and model switches
+- preserve decisions and trust boundaries outside the chat window
+- distinguish active context from durable knowledge
+- verify live reality before acting on stale notes
+- produce receipts that show what the assistant checked
 
-DAOS is not a hosted app and not a full assistant runtime. It is the operating structure you can put beside a runtime.
+DAOS is not the assistant, not a hosted app, and not a full assistant runtime. It is the recovery layer you can put beside the tools you already use.
 
 Agent-readable summary: DAOS is a portable context-continuity / operating-truth layer; not a task manager, not a vector memory DB, not a full runtime, and not a supervisor brain. See `docs/for-agents.md`.
+
+The first-run proof surfaces are `DAOS Status`, `DAOS On`, `reset-test`, and `doctor` receipts.
 
 ## Try it first
 
@@ -78,7 +80,8 @@ This is the core product loop:
 2. DAOS scans existing instruction carriers like `AGENTS.md`, `CLAUDE.md`, `.cursorrules`, and Copilot instructions.
 3. DAOS asks before editing existing instruction files.
 4. `use-daos` shows the current setup and continuity status.
-5. Your assistant uses the DAOS files to recover orientation without treating memory as live truth.
+5. `reset-test` and `doctor` produce receipts for reset recovery, active surfaces, and runtime evidence.
+6. Your assistant uses the DAOS files to recover orientation without treating memory as live truth.
 
 ## What you should have after one sitting
 
@@ -194,7 +197,7 @@ The CLI is the easier first path, but the pack remains plain markdown by design.
 - `scripts/daos.py` — Python reference CLI used by the wrapper.
 - `starter-pack/` — the default DAOS baseline installed by `use-daos init`.
 - `docs/quickstart.md` — short first-run procedure.
-- `docs/memory.md` — deeper memory doctrine.
+- `docs/memory.md` — deeper context-continuity and memory model.
 - `docs/maintenance.md` — manual-first upkeep loop and optional automation guardrails.
 - `docs/agent-integrations.md` — notes for wiring DAOS beside assistants.
 - `docs/portability.md` — durable wiki portability model.
@@ -205,7 +208,7 @@ The CLI is the easier first path, but the pack remains plain markdown by design.
 
 The GitHub source tree also carries tests and selected verification material. Heavier internal eval artifacts stay out of the npm runtime package so `use-daos` installs as focused local tooling, not a benchmark archive.
 
-## What is already proven
+## What DAOS proves today
 
 The current v0.2 line includes:
 - `use-daos init` and no-args `use-daos` as the first-user CLI surface
