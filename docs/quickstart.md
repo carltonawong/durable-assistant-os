@@ -4,6 +4,8 @@ Use this when you want a first usable DAOS pack without reading the whole repo.
 
 ## Fast path
 
+Run it from the repo root:
+
 ```bash
 npx use-daos init
 npx use-daos setup
@@ -13,9 +15,11 @@ npx use-daos reset-test
 npx use-daos doctor
 ```
 
-`use-daos init` installs the DAOS baseline into your DAOS home, scans the current working directory for existing agent instruction files, and stages a bridge review when needed.
+That gives your assistant a local continuity home: what the assistant is for, what matters now, where durable decisions live, how to recover after reset, and what must be verified before action.
 
-`use-daos setup` is the guided activation step. It explains and fills the minimum assistant charter, operating profile, current focus, and reset handoff. Run it in an interactive terminal; for non-interactive smoke tests, use `use-daos setup --accept-defaults`.
+Run `setup` interactively unless you are smoke-testing.
+
+`use-daos setup` is the guided activation step. It explains and fills the minimum assistant charter, operating profile, current focus, and reset handoff. For non-interactive smoke tests, use `use-daos setup --accept-defaults`.
 
 `use-daos check`, `use-daos on`, `use-daos reset-test`, and `use-daos doctor` should all default to the active DAOS home. `doctor` is read-only and separates installed / bridged / activated / proven instead of treating file presence as runtime proof. When the reset-test sequence passes, DAOS ends with:
 

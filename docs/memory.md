@@ -1,10 +1,10 @@
-# DAOS Memory and Context Model
+# DAOS Continuity, Memory, and Current-State Model
 
 <!-- DAOS baseline note: Current public framework baseline is v0.2.7; this file remains part of the current release surface even if its original feature landed in an earlier patch. -->
 
 ## Goal
 
-Use memory as part of a larger context-continuity system: enough durable knowledge to keep the assistant useful over time, without turning the system into a cluttered archive of everything it has ever seen.
+Use memory as one part of a larger continuity system: enough durable knowledge to help the next assistant recover current state, decisions, handoffs, and verification targets without turning the system into a cluttered archive of everything it has ever seen.
 
 DAOS does not treat memory as a prestige feature or the product category.
 It treats memory as one mechanism inside an agent-agnostic operating harness: the shared continuity layer that lets durable collaboration survive across sessions, tools, and even agent swaps.

@@ -6,14 +6,14 @@
 
 DAOS tries to stop assistant context from collapsing into one blurry pile.
 
-Memory is one mechanism in that model. The larger job is continuity: giving the assistant the right context at the right moment without pretending old notes are always current.
+The goal is not to make assistants remember everything. The larger job is continuity: helping the next assistant recover the current state, durable decisions, handoff point, and verification targets without pretending old notes are automatically true.
 
-It keeps six things distinct:
+It keeps six recovery surfaces distinct:
 - **local thread** — what is being asked right now
 - **hot cache / active front door** — compact Current Focus entries and current operational corrections
 - **reset handoff** — the exact next move after reset or long idle
 - **agent continuity** — optional per-agent resume help when the shared front door is not enough
-- **durable wiki/docs memory** — what should survive and be shared
+- **durable wiki/docs memory** — decisions and knowledge that should survive and be shared
 - **live reality** — files, systems, and runtime state that must be checked before acting
 
 ![DAOS context model](assets/daos-memory-model.svg)
