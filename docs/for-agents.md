@@ -25,3 +25,15 @@ use-daos doctor
 ## Operating rule
 
 Memory can orient, but current reality wins when freshness matters. Recheck release versions, branch/tag state, publish status, runtime health, and test results against live authority before acting.
+
+### Return preflight
+
+When the user names a project/client/repo/runtime that may already exist, check artifacts and classify stage before greenfield advice.
+
+Use the smallest evidence: workspace/repo, Git state, receipts, host paths, services, or listeners. Then label state:
+
+```text
+greenfield | scaffolded | repo-built | VPS-smoked | service-installed | live-wired | unknown
+```
+
+If evidence is missing, say `unknown` and name the first read-only check.
