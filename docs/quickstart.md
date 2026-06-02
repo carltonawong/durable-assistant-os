@@ -44,6 +44,15 @@ DAOS On
 
 That is enough for a first pass. You do not need to understand every layer before using DAOS as a context-continuity harness.
 
+## Choose the DAOS home
+
+New assistants use `~/.daos`; existing runtimes can opt in:
+
+```bash
+DAOS_HOME=/path/to/assistant-home npx use-daos init
+npx use-daos init --use-detected-home --scan /path/to/assistant-home
+```
+
 ## If DAOS finds existing agent instructions
 
 DAOS scans instruction carriers such as:
@@ -125,10 +134,10 @@ The Hermes detector reports `runtime`, `startup_root`, `daos_home`, `prompt_prec
 A first pass is good enough when:
 - the assistant's main job is clear
 - approval boundaries are explicit
-- the current focus is visible in `wiki/cache/hot-cache.md`
-- reset recovery has an exact next move when real work begins
-- any existing instruction files are reviewed or explicitly left alone
-- live files/runtime are treated as higher authority than remembered notes
+- current focus is visible in `wiki/cache/hot-cache.md`
+- reset recovery has an exact next move
+- existing instruction files are reviewed or left alone
+- live files/runtime outrank memory
 
 Do not try to model your entire life or organization before first use. DAOS should make day-one continuity easier, not turn setup into a taxonomy project.
 

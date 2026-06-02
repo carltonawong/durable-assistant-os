@@ -50,6 +50,7 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     init.add_argument("pack_dir", nargs="?", help="Destination DAOS home. Defaults to DAOS_HOME or ~/.daos.")
     init.add_argument("--blank", action="store_true", help="Install baseline without scanning existing instruction carriers")
     init.add_argument("--scan", action="append", default=[], help="Working directory to scan for existing agent instruction files")
+    init.add_argument("--use-detected-home", action="store_true", help="Install additively into detected assistant home when no destination is given")
     init.add_argument("--force", action="store_true", help="Replace an existing non-empty DAOS destination")
 
     setup = subparsers.add_parser(
@@ -142,6 +143,49 @@ def resolve_default_pack_dir(pack_dir_arg: str | None) -> Path:
     return (Path.home() / ".daos").resolve()
 
 
+ASSISTANT_HOME_MARKERS = (
+    "AGENTS.md",
+    "CLAUDE.md",
+    "GEMINI.md",
+    "HERMES.md",
+    "OPENCLAW.md",
+    "QUINN.md",
+    ".cursorrules",
+)
+ASSISTANT_HOME_DIR_MARKERS = (".openclaw", ".hermes", ".cursor", ".claude")
+
+
+def _looks_like_daos_home(path: Path) -> bool:
+    return (path / "assistant-charter.md").exists() and (path / "operating-profile.md").exists() and (path / "wiki" / "cache").is_dir()
+
+
+def _looks_like_assistant_operating_home(path: Path) -> bool:
+    if _looks_like_daos_home(path):
+        return True
+    if any((path / marker).exists() for marker in ASSISTANT_HOME_MARKERS):
+        return True
+    if any((path / marker).is_dir() for marker in ASSISTANT_HOME_DIR_MARKERS):
+        return True
+    return False
+
+
+def detect_assistant_operating_home(scan_paths: list[Path]) -> Path | None:
+    candidates: list[Path] = []
+    for raw_path in scan_paths:
+        path = raw_path.expanduser().resolve()
+        current = path if path.is_dir() else path.parent
+        for parent in (current, *current.parents):
+            if _looks_like_assistant_operating_home(parent):
+                candidates.append(parent)
+                break
+    if not candidates:
+        return None
+    for candidate in candidates:
+        if _looks_like_daos_home(candidate):
+            return candidate
+    return candidates[0]
+
+
 def run_status(pack_dir_arg: str | None, *, heading: str = "DAOS Status") -> int:
     pack_dir = resolve_default_pack_dir(pack_dir_arg)
     exit_code, stdout, stderr = build_state_report(pack_dir, heading=heading)
@@ -194,10 +238,13 @@ def _approve_instruction_edits(carriers: list[Path], backup_root: Path) -> dict[
 
 
 def run_init(args: argparse.Namespace) -> int:
-    pack_dir = resolve_default_pack_dir(args.pack_dir)
+    explicit_destination = bool(args.pack_dir or os.environ.get("DAOS_HOME"))
     try:
         scan_paths = _resolve_init_scan_paths(args)
-        destination = bootstrap(pack_dir, force=args.force)
+        detected_home = detect_assistant_operating_home(scan_paths) if scan_paths else None
+        use_detected_home = bool(args.use_detected_home and not explicit_destination and detected_home)
+        pack_dir = detected_home if use_detected_home else resolve_default_pack_dir(args.pack_dir)
+        destination = bootstrap(pack_dir, force=args.force, overlay=use_detected_home)
         report_path = None
         applied_backups: dict[Path, Path] = {}
         carriers = find_instruction_carriers(scan_paths) if scan_paths else []
@@ -219,6 +266,12 @@ def run_init(args: argparse.Namespace) -> int:
     print(f"DAOS initialized: {destination}")
     print("purpose: shared continuity baseline for agents; existing instruction files are edited only with approval")
     print("baseline: installed mandatory wiki/cache framework")
+    if 'detected_home' in locals() and detected_home:
+        print(f"assistant home scan: detected {detected_home}")
+        if 'use_detected_home' in locals() and use_detected_home:
+            print("assistant home install: used detected home additively; preserved existing files")
+        elif not explicit_destination:
+            print("assistant home install: defaulted to ~/.daos; use --use-detected-home to install into detected home")
     if args.blank:
         print("instruction scan: skipped (--blank)")
     elif report_path:
