@@ -193,6 +193,7 @@ def evaluate_action_preflight_policy(
     requested_action: str | None = None,
     explicit_override: bool = False,
     read_only: bool = False,
+    memory_evidence: str | None = None,
 ) -> ActionPolicyResult:
     """Convert a durable action preference into a tool-selection preflight.
 
@@ -200,9 +201,13 @@ def evaluate_action_preflight_policy(
     not hardcode one person's browser or posting preference as a universal rule.
     A policy may include ``preference``, ``default_action``, and
     ``exception_rule`` fields.
+
+    ``memory_evidence`` is context, not permission; sensitive deviations still
+    require explicit override or a read-only exception.
     """
 
     task_class = _clean(task_class) or "unknown"
+    memory_evidence = _clean(memory_evidence)
     policy = policies.get(task_class) or policies.get("*") or {}
     preference = _clean(policy.get("preference"))
     default_action = _clean(policy.get("default_action"))
@@ -224,16 +229,18 @@ def evaluate_action_preflight_policy(
     sensitive = task_class in SENSITIVE_ACTION_CLASSES or bool(policy.get("sensitive"))
 
     if violating and sensitive and not explicit_override and not read_only:
+        extra_notes = ("memory-evidence-not-permission",) if memory_evidence else ()
+        evidence_clause = " Memory evidence was context, not permission." if memory_evidence else ""
         return ActionPolicyResult(
             task_class=task_class,
             preference=preference,
             selected_action=selected,
             default_action=default_action,
             exception_rule=exception_rule,
-            receipt=f"Blocked {selected}; durable policy for {task_class} defaults to {default_action}.",
+            receipt=f"Blocked {selected}; durable policy for {task_class} defaults to {default_action}.{evidence_clause}",
             blocked=True,
             needs_confirmation=True,
-            notes=("durable-policy-violation",),
+            notes=("durable-policy-violation", *extra_notes),
         )
 
     if violating and not explicit_override and read_only:

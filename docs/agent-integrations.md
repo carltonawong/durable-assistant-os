@@ -58,23 +58,23 @@ Do not move the baseline doctrine itself here.
 
 ### What this adds
 
-DAOS can support real runtime integrations without turning the public repo into one private assistant app. The portable adapter contract is a read-only preflight layer that runs before broad memory fallback or irreversible tool choice.
+DAOS supports runtime integrations without turning the repo into one private assistant app. The adapter contract is read-only preflight before broad memory fallback or irreversible tool choice.
 
-It covers two durable continuity failures:
+It covers two failures:
 
-1. **Reply-anchor recovery**: after reset, compression, idle expiry, or process restart, an explicit reply/thread/message anchor should beat generic hot memory for that turn.
-2. **Action-policy enforcement**: durable preferences that affect risky action classes should become a concrete preflight before a tool path is chosen.
+1. **Reply-anchor recovery**: after reset, compression, idle expiry, or process restart, an explicit reply/thread/message anchor beats generic hot memory for that turn.
+2. **Action-policy enforcement**: durable preferences for risky action classes become preflight before tool-path choice.
 
 The helper module is:
 
 - `scripts.daos_core.context_preflight.recover_reply_anchor_context(...)`
 - `scripts.daos_core.context_preflight.evaluate_action_preflight_policy(...)`
 
-It is intentionally local and stdlib-only. It does not fetch messages, open browsers, access credentials, call the network, or mutate DAOS files. Runtime adapters collect their own evidence first, then pass that evidence into the preflight helper.
+It is local and stdlib-only: no message fetches, browsers, credentials, network calls, or file mutation. Adapters collect evidence, then pass it into the helper.
 
 ### Reply-anchor recovery shape
 
-Adapters that receive a messaging event should preserve a compact anchor shape when the platform provides one:
+Adapters should preserve a compact anchor shape when the platform provides one:
 
 ```text
 context_anchor:
@@ -86,13 +86,13 @@ session_boundary:
   none / compression / reset / idle-expiry / process-restart
 ```
 
-Expected behavior:
+Expected:
 
 - local thread context still wins when it is sufficient
-- an explicit reply anchor wins over generic hot/shared memory for that turn
-- if the anchor resolves to a different lane, report a concise resume receipt instead of guessing
-- if the anchor is missing or inaccessible after a boundary, ask for the missing context once
-- do not expose transcript paths, local cache paths, or private storage details in receipts
+- reply anchor wins over generic hot/shared memory for that turn
+- if the anchor resolves to another lane, report a concise receipt instead of guessing
+- if anchor is missing or inaccessible after a boundary, ask for missing context once
+- do not expose transcript paths, cache paths, or private storage details in receipts
 
 ### Action-policy preflight shape
 
@@ -106,13 +106,13 @@ exception_rule: when another path is allowed
 receipt: one short sentence when the policy changes or blocks tool selection
 ```
 
-Expected behavior:
+Expected:
 
-- no one user's browser/profile preference is a universal DAOS default
-- the runtime supplies policy data from its own durable profile or configuration
+- no one user's browser/profile preference is a universal default
+- runtime supplies policy data from its durable profile or configuration
 - sensitive mutations cannot silently violate the durable default
-- read-only exceptions and explicit overrides are recorded as such
-- receipts stay user-facing and compact, not memory dumps
+- read-only exceptions and explicit overrides are recorded
+- receipts stay compact and user-facing, not memory dumps
 
 ### Verification checklist
 
@@ -120,9 +120,9 @@ A good adapter integration should prove:
 
 - reply-anchor recovery after simulated session rollover
 - anchor-lane conflict handling where the reply anchor wins for the current turn
-- low-confidence receipts when an anchor is present but cannot be resolved
+- low-confidence receipts when an anchor cannot be resolved
 - durable action-policy enforcement after a simulated reset/compression boundary
-- no local/private path leakage in user-facing receipts
+- no local/private path leakage in receipts
 
 ---
 
@@ -130,28 +130,28 @@ A good adapter integration should prove:
 
 ### What this adds
 
-Any runtime that compresses, summarizes, prunes, or rolls session context needs a deterministic continuity floor. LLM-generated summaries can improve resume quality, but they cannot be the only mechanism preserving the window that is about to be dropped.
+Any runtime that compresses, summarizes, prunes, or rolls session context needs a deterministic continuity floor. LLM summaries help, but cannot be the only record of a window about to be dropped.
 
 The runtime invariant is:
 
 > before any context window is discarded, preserve a bounded and redacted deterministic handoff from that exact window.
 
-If the normal summary succeeds, use it. If summary generation fails, the fallback must not depend on a second LLM call. It should be generated from already-available session data and inserted where the runtime would otherwise insert a generic missing-summary marker.
+If the normal summary succeeds, use it. If summary generation fails, the fallback must not depend on a second LLM call. Generate it from already-available session data and insert it where the runtime would otherwise insert a missing-summary marker.
 
 ### Minimum fallback contents
 
-A useful fallback should preserve enough information to let the next turn recover the lane without replaying the whole transcript:
+A useful fallback should preserve enough for the next turn to recover the lane without replaying the whole transcript:
 
 - recent user asks from the dropped window
-- recent tool/action state, including job/process IDs, command outcomes, and external side effects when available
+- recent tool/action state, including IDs, outcomes, and external side effects when available
 - file/path mentions that anchor the work
-- last dropped turns or compact deterministic extracts from them
+- last dropped turns or compact extracts from them
 
-Keep the fallback bounded and redacted. Do not dump full transcripts, secrets, credentials, private browser/session paths, or large tool outputs.
+Keep the fallback bounded and redacted. Do not dump full transcripts, secrets, credentials, private paths, or large tool outputs.
 
 ### Failure receipt
 
-When the fallback is used, user-facing/runtime warnings should say continuity is degraded and a deterministic fallback handoff was inserted. Avoid saying only that a placeholder was inserted or that the window is unrecoverable when bounded recovery data exists.
+When fallback is used, user-facing/runtime warnings should say continuity is degraded and a deterministic fallback handoff was inserted. Avoid saying only that a placeholder was inserted or that the window is unrecoverable.
 
 ### Verification checklist
 
