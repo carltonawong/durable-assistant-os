@@ -106,6 +106,26 @@ class ContextPreflightTests(unittest.TestCase):
         self.assertTrue(after_rollover.blocked)
         self.assertIn("durable-policy-violation", after_rollover.notes)
 
+    def test_memory_evidence_does_not_grant_sensitive_action_permission(self) -> None:
+        result = evaluate_action_preflight_policy(
+            "public-posting",
+            {
+                "public-posting": {
+                    "preference": "Use approved visible/publication path for public posts.",
+                    "default_action": "approved-publication-path",
+                    "exception_rule": "Alternate publication path needs explicit approval.",
+                    "sensitive": True,
+                }
+            },
+            requested_action="remembered-shortcut-path",
+            memory_evidence="Prior memory says the shortcut was okay last time.",
+        )
+
+        self.assertTrue(result.blocked)
+        self.assertTrue(result.needs_confirmation)
+        self.assertIn("Memory evidence was context, not permission.", result.receipt)
+        self.assertIn("memory-evidence-not-permission", result.notes)
+
     def test_read_only_exception_is_explicit_and_non_mutating(self) -> None:
         result = evaluate_action_preflight_policy(
             "login-sensitive",
