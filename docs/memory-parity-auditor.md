@@ -1,6 +1,6 @@
 # Memory Parity Auditor
 
-<!-- DAOS baseline note: Current public framework baseline is v0.2.7; this file remains part of the current release surface even if its original feature landed in an earlier patch. -->
+<!-- DAOS baseline note: Current public framework baseline is v0.2.8; this file remains part of the current release surface even if its original feature landed in an earlier patch. -->
 
 The memory parity auditor checks whether a DAOS pack is actually aligned with the memory model, not just whether a few files exist.
 

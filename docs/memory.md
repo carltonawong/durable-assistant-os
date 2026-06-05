@@ -1,6 +1,6 @@
 # DAOS Continuity, Memory, and Current-State Model
 
-<!-- DAOS baseline note: Current public framework baseline is v0.2.7; this file remains part of the current release surface even if its original feature landed in an earlier patch. -->
+<!-- DAOS baseline note: Current public framework baseline is v0.2.8; this file remains part of the current release surface even if its original feature landed in an earlier patch. -->
 
 ## Goal
 

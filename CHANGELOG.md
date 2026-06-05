@@ -14,7 +14,25 @@ Do not add entries for every typo fix or private WIP note.
 
 ## Unreleased
 
-No unreleased framework-facing changes are staged after v0.2.7.
+No unreleased framework-facing changes are staged after v0.2.8.
+
+## v0.2.8 - 2026-06-04
+
+### Added
+- Added `use-daos init --use-detected-home`, an explicit opt-in path for installing the starter pack additively into a detected assistant operating home instead of defaulting to a disconnected `~/.daos`.
+
+### Changed
+- Sharpened the README and public docs around DAOS as a portable context-continuity layer, with clearer context-recovery and returning-workstream preflight language.
+- Added a deterministic compaction fallback invariant for runtimes that lose the LLM-generated summary path, preserving bounded, redacted handoff context before a window is discarded.
+- Made npm/package smoke tests select the platform-native npm command so WSL/Linux release gates avoid Windows shim false failures.
+- Bumped package metadata and generated framework manifests to `0.2.8` / `v0.2.8`.
+
+### Hardened
+- Added adapter preflight coverage that treats remembered memory evidence as context, not permission, for sensitive actions.
+- Clarified that release, publish, branch/tag, runtime-health, scan, and test-result claims remain freshness-sensitive and require live authority.
+
+### Notes
+- Patch checkpoint only: no hosted runtime, autonomous control layer, private integration, or new memory layer.
 
 ## v0.2.7 - 2026-05-25
 

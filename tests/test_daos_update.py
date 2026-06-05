@@ -56,7 +56,7 @@ class DaosUpdateScriptTests(unittest.TestCase):
             self.assertEqual(result.returncode, 0, msg=result.stderr)
             self.assertIn("manifest: present", result.stdout)
             self.assertIn("schema_version: 1", result.stdout)
-            self.assertIn("framework_version: v0.2.7", result.stdout)
+            self.assertIn("framework_version: v0.2.8", result.stdout)
             self.assertRegex(result.stdout, r"pack_id: [0-9a-f-]+")
             self.assertIn("upgrade_ready: stable", result.stdout)
 
@@ -86,7 +86,7 @@ class DaosUpdateScriptTests(unittest.TestCase):
             self.assertEqual(result.returncode, 0, msg=result.stderr)
             manifest = json.loads((destination / "daos-pack.json").read_text(encoding="utf-8"))
             self.assertEqual(manifest["schema_version"], "1")
-            self.assertEqual(manifest["framework_version"], "v0.2.7")
+            self.assertEqual(manifest["framework_version"], "v0.2.8")
             self.assertTrue(manifest["pack_id"])
             self.assertEqual((destination / "assistant-charter.md").read_text(encoding="utf-8"), original_charter)
             self.assertTrue((destination / ".daos" / "migrations").is_dir())
@@ -111,7 +111,7 @@ class DaosUpdateScriptTests(unittest.TestCase):
 
             self.assertEqual(result.returncode, 0, msg=result.stderr)
             updated_manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
-            self.assertEqual(updated_manifest["framework_version"], "v0.2.7")
+            self.assertEqual(updated_manifest["framework_version"], "v0.2.8")
             self.assertTrue(updated_manifest["pack_id"])
             backup_files = list((destination / ".daos" / "backups").glob("**/daos-pack.json"))
             self.assertGreaterEqual(len(backup_files), 1)
