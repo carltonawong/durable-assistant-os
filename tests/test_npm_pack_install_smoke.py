@@ -7,14 +7,9 @@ import tempfile
 import unittest
 from pathlib import Path
 
+from npm_command import npm_command
+
 REPO_ROOT = Path(__file__).resolve().parents[1]
-
-
-def npm_command() -> str:
-    executable = shutil.which("npm.cmd") or shutil.which("npm")
-    if executable is None:
-        raise unittest.SkipTest("npm executable not found")
-    return executable
 
 
 def fake_home_env(home: Path) -> dict[str, str]:
