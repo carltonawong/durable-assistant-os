@@ -2,19 +2,13 @@ from __future__ import annotations
 
 import json
 import re
-import shutil
 import subprocess
 import unittest
 from pathlib import Path
 
+from npm_command import npm_command
+
 REPO_ROOT = Path(__file__).resolve().parents[1]
-
-
-def npm_command() -> str:
-    executable = shutil.which("npm.cmd") or shutil.which("npm")
-    if executable is None:
-        raise unittest.SkipTest("npm executable not found")
-    return executable
 
 
 class DaosNpmPackagePayloadTests(unittest.TestCase):
