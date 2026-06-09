@@ -14,7 +14,8 @@ Do not add entries for every typo fix or private WIP note.
 
 ## Unreleased
 
-No unreleased framework-facing changes are staged after v0.2.8.
+### Hardened
+- Added an artifact recall guard so assistants recover prior artifacts instead of inferring exact identity from hot cache alone.
 
 ## v0.2.8 - 2026-06-04
 

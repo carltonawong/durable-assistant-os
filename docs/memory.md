@@ -211,8 +211,21 @@ For example:
 - a durable preference should not be treated like a live process check
 - a current focus note should not be treated like a permanent biography fact
 - an old project summary should not override the current repo state
+- a current-focus note should not be treated like proof of which prior demo, branch, deployment, or generated file the user means
 
 The more clearly these are separated, the easier it is to stay helpful without becoming brittle.
+
+## Prior artifact recall
+
+If the user asks for a prior artifact and the identifier is not in the local thread, do not answer from hot cache or familiar memory alone. Examples: demo/preview URLs, mockups, generated files, deployments, branches, receipts, and result cards.
+
+Recover narrowly:
+1. inspect the local thread/reply target
+2. search targeted session/wiki/source records
+3. verify the live URL, repo, or file when possible
+4. answer with the verified identifier
+
+This keeps hot cache useful without making it artifact authority.
 
 ## Compression rules
 
