@@ -29,6 +29,7 @@ Keep default-read surfaces small. Move detailed doctrine, schemas, historical ma
 - Do not resume from summaries first when the answer is already in the immediate conversation.
 - Hot cache, hot-cache log, and continuity are orientation aids, not automatic truth.
 - A different or mismatched hot cache is normal in multi-focus systems; it does not automatically mean the agent lost its place.
+- For prior concrete artifact requests, verify the exact artifact identity instead of inferring from the current hot cache.
 - For live operational facts, verify against actual files/runtime/state.
 - Recover the last sentence, not just the chapter.
 

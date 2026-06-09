@@ -22,6 +22,18 @@ If the thread is not enough:
 4. if still unsure of your own prior lane, read `agent-continuity.md`
 5. verify important assumptions against wiki/files/runtime before acting
 
+### Artifact recall guard
+
+Hot cache is a routing hint, not an artifact registry.
+
+If the user asks for a prior artifact and the identifier is not in the local thread, do not infer from hot cache alone. Examples: demo/preview URLs, mockups, files, deployments, branches, receipts, or result cards.
+
+Recover the artifact:
+1. inspect the local thread/reply target
+2. search targeted session/wiki/source records
+3. verify the live URL, repo, or file when possible
+4. answer with the verified identifier and uncertainty
+
 ## Allowed sections
 
 The hot cache may contain only:
