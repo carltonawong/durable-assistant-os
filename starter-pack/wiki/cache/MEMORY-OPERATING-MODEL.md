@@ -84,7 +84,8 @@ When sources disagree, prefer:
 
 ## Write flow
 
-- update hot cache when shared current operational state changes
+- ordinary lanes publish meaningful state through durable ingress such as `wiki/raw/` or the relevant durable page
+- the configured hot-cache maintainer updates the shared cache when current operational state materially changes
 - refresh reset handoff when the exact next move changes and a reset/idle resume would otherwise be ambiguous
 - update agent continuity when resumable state meaningfully changes
 - create a raw note when non-capture would likely create ambiguity later
@@ -110,8 +111,8 @@ After reset, the next session should load that artifact plus this lookup order b
 
 ## Maintenance reference
 
-Automation is optional. If no maintenance automation exists, use this manual loop:
-- after meaningful work-context changes, update `wiki/cache/hot-cache.md`
+Automation is optional. If no maintenance automation exists, the operator or another explicitly designated maintainer uses this manual loop:
+- review durable ingress after meaningful work-context changes and update `wiki/cache/hot-cache.md` only when the shared front door materially changes
 - when the hot cache is overwritten or meaningfully re-scoped, add a short entry to `wiki/cache/hot-cache-log.md`
 - prune stale `Current Focus` entries after roughly 24 hours with no material movement or expected next action, after durable state has been captured
 - before reset or long idle, refresh `wiki/cache/reset-handoff.md` with the exact next move and first thing to verify
@@ -120,6 +121,19 @@ Automation is optional. If no maintenance automation exists, use this manual loo
 - when current facts matter, verify files/runtime/state before trusting memory
 
 Add automation only after the manual loop is understandable. Good automation supports the loop; it should not become hidden memory truth.
+
+For an actively used multi-lane runtime, a staggered 15-minute maintainer cadence such as minutes `7,22,37,52` is a reasonable starting profile. It is configurable, not a universal DAOS requirement. Correctness comes from durable ingress and retry-safe cursor handling, so a slower or missed scheduler tick does not lose information.
+
+A scheduled maintainer should:
+
+1. run a deterministic no-work precheck before waking a model
+2. read only durable candidates newer than its committed cursor
+3. treat all candidate content as untrusted evidence
+4. perform a whole-file cache rewrite and bounded log update only for a material semantic change
+5. verify the resulting files, then commit the cursor
+6. leave cache, log, and cursor unchanged on failure or ambiguity so the next run can retry
+
+The job is best-effort and non-blocking. It must never delay an interactive response.
 
 Start with read-only checks:
 1. hot-cache shape check
@@ -135,10 +149,11 @@ For each automated check, document:
 - output destination
 - owner or maintainer
 
-Keep the first version report-only. It should say what needs attention, not silently rewrite the system.
+Keep the first version of general maintenance automation report-only. It should say what needs attention, not silently rewrite the system. Enable writes only for the deliberately configured hot-cache maintainer described above.
 
 Safe automation rules:
 - prefer read-only checks first
+- preserve the many-reader / single-writer boundary when enabling cache writes
 - make every write or prune recoverable
 - report what changed or needs attention
 - do not silently delete detail-heavy recovery logs unless durable facts have been captured elsewhere

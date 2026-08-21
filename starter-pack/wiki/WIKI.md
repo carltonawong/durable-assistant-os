@@ -84,4 +84,4 @@ The canonical doctrine files in `wiki/cache/` are installed payloads, not free-r
 
 Treat them as the memory-system spine unless explicitly migrated by a later framework update.
 
-Do not casually rewrite those baseline doctrine files during ordinary use; update live cache surfaces or write durable notes instead.
+Do not casually rewrite those baseline doctrine files during ordinary use. Ordinary lanes write durable notes; the configured hot-cache maintainer updates the shared cache surfaces.

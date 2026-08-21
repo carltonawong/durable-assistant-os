@@ -148,8 +148,8 @@ class DaosNpmPackagePayloadTests(unittest.TestCase):
 
         # v0.2.8 adds one release note while keeping the compact docs payload bounded.
         self.assertLessEqual(package["entryCount"], 77)
-        # Keep the payload near 115 KB while including the assistant-home install path and v0.2.8 note.
-        self.assertLessEqual(package["size"], 115_000)
+        # Keep the payload near 120 KB while allowing compact protocol hardening docs.
+        self.assertLessEqual(package["size"], 120_000)
 
 
 if __name__ == "__main__":

@@ -93,6 +93,8 @@ These are mandatory runtime surfaces, but not fixed-content files:
 
 `wiki/cache/reset-handoff.md` is the named public DAOS reset/wake-up continuity artifact.
 
+`hot-cache.md` and `hot-cache-log.md` use a many-reader / single-writer boundary during normal operation: all lanes may read and publish durable evidence, while one explicitly configured maintainer owns cache mutation.
+
 Agent- or runtime-specific sidecars may still exist, but this file is the public baseline surface.
 
 ## Mandatory behavior baseline
@@ -103,6 +105,7 @@ A hardened DAOS install must also provide these behaviors:
 - verified reality outranks remembered state for live facts
 - durable capture when non-capture would create ambiguity later
 - project checkpoint capture before active work changes future assumptions invisibly
+- many-reader / single-writer authority for shared hot-cache mutation
 - reset/wake-up continuity mechanism
 - maintenance automation for ingest, compression, audits, and hygiene
 

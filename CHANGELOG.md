@@ -16,6 +16,8 @@ Do not add entries for every typo fix or private WIP note.
 
 ### Hardened
 - Added an artifact recall guard so assistants recover prior artifacts instead of inferring exact identity from hot cache alone.
+- Added a portable many-reader / single-writer hot-cache protocol: ordinary lanes publish durable evidence, one configured maintainer performs verified retry-safe rewrites, and optional runtime guards can enforce the boundary without making interactive work wait.
+- Documented a configurable staggered 15-minute active-runtime profile with deterministic no-work prechecks; durable ingress and post-readback cursor commits, rather than scheduler frequency, prevent missed information.
 
 ## v0.2.8 - 2026-06-04
 
