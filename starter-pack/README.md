@@ -79,7 +79,7 @@ If you are unsure what to write, use these defaults and refine later:
 DAOS works best when temporary context has a path into durable memory.
 
 Basic loop:
-1. Use `wiki/cache/hot-cache.md` for what matters now.
+1. Read `wiki/cache/hot-cache.md` for what matters now; during normal operation, one configured maintainer writes it.
 2. Use `wiki/cache/reset-handoff.md` for the exact next move after reset or long idle.
 3. Put durable observations that should survive into `wiki/raw/` or durable wiki pages.
 4. Use `cadence-review.md` after real use starts to decide what to keep, change, or remove.

@@ -97,6 +97,23 @@ class DaosMemoryParityTests(unittest.TestCase):
             self.assertEqual(result.status, "watch")
             self.assertTrue(any("section shape" in finding.message for finding in result.findings))
 
+    def test_hot_cache_writer_boundary_drift_is_visible(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            destination = Path(tmpdir) / "hot-cache-writer-boundary-pack"
+            self.bootstrap_filled_pack(destination)
+            agents_path = destination / "AGENTS.md"
+            agents_text = agents_path.read_text(encoding="utf-8")
+            self.assertIn("many-reader / single-writer", agents_text)
+            agents_path.write_text(
+                agents_text.replace("many-reader / single-writer", "shared-writer"),
+                encoding="utf-8",
+            )
+
+            result = audit_memory_parity(destination)
+
+            self.assertEqual(result.status, "watch")
+            self.assertTrue(any("hot-cache writer boundary" in finding.message for finding in result.findings))
+
     def test_cli_outputs_report_shape(self) -> None:
         with tempfile.TemporaryDirectory() as tmpdir:
             destination = Path(tmpdir) / "cli-pack"

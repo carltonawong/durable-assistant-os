@@ -125,6 +125,29 @@ def check_read_order_semantics(root: Path, result: ParityResult) -> None:
         result.warning("read-order semantics may be thin; expected local thread plus hot-cache orientation language")
 
 
+def check_hot_cache_writer_boundary(root: Path, result: ParityResult) -> None:
+    agents_path = root / "AGENTS.md"
+    doctrine_paths = (
+        root / "wiki" / "cache" / "HOT-CACHE-SPEC.md",
+        root / "wiki" / "cache" / "MEMORY-OPERATING-MODEL.md",
+    )
+    if not agents_path.is_file() or not all(path.is_file() for path in doctrine_paths):
+        return
+
+    agents_text = read_text(agents_path).lower()
+    doctrine_text = "\n".join(read_text(path).lower() for path in doctrine_paths)
+    missing: list[str] = []
+    if "many-reader / single-writer" not in agents_text:
+        missing.append("agent-level many-reader / single-writer authority")
+    for term in ("durable ingress", "untrusted evidence", "non-blocking"):
+        if term not in doctrine_text:
+            missing.append(term)
+    if missing:
+        result.warning(
+            "hot-cache writer boundary may be thin; expected " + ", ".join(missing)
+        )
+
+
 def check_raw_source_boundaries(root: Path, result: ParityResult) -> None:
     raw_readme = root / "wiki" / "raw" / "README.md"
     source_readme = root / "wiki" / "sources" / "README.md"
@@ -159,6 +182,7 @@ def audit_memory_parity(pack_dir: str | Path) -> ParityResult:
     check_hot_cache_log_order(root, result)
     check_hot_cache_shape(root, result)
     check_read_order_semantics(root, result)
+    check_hot_cache_writer_boundary(root, result)
     check_raw_source_boundaries(root, result)
     check_agent_continuity_freshness(root, result)
     return result

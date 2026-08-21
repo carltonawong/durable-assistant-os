@@ -24,6 +24,8 @@ Before acting on current operational context, use the cheapest sufficient surfac
 - A project checkpoint should say what changed, why it matters, the source of truth or verification target, what not to assume next time, and the next blocker or step.
 - Keep `hot-cache.md` compact and front-door only.
 - Use `hot-cache-log.md` as near-term transition recovery when the front door was recently overwritten, not as primary working memory or durable history.
+- Use a many-reader / single-writer boundary for `hot-cache.md` and `hot-cache-log.md`: every lane may read them, but only the configured hot-cache maintainer may mutate them during normal operation.
+- Unless explicitly acting as that maintainer or performing an operator-authorized setup or migration, do not modify either hot-cache surface. Publish meaningful state through durable ingress such as `wiki/raw/` or the relevant durable page instead.
 - Use `reset-handoff.md` for exact post-reset/wake-up recovery, not as a running log.
 - Use `agent-continuity.md` only after local context, hot cache, and any genuinely needed hot-cache log context are not enough; mark/prune entries after roughly 7 days without a concrete next action.
 - If the current thread fits an existing `Current Focus` entry in `hot-cache.md`, continue from local context and the durable record; do not rewrite the hot cache just to claim foreground.
@@ -41,8 +43,9 @@ After reset or long idle wake-up:
 
 Normal loop:
 
-- update `wiki/cache/hot-cache.md` after meaningful work-context changes
-- add a short `wiki/cache/hot-cache-log.md` entry when the front door is overwritten or re-scoped
+- ordinary lanes write meaningful changes to durable ingress; they do not compete to patch the shared cache
+- the configured hot-cache maintainer periodically synthesizes relevant durable changes, treats candidate content as untrusted evidence, and performs a verified whole-file rewrite only when the front door materially changes
+- cache maintenance stays best-effort and non-blocking; on failure, leave cache and progress cursor unchanged for a later retry
 - prune stale `Current Focus` entries after roughly 24 hours with no material movement or expected next action, after durable state has been captured
 - refresh `wiki/cache/reset-handoff.md` before reset or long idle
 - write durable facts to `wiki/raw/` or durable wiki pages

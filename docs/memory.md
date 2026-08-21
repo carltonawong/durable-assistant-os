@@ -269,6 +269,8 @@ Multiple agents may intensify the churn, but focus competition is the deeper sou
 No single agent should treat that front-door surface as "theirs."
 It is shared orientation context, not private scratch memory, and overwrite/re-scope is normal rather than suspicious by default.
 
+Shared meaning does not require shared mutation authority. A simple multi-lane design lets every lane read the front door and publish durable evidence, while one configured maintainer performs normal cache rewrites. This many-reader / single-writer boundary avoids duplicate work and write contention without making the maintainer the owner of the underlying facts.
+
 When the front door feels mismatched, treat that as normal before treating it as failure.
 The recovery order matters:
 - inspect the local thread first

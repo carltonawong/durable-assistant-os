@@ -170,7 +170,7 @@ It keeps six things separate:
 
 DAOS treats short-term context as controlled volatility, not durable truth:
 
-- rewrite volatile front-door context as Current Focus changes
+- route meaningful state through durable capture, then let one designated maintainer rewrite volatile front-door context as Current Focus changes
 - log recent front-door churn only when it helps another agent recover from a prune, displacement, or re-scope
 - promote decisions, corrections, and findings that would create ambiguity if lost
 - verify live facts against files, runtime state, inboxes, calendars, or other source systems

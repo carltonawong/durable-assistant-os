@@ -25,6 +25,7 @@ The first version is intentionally small and read-only. It checks:
 - `wiki/cache/hot-cache-log.md` keeps reverse-chronological front-door transition order, with newest entries at the top
 - `wiki/cache/hot-cache.md` has the five required front-door sections
 - `AGENTS.md` / `wiki/WIKI.md` carry local-thread-first plus hot-cache orientation language
+- agent and cache doctrine carry the many-reader / single-writer boundary, durable ingress, untrusted-evidence handling, and non-blocking maintenance semantics
 - `wiki/raw/README.md` and `wiki/sources/README.md` exist and describe the raw/source boundary
 - `wiki/cache/agent-continuity.md` has a visible freshness marker when it contains fallback continuity material
 
@@ -75,6 +76,7 @@ This first slice does not:
 
 - inspect a live assistant runtime
 - verify cron scheduler state
+- prove that a runtime hook actually blocks non-owner cache mutation
 - repair files automatically
 - judge whether an assistant actually loaded these files on session start
 - merge or rewrite durable wiki content

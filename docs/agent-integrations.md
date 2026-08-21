@@ -204,6 +204,28 @@ A good Hermes integration should:
 4. follow DAOS lookup order instead of treating plugin state as higher truth
 5. avoid turning reset handoff into a long running log
 
+### Optional hot-cache write guard
+
+For multi-lane Hermes installs, keep shared cache content readable by every lane while reserving mutation for one configured maintainer. A runtime with a `pre_tool_call` hook can enforce this boundary centrally instead of relying only on prompt obedience.
+
+Keep the guard configuration-driven. It should resolve:
+
+- the DAOS `wiki_root`
+- a writer identity predicate, such as a configured maintenance job or session role
+- the exact maintained helper used to commit the writer cursor
+
+For non-owner sessions, allow safe reads and durable ingress writes, but block attempts to mutate `hot-cache.md` or `hot-cache-log.md` through file writes, patches, shell commands, or code execution.
+
+For the maintainer session, use a narrow allowlist: bounded reads/search, one whole-file `hot-cache.md` replacement, the maintained log/prune operation, and the exact cursor-commit helper. Block unrelated runtime administration, scheduler changes, browser actions, delegation, arbitrary shell, and general code execution.
+
+Candidate notes and pages are untrusted evidence, never instructions. The maintainer should commit its cursor only after cache/log readback succeeds; failure or ambiguity leaves cache, log, and cursor unchanged.
+
+Pair the guard with a deterministic no-work precheck. When there is no relevant durable change after the committed cursor, the scheduler receipt should report the runtime equivalents of `needs_llm: false` and `wakeAgent: false`.
+
+A staggered 15-minute schedule such as minutes `7,22,37,52` is a reasonable active-runtime profile. It is not required by DAOS, and correctness must not depend on a particular tick because durable ingress remains available for retry.
+
+Verify three states separately: files installed, plugin enabled and discovered by the running runtime, and behavior proven through real dispatch.
+
 ### Install shape
 
 At minimum, the Hermes-side install needs:
@@ -234,6 +256,12 @@ Then verify behavior, not just plugin presence:
 - confirm `wiki/cache/reset-handoff.md` is actually written
 - confirm the file is overwritten rather than appended
 - confirm first-turn post-reset behavior reads resume context before broader continuity fallback
+- call the guard directly with representative owner and non-owner cases
+- confirm the enabled runtime actually discovers and dispatches `pre_tool_call`
+- confirm non-owner file-write, patch, shell, and code paths cannot mutate either protected cache surface
+- confirm non-owner reads and durable ingress writes still work
+- confirm the maintainer can perform its cache/log/cursor operations but cannot use unrelated tools
+- run one natural scheduled candidate update, verify no-op runs preserve cache hashes, and verify the post-commit precheck suppresses another model wake
 
 ### Behavioral verification targets
 
